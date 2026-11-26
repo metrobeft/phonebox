@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="tag_hack_orig_typeface" />
+    <item type="id" name="tag_hack_orig_transform" />
+    <item type="id" name="tag_hack_orig_shadow" />
+    <item type="id" name="tag_hack_glitch_active" />
+</resources>
