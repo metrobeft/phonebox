@@ -17,6 +17,7 @@ public final class ThemeColors {
     public final boolean isLofi;
     public final boolean isStarfall;
     public final boolean isMiku;
+    public final boolean isFantasy;
 
     public final int bg;
     public final int topBar;
@@ -102,7 +103,8 @@ public final class ThemeColors {
         this.isLofi = "lofi".equals(id);
         this.isStarfall = "starfall".equals(id);
         this.isMiku = "miku".equals(id);
-        this.isAnime = isSakura || isLofi || isStarfall || isMiku;
+        this.isFantasy = "fantasy".equals(id);
+        this.isAnime = isSakura || isLofi || isStarfall || isMiku || isFantasy;
 
         this.bg = bg;
         this.topBar = topBar;
@@ -155,12 +157,13 @@ public final class ThemeColors {
     public static boolean isCustomLocalTheme(String presetId) {
         String key = normalizePresetId(presetId);
         return "sakura".equals(key) || "lofi".equals(key) || "starfall".equals(key)
-                || "miku".equals(key) || "hack".equals(key);
+                || "miku".equals(key) || "fantasy".equals(key) || "hack".equals(key);
     }
 
     public static boolean isLivingWorldId(String presetId) {
         String key = normalizePresetId(presetId);
-        return "sakura".equals(key) || "lofi".equals(key) || "starfall".equals(key) || "miku".equals(key);
+        return "sakura".equals(key) || "lofi".equals(key) || "starfall".equals(key)
+                || "miku".equals(key) || "fantasy".equals(key);
     }
 
     public static ThemeColors forPreset(String presetId, String accentHex) {
@@ -281,6 +284,35 @@ public final class ThemeColors {
                     0x1639C5BB, 0x267FE7FF,
                     0x267FE7FF, 0x48B6FFF9,
                     0xCC04141A, 0x4439C5BB, 0xE8031015);
+        }
+
+        if ("fantasy".equals(key)) {
+            // Arcane Fantasy Realm (Ouro Arcano #F4C858 + Esmeralda Mana #4CF2B2 + Ametista #B77BFF)
+            return new ThemeColors("fantasy",
+                    0xFF060A16, // bg (deep enchanted night melting into black Android 4.2.2 bar)
+                    0xEE10172B, // topBar
+                    0xF5080D1C, // navBar
+                    0xCC11192E, // cardBg (translucent obsidian grimoire glass)
+                    0xD417213B, // cardAltBg
+                    0xDC1E2947, // cardHighlightBg (royal arcane focus card)
+                    0xE6222E4F, // surfaceControl
+                    0xFF33426B, // surfacePressed
+                    0xFF8C7442, // border (antique enchanted gold frame)
+                    0xFF473E34, // divider
+                    0xFF0E1629, // trackBg
+                    0xFFFFF9EC, // textPrimary (luminous ivory parchment)
+                    0xFFEADDBB, // textSecondary (warm golden parchment)
+                    0xFFB8B094, // textMuted (antique parchment slate)
+                    0xFFF4C858, // accent (enchanted arcane gold)
+                    0xFF4CF2B2, 0xE60D3B32, // green (mana emerald)
+                    0xFF6AD8FF, 0xE60F324D, // sky (celestial frost mana)
+                    0xFFB77BFF,             // purple (arcane amethyst)
+                    0xFFFFD970, 0xE6453310, // amber (dragon gold)
+                    0xFFFF5C7A, 0xE64A1123, // red (dragon ruby)
+                    0xFF141006, 0xE63D3014, 0xFF4CF2B2,
+                    0x16F4C858, 0x28F4C858,
+                    0x28FFF2CC, 0x4CFFE7A3,
+                    0xCC0A1121, 0x44F4C858, 0xE8060A16);
         }
 
         if ("hack".equals(key)) {

@@ -173,6 +173,8 @@ public final class AnimeEntranceOverlayView extends View {
             drawStarfallEntrance(canvas, w, h, elapsed, progress, masterFade);
         } else if ("miku".equals(world)) {
             drawMikuEntrance(canvas, w, h, elapsed, progress, masterFade);
+        } else if ("fantasy".equals(world)) {
+            drawFantasyEntrance(canvas, w, h, elapsed, progress, masterFade);
         } else {
             drawSakuraEntrance(canvas, w, h, elapsed, progress, masterFade);
         }
@@ -358,6 +360,71 @@ public final class AnimeEntranceOverlayView extends View {
         drawTitleBlock(canvas, w, h, cx, cy, elapsed, fade,
                 "HATSUNE MIKU  01", "CYBER VOCAL STAGE  //  HP 7.1",
                 0x00EEFFFE, 0x0039C5BB, 0x00FF2E88, 0x0079C4C7);
+    }
+
+    private void drawFantasyEntrance(Canvas canvas, int w, int h, long elapsed, float progress, float fade) {
+        bgPaint.setColor((Math.round(244f * fade) << 24) | 0x00060A16);
+        canvas.drawRect(0f, 0f, w, h, bgPaint);
+
+        float cx = w * 0.5f;
+        float cy = h * 0.47f;
+        float minDim = Math.min(w, h);
+        float ease = 1f - (1f - progress) * (1f - progress) * (1f - progress);
+
+        // Expanding self-summoning Arcane Magic Circle (concentric gold/emerald rings + rotating hexagram)
+        float magicR = minDim * (0.14f + 0.28f * ease);
+        strokePaint.setStrokeWidth(2.2f * density);
+        strokePaint.setColor((Math.round(175f * fade) << 24) | 0x00F4C858);
+        canvas.drawCircle(cx, cy, magicR, strokePaint);
+        strokePaint.setStrokeWidth(1.2f * density);
+        strokePaint.setColor((Math.round(145f * fade) << 24) | 0x004CF2B2);
+        canvas.drawCircle(cx, cy, magicR * 0.84f, strokePaint);
+        strokePaint.setColor((Math.round(115f * fade) << 24) | 0x00B77BFF);
+        canvas.drawCircle(cx, cy, magicR * 0.52f, strokePaint);
+
+        // Dual counter-rotating inscribed arcane triangles (hexagram sigil)
+        double rot1 = progress * 1.35;
+        double rot2 = -progress * 1.10 + Math.PI / 3.0;
+        drawInscribedTriangle(canvas, cx, cy, magicR * 0.84f, rot1, (Math.round(165f * fade) << 24) | 0x00F4C858);
+        drawInscribedTriangle(canvas, cx, cy, magicR * 0.84f, rot2, (Math.round(140f * fade) << 24) | 0x004CF2B2);
+
+        // 6 orbiting arcane rune gems
+        for (int i = 0; i < 6; i++) {
+            double ang = (i * Math.PI / 3.0) + rot1;
+            float ox = cx + (float) Math.cos(ang) * magicR;
+            float oy = cy + (float) Math.sin(ang) * magicR;
+            fillPaint.setColor((Math.round(235f * fade) << 24) | (i % 2 == 0 ? 0x004CF2B2 : 0x00F4C858));
+            drawStar(canvas, ox, oy, 5.5f * density, fillPaint);
+        }
+
+        // Enchanted diamond crest floating above title
+        float crestY = cy - 52f * density;
+        float crestR = Math.max(15f * density, minDim * 0.052f) * Math.min(1f, elapsed / 300f);
+        fillPaint.setColor((Math.round(65f * fade) << 24) | 0x004CF2B2);
+        canvas.drawCircle(cx, crestY, crestR * 1.65f, fillPaint);
+        fillPaint.setColor((Math.round(240f * fade) << 24) | 0x00F4C858);
+        drawStar(canvas, cx, crestY, crestR, fillPaint);
+        fillPaint.setColor((Math.round(240f * fade) << 24) | 0x004CF2B2);
+        drawStar(canvas, cx, crestY, crestR * 0.45f, fillPaint);
+
+        drawTitleBlock(canvas, w, h, cx, cy, elapsed, fade,
+                "PHONEBOX  FANTASY", "ARCANE REALM EDITION  //  HP 7.1",
+                0x00FFF9EC, 0x00F4C858, 0x004CF2B2, 0x00B8B094);
+    }
+
+    private void drawInscribedTriangle(Canvas canvas, float cx, float cy, float r, double angleRad, int color) {
+        workPath.reset();
+        for (int i = 0; i < 3; i++) {
+            double a = angleRad + i * (Math.PI * 2.0 / 3.0);
+            float vx = cx + (float) Math.cos(a) * r;
+            float vy = cy + (float) Math.sin(a) * r;
+            if (i == 0) workPath.moveTo(vx, vy);
+            else workPath.lineTo(vx, vy);
+        }
+        workPath.close();
+        strokePaint.setStrokeWidth(1.4f * density);
+        strokePaint.setColor(color);
+        canvas.drawPath(workPath, strokePaint);
     }
 
     private void drawTitleBlock(Canvas canvas, int w, int h, float cx, float cy, long elapsed, float fade,

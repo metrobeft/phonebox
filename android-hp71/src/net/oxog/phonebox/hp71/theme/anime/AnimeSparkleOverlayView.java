@@ -65,7 +65,7 @@ public final class AnimeSparkleOverlayView extends View {
             timeSec += 0.06f;
 
             if (w > 0 && h > 0) {
-                boolean upward = "miku".equals(world) || "starfall".equals(world) || "lofi".equals(world);
+                boolean upward = "miku".equals(world) || "starfall".equals(world) || "lofi".equals(world) || "fantasy".equals(world);
                 for (int i = 0; i < EDGE_PARTICLES; i++) {
                     px[i] += pvx[i] + (float) Math.sin(timeSec * 2.1f + i * 1.7f) * 0.55f * density;
                     py[i] += upward ? -pvy[i] : pvy[i];
@@ -145,6 +145,11 @@ public final class AnimeSparkleOverlayView extends View {
             starRgb = 0x00FF2E88;
             sweepPrimaryRgb = 0x0039C5BB;
             sweepCoreRgb = 0x00FF5CA8;
+        } else if ("fantasy".equals(world)) {
+            cornerColor = 0xAAF4C858;
+            starRgb = 0x004CF2B2;
+            sweepPrimaryRgb = 0x00F4C858;
+            sweepCoreRgb = 0x004CF2B2;
         } else {
             cornerColor = 0x99FF7ED4;
             starRgb = 0x00FFD56B;
@@ -188,7 +193,7 @@ public final class AnimeSparkleOverlayView extends View {
         boolean rightSide = (i % 2 == 1);
         float marginW = Math.max(44f * density, w * 0.16f);
         px[i] = rightSide ? (w - marginW + (i * 19f * density) % marginW) : ((i * 23f * density) % marginW);
-        boolean upward = "miku".equals(world) || "starfall".equals(world) || "lofi".equals(world);
+        boolean upward = "miku".equals(world) || "starfall".equals(world) || "lofi".equals(world) || "fantasy".equals(world);
         if (edgeSpawn) {
             py[i] = upward ? (h + 10f * density + i * 12f * density) : (-10f * density - i * 14f * density);
         } else {
@@ -243,6 +248,13 @@ public final class AnimeSparkleOverlayView extends View {
                 } else if ("miku".equals(world)) {
                     int col = (i % 2 == 0) ? 0x8239C5BB : 0x7AFF2E88;
                     drawEdgeNote(canvas, px[i], py[i], psize[i] * 0.92f, col);
+                } else if ("fantasy".equals(world)) {
+                    float pulse = 0.55f + 0.45f * (float) Math.sin(timeSec * 2.5f + i * 1.4f);
+                    int rgb = (i % 3 == 0) ? 0x004CF2B2 : ((i % 2 == 0) ? 0x00F4C858 : 0x00B77BFF);
+                    partPaint.setColor((Math.round(pulse * 65f) << 24) | rgb);
+                    canvas.drawCircle(px[i], py[i], psize[i] * 1.55f, partPaint);
+                    partPaint.setColor((Math.round(pulse * 190f) << 24) | rgb);
+                    drawStar(canvas, px[i], py[i], psize[i] * 0.9f, partPaint);
                 } else {
                     partPaint.setColor(i % 2 == 0 ? 0x6EFF9CE0 : 0x62FFD6F4);
                     canvas.save();

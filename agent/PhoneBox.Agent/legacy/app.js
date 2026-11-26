@@ -36,6 +36,7 @@
     'lofi': { bg: '#130a1e', bar: 'rgba(29, 16, 44, 0.94)', card: 'rgba(33, 19, 48, 0.82)', cardAlt: 'rgba(42, 24, 61, 0.84)', focal: 'rgba(53, 30, 74, 0.86)', inset: 'rgba(21, 11, 34, 0.86)', stripe: 'rgba(58, 34, 79, 0.70)', border: '#835584', line: '#4f3058', text: '#fff4ec', muted: '#c9a6c4', accent: '#ffb38a', isAnime: true, world: 'lofi', art: '/legacy/theme_lofi.png', starGold: '#ffe066', gridCol: 'rgba(255, 179, 138, 0.24)', ramCol: '#d4a5ff', gpuCol: '#9fe3c9', tempCol: '#ffe066' },
     'starfall': { bg: '#020512', bar: 'rgba(7, 18, 43, 0.94)', card: 'rgba(10, 24, 51, 0.80)', cardAlt: 'rgba(16, 34, 71, 0.84)', focal: 'rgba(19, 43, 87, 0.86)', inset: 'rgba(6, 16, 36, 0.86)', stripe: 'rgba(22, 50, 97, 0.70)', border: '#2e6aa6', line: '#1d436e', text: '#f0fbff', muted: '#88b4dc', accent: '#7fe7ff', isAnime: true, world: 'starfall', art: '/legacy/theme_starfall.png', starGold: '#6dffb0', gridCol: 'rgba(127, 231, 255, 0.24)', ramCol: '#b57cff', gpuCol: '#6dffb0', tempCol: '#ffe066' },
     'miku': { bg: '#031015', bar: 'rgba(6, 28, 36, 0.94)', card: 'rgba(7, 32, 41, 0.80)', cardAlt: 'rgba(10, 43, 54, 0.84)', focal: 'rgba(13, 54, 68, 0.86)', inset: 'rgba(4, 20, 26, 0.86)', stripe: 'rgba(15, 61, 76, 0.70)', border: '#218688', line: '#134f57', text: '#eefffe', muted: '#79c4c7', accent: '#39c5bb', isAnime: true, world: 'miku', art: '/legacy/theme_miku.png', starGold: '#ff2e88', gridCol: 'rgba(57, 197, 187, 0.25)', ramCol: '#ff5ca8', gpuCol: '#5bf5b8', tempCol: '#ffd866' },
+    'fantasy': { bg: '#060a16', bar: 'rgba(16, 23, 43, 0.94)', card: 'rgba(17, 25, 46, 0.82)', cardAlt: 'rgba(23, 33, 59, 0.84)', focal: 'rgba(30, 41, 71, 0.86)', inset: 'rgba(10, 17, 33, 0.86)', stripe: 'rgba(34, 46, 79, 0.70)', border: '#8c7442', line: '#473e34', text: '#fff9ec', muted: '#b8b094', accent: '#f4c858', isAnime: true, world: 'fantasy', art: '/legacy/theme_fantasy.png', starGold: '#4cf2b2', gridCol: 'rgba(244, 200, 88, 0.24)', ramCol: '#b77bff', gpuCol: '#4cf2b2', tempCol: '#ffd970' },
     'hack': { bg: '#000000', bar: 'rgba(2, 10, 5, 0.94)', card: 'rgba(3, 16, 8, 0.80)', cardAlt: 'rgba(5, 22, 12, 0.84)', focal: 'rgba(6, 31, 17, 0.86)', inset: 'rgba(1, 10, 5, 0.88)', stripe: 'rgba(9, 36, 20, 0.72)', border: '#15693b', line: '#0e3e22', text: '#e8fff0', muted: '#3fb874', accent: '#00ff66', isHack: true },
     'amoled': { bg: '#000000', bar: '#050608', card: '#0a0c10', cardAlt: '#07090d', border: '#1a202c', line: '#141923', text: '#f1f5f9', muted: '#8592a6' },
     'midnight': { bg: '#060d1f', bar: '#0a1530', card: '#0f1d3d', cardAlt: '#0c1733', border: '#1e3361', line: '#192b52', text: '#eaf2ff', muted: '#8da7cc' },
@@ -2988,7 +2989,7 @@
 
       function isLivingWorldId(id) {
         var k = normalizeThemeId(id);
-        return k === 'sakura' || k === 'lofi' || k === 'starfall' || k === 'miku';
+        return k === 'sakura' || k === 'lofi' || k === 'starfall' || k === 'miku' || k === 'fantasy';
       }
 
       function isCustomLocalThemeId(id) {
@@ -3903,7 +3904,9 @@
             ? ['255,255,255', '127,231,255', '109,255,176', '255,224,102', '181,124,255']
             : (world === 'miku'
               ? ['57,197,187', '127,231,255', '255,46,136', '238,255,254']
-              : ['255,246,253', '255,213,107', '124,232,255', '255,184,232']));
+              : (world === 'fantasy'
+                ? ['255,246,220', '244,200,88', '76,242,178', '183,123,255', '106,216,255']
+                : ['255,246,253', '255,213,107', '124,232,255', '255,184,232'])));
 
         animeStars = [];
         var i;
@@ -3924,7 +3927,9 @@
             ? ['220,255,120', '109,255,176', '127,231,255', '255,224,102']
             : (world === 'miku'
               ? ['57,197,187', '127,231,255', '255,46,136', '91,245,184']
-              : ['255,126,212', '255,168,226', '255,209,240', '228,155,255']));
+              : (world === 'fantasy'
+                ? ['244,200,88', '76,242,178', '255,233,153', '183,123,255']
+                : ['255,126,212', '255,168,226', '255,209,240', '228,155,255'])));
 
         animePetals = [];
         for (i = 0; i < 24; i++) {
@@ -3995,6 +4000,16 @@
             p.x = r % Math.max(1, w);
             p.y = h + 14;
           }
+        } else if (world === 'fantasy') {
+          p.size = 2.2 + (r % 4) * 0.85;
+          p.vx = ((r % 9) - 4) * 0.14;
+          p.vy = -(0.42 + (r % 6) * 0.16);
+          p.angle = 0;
+          p.spin = 0;
+          if (respawnEdge) {
+            p.x = r % Math.max(1, w);
+            p.y = h + 12;
+          }
         } else {
           p.size = (4.8 + (r % 5) * 1.15) * depth;
           p.vx = (0.75 + (r % 7) * 0.18) * depth;
@@ -4016,7 +4031,7 @@
       function resetAnimeEdgePetal(ep, idx, w, h, edgeSpawn, world) {
         var rightSide = (idx % 2 === 1);
         var marginW = Math.max(44, w * 0.16);
-        var upward = world === 'miku' || world === 'starfall' || world === 'lofi';
+        var upward = world === 'miku' || world === 'starfall' || world === 'lofi' || world === 'fantasy';
         ep.x = rightSide ? (w - marginW + ((idx * 19) % marginW)) : ((idx * 23) % marginW);
         ep.y = edgeSpawn ? (upward ? (h + 10 + idx * 12) : (-10 - idx * 14)) : ((idx * 97) % Math.max(1, h));
         ep.vx = upward ? (rightSide ? -0.18 : 0.18) : (0.45 + (idx % 3) * 0.25);
@@ -4194,6 +4209,22 @@
               if (animeEq[i] > animeEqPeak[i]) animeEqPeak[i] = animeEq[i];
               else animeEqPeak[i] = Math.max(animeEq[i], animeEqPeak[i] - 0.025);
             }
+          } else if (world === 'fantasy') {
+            for (i = 0; i < animePetals.length; i++) {
+              var fw = animePetals[i];
+              fw.x += fw.vx + Math.sin(animeTime * 1.7 + fw.phase) * 0.60;
+              fw.y += fw.vy * boost;
+              if (fw.y < -16 || fw.x < -18 || fw.x > w + 18) resetAnimePetal(fw, true, w, h, world);
+            }
+            if (animeMeteor.active) {
+              animeMeteor.x += animeMeteor.vx;
+              animeMeteor.y += animeMeteor.vy;
+              animeMeteor.life -= 0.06;
+              if (animeMeteor.life <= 0 || animeMeteor.x < -70 || animeMeteor.y > h + 40) {
+                animeMeteor.active = false;
+                animeMeteor.nextAt = now + 3200 + (hackRand() % 3200);
+              }
+            } else if (now >= animeMeteor.nextAt) spawnAnimeMeteor(w, h);
           } else {
             var gust = Math.sin(animeTime * 0.7) * 0.55;
             for (i = 0; i < animePetals.length; i++) {
@@ -4437,6 +4468,108 @@
           return;
         }
 
+        if (world === 'fantasy') {
+          grad.addColorStop(0, '#130b2a'); grad.addColorStop(0.42, '#0e1733'); grad.addColorStop(0.80, '#081222'); grad.addColorStop(1, '#02050b');
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+          var fg1 = ctx.createRadialGradient(w * 0.78, h * 0.22, 8, w * 0.78, h * 0.22, Math.max(w, h) * 0.44);
+          fg1.addColorStop(0, 'rgba(244, 200, 88, 0.22)'); fg1.addColorStop(0.48, 'rgba(183, 123, 255, 0.11)'); fg1.addColorStop(1, 'rgba(6, 10, 22, 0)');
+          ctx.fillStyle = fg1; ctx.fillRect(0, 0, w, h);
+          var fg2 = ctx.createRadialGradient(w * 0.20, h * 0.82, 8, w * 0.20, h * 0.82, Math.max(w, h) * 0.42);
+          fg2.addColorStop(0, 'rgba(76, 242, 178, 0.21)'); fg2.addColorStop(0.52, 'rgba(106, 216, 255, 0.08)'); fg2.addColorStop(1, 'rgba(6, 10, 22, 0)');
+          ctx.fillStyle = fg2; ctx.fillRect(0, 0, w, h);
+
+          drawStarsSet(ctx, animateStep, 0.90);
+
+          // Giant Fantasy Moon + Rotating Arcane Magic Circle (upper-right)
+          var fmx = w * 0.78, fmy = h * 0.23, fmr = Math.min(w, h) * 0.068;
+          ctx.fillStyle = 'rgba(244, 200, 88, 0.12)'; ctx.beginPath(); ctx.arc(fmx, fmy, fmr * 2.15, 0, Math.PI * 2, false); ctx.fill();
+          ctx.fillStyle = 'rgba(255, 246, 220, 0.16)'; ctx.beginPath(); ctx.arc(fmx, fmy, fmr * 1.38, 0, Math.PI * 2, false); ctx.fill();
+          ctx.fillStyle = 'rgba(255, 246, 220, 0.92)'; ctx.beginPath(); ctx.arc(fmx, fmy, fmr, 0, Math.PI * 2, false); ctx.fill();
+
+          var fmgR = Math.min(w, h) * 0.165;
+          var frot = animateStep ? (animeTime * 0.24) : 0.35;
+          ctx.strokeStyle = 'rgba(244, 200, 88, 0.42)'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(fmx, fmy, fmgR, 0, Math.PI * 2, false); ctx.stroke();
+          ctx.strokeStyle = 'rgba(76, 242, 178, 0.32)'; ctx.lineWidth = 1.0;
+          ctx.beginPath(); ctx.arc(fmx, fmy, fmgR * 0.84, 0, Math.PI * 2, false); ctx.stroke();
+          ctx.strokeStyle = 'rgba(183, 123, 255, 0.24)';
+          ctx.beginPath(); ctx.arc(fmx, fmy, fmgR * 1.12, 0, Math.PI * 2, false); ctx.stroke();
+
+          var drawTri = function (cx0, cy0, r0, ang0, col0) {
+            ctx.strokeStyle = col0; ctx.lineWidth = 1.2; ctx.beginPath();
+            for (var ti = 0; ti < 3; ti++) {
+              var ta0 = ang0 + ti * (Math.PI * 2 / 3);
+              var tx0 = cx0 + Math.cos(ta0) * r0, ty0 = cy0 + Math.sin(ta0) * r0;
+              if (ti === 0) ctx.moveTo(tx0, ty0); else ctx.lineTo(tx0, ty0);
+            }
+            ctx.closePath(); ctx.stroke();
+          };
+          drawTri(fmx, fmy, fmgR * 0.84, frot, 'rgba(244, 200, 88, 0.36)');
+          drawTri(fmx, fmy, fmgR * 0.84, -frot + Math.PI / 3, 'rgba(76, 242, 178, 0.30)');
+          for (i = 0; i < 6; i++) {
+            var oa = frot + i * (Math.PI / 3);
+            drawCanvasDiamondStar(ctx, fmx + Math.cos(oa) * fmgR, fmy + Math.sin(oa) * fmgR, 3.8, i % 2 === 0 ? 'rgba(76,242,178,0.68)' : 'rgba(244,200,88,0.74)');
+          }
+
+          drawMeteorSet(ctx, '244,200,88', '76,242,178', '255,249,236');
+
+          // Fantasy cliff silhouette
+          ctx.fillStyle = 'rgba(6, 10, 21, 0.82)';
+          ctx.beginPath(); ctx.moveTo(0, h); ctx.lineTo(0, h * 0.82); ctx.lineTo(w * 0.14, h * 0.86);
+          ctx.lineTo(w * 0.34, h * 0.89); ctx.lineTo(w * 0.56, h * 0.78); ctx.lineTo(w * 0.78, h * 0.85);
+          ctx.lineTo(w, h * 0.80); ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
+
+          // Silhouetted Fantasy Citadel with warm golden windows
+          var ccx = w * 0.58, cby = h * 0.80, cs = Math.min(w, h) * 0.16;
+          ctx.fillStyle = 'rgba(8, 13, 29, 0.92)';
+          ctx.fillRect(ccx - cs * 0.42, cby - cs * 0.48, cs * 0.84, cs * 0.48 + 12);
+          ctx.fillRect(ccx - cs * 0.14, cby - cs * 0.88, cs * 0.28, cs * 0.44);
+          ctx.beginPath(); ctx.moveTo(ccx - cs * 0.18, cby - cs * 0.88); ctx.lineTo(ccx, cby - cs * 1.32); ctx.lineTo(ccx + cs * 0.18, cby - cs * 0.88); ctx.closePath(); ctx.fill();
+          ctx.fillRect(ccx - cs * 0.48, cby - cs * 0.72, cs * 0.20, cs * 0.37);
+          ctx.beginPath(); ctx.moveTo(ccx - cs * 0.52, cby - cs * 0.72); ctx.lineTo(ccx - cs * 0.38, cby - cs * 1.04); ctx.lineTo(ccx - cs * 0.24, cby - cs * 0.72); ctx.closePath(); ctx.fill();
+          ctx.fillRect(ccx + cs * 0.28, cby - cs * 0.68, cs * 0.20, cs * 0.33);
+          ctx.beginPath(); ctx.moveTo(ccx + cs * 0.24, cby - cs * 0.68); ctx.lineTo(ccx + cs * 0.38, cby - cs * 0.98); ctx.lineTo(ccx + cs * 0.52, cby - cs * 0.68); ctx.closePath(); ctx.fill();
+
+          var wf = animateStep ? (0.82 + 0.18 * Math.sin(animeTime * 3.1)) : 0.92;
+          ctx.fillStyle = 'rgba(244, 200, 88, ' + (wf * 0.88).toFixed(2) + ')';
+          var ww = Math.max(2.2, cs * 0.055), wh = Math.max(4.5, cs * 0.11);
+          ctx.fillRect(ccx - ww * 0.5, cby - cs * 0.74, ww, wh);
+          ctx.fillRect(ccx - cs * 0.38 - ww * 0.5, cby - cs * 0.60, ww, wh * 0.85);
+          ctx.fillRect(ccx + cs * 0.38 - ww * 0.5, cby - cs * 0.56, ww, wh * 0.85);
+          ctx.fillRect(ccx - cs * 0.18, cby - cs * 0.34, ww, wh * 0.8);
+          ctx.fillRect(ccx + cs * 0.12, cby - cs * 0.34, ww, wh * 0.8);
+
+          // Floating rock island + glowing faceted mana crystals
+          var drawCrystal = function (bx, by, hLen, tiltDeg) {
+            ctx.save(); ctx.translate(bx, by); ctx.rotate(tiltDeg * Math.PI / 180);
+            var hw = hLen * 0.24;
+            ctx.fillStyle = 'rgba(76, 242, 178, 0.18)'; ctx.beginPath(); ctx.arc(0, -hLen * 0.5, hLen * 0.72, 0, Math.PI * 2, false); ctx.fill();
+            ctx.fillStyle = 'rgba(76, 242, 178, 0.72)'; ctx.beginPath();
+            ctx.moveTo(-hw, 2); ctx.lineTo(-hw * 0.82, -hLen * 0.68); ctx.lineTo(0, -hLen); ctx.lineTo(hw * 0.82, -hLen * 0.68); ctx.lineTo(hw, 2); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = 'rgba(168, 255, 226, 0.78)'; ctx.beginPath();
+            ctx.moveTo(0, -hLen); ctx.lineTo(hw * 0.82, -hLen * 0.68); ctx.lineTo(0, 0); ctx.closePath(); ctx.fill();
+            ctx.restore();
+          };
+          var ibob = animateStep ? Math.sin(animeTime * 1.4) * 4.5 : 0;
+          var ix = w * 0.16, iy = h * 0.74 + ibob, isz = Math.min(w, h) * 0.065;
+          ctx.fillStyle = 'rgba(10, 17, 36, 0.80)'; ctx.beginPath();
+          ctx.moveTo(ix - isz, iy); ctx.lineTo(ix + isz, iy); ctx.lineTo(ix + isz * 0.45, iy + isz * 0.75); ctx.lineTo(ix, iy + isz * 1.05); ctx.lineTo(ix - isz * 0.55, iy + isz * 0.65); ctx.closePath(); ctx.fill();
+          drawCrystal(ix - isz * 0.25, iy, 12, -12); drawCrystal(ix + isz * 0.22, iy, 16, 10);
+          drawCrystal(w * 0.06, h * 0.86, 20, -16); drawCrystal(w * 0.10, h * 0.88, 14, 14);
+          drawCrystal(w * 0.91, h * 0.84, 22, 15); drawCrystal(w * 0.87, h * 0.87, 15, -12);
+
+          // Rising golden & mana-emerald fairy wisps
+          for (i = 0; i < animePetals.length; i++) {
+            var wp = animePetals[i];
+            var wpul = animateStep ? (0.45 + 0.55 * Math.abs(Math.sin(animeTime * 2.4 + wp.phase))) : 0.72;
+            ctx.fillStyle = 'rgba(' + wp.rgb + ',' + (wpul * 0.20).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.size * 2.7, 0, Math.PI * 2, false); ctx.fill();
+            var wcol = 'rgba(' + wp.rgb + ',' + (wpul * 0.88).toFixed(2) + ')';
+            if (i % 3 === 0) drawCanvasDiamondStar(ctx, wp.x, wp.y, wp.size * 1.4, wcol);
+            else { ctx.fillStyle = wcol; ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.size, 0, Math.PI * 2, false); ctx.fill(); }
+          }
+          return;
+        }
+
         // ---- SAKURA STORM (DEFAULT LIVING WORLD) ----
         grad.addColorStop(0, '#180c38'); grad.addColorStop(0.42, '#0e0824'); grad.addColorStop(0.80, '#070414'); grad.addColorStop(1, '#020108');
         ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
@@ -4493,7 +4626,7 @@
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, w, h);
 
-        var upward = world === 'miku' || world === 'starfall' || world === 'lofi';
+        var upward = world === 'miku' || world === 'starfall' || world === 'lofi' || world === 'fantasy';
         var i;
         if (animateStep) {
           animeSparkleTime += 0.06;
@@ -4526,15 +4659,21 @@
               drawCanvasDiamondStar(ctx, ep2.x, ep2.y, ep2.size * 0.85, (i % 2 === 0 ? 'rgba(220,255,120,' : 'rgba(127,231,255,') + (sp2 * 0.58).toFixed(2) + ')');
             } else if (world === 'miku') {
               drawCanvasMusicNote(ctx, ep2.x, ep2.y, ep2.size * 0.92, 0, i % 2 === 0 ? 'rgba(57,197,187,0.52)' : 'rgba(255,46,136,0.48)');
+            } else if (world === 'fantasy') {
+              var fpul2 = 0.55 + 0.45 * Math.sin(animeSparkleTime * 2.5 + i * 1.4);
+              var frgb = (i % 3 === 0) ? '76,242,178' : ((i % 2 === 0) ? '244,200,88' : '183,123,255');
+              ctx.fillStyle = 'rgba(' + frgb + ',' + (fpul2 * 0.25).toFixed(2) + ')';
+              ctx.beginPath(); ctx.arc(ep2.x, ep2.y, ep2.size * 1.55, 0, Math.PI * 2, false); ctx.fill();
+              drawCanvasDiamondStar(ctx, ep2.x, ep2.y, ep2.size * 0.9, 'rgba(' + frgb + ',' + (fpul2 * 0.74).toFixed(2) + ')');
             } else {
               drawCanvasSakuraPetal(ctx, ep2.x, ep2.y, ep2.size, ep2.ang, (i % 2 === 0) ? 'rgba(255,156,224,0.44)' : 'rgba(255,214,244,0.38)', 1);
             }
           }
         }
 
-        var cCol = world === 'lofi' ? '255,179,138' : (world === 'starfall' ? '127,231,255' : (world === 'miku' ? '57,197,187' : '255,126,212'));
-        var sCol = world === 'lofi' ? '255,224,102' : (world === 'starfall' ? '109,255,176' : (world === 'miku' ? '255,46,136' : '255,213,107'));
-        var coreCol = world === 'miku' ? '255,92,168' : (world === 'starfall' ? '228,251,255' : '255,242,204');
+        var cCol = world === 'lofi' ? '255,179,138' : (world === 'starfall' ? '127,231,255' : (world === 'miku' ? '57,197,187' : (world === 'fantasy' ? '244,200,88' : '255,126,212')));
+        var sCol = world === 'lofi' ? '255,224,102' : (world === 'starfall' ? '109,255,176' : (world === 'miku' ? '255,46,136' : (world === 'fantasy' ? '76,242,178' : '255,213,107')));
+        var coreCol = world === 'miku' ? '255,92,168' : (world === 'starfall' ? '228,251,255' : (world === 'fantasy' ? '76,242,178' : '255,242,204'));
 
         if (animeSweepActive) {
           var sx = w * animeSweepProg;
@@ -4577,6 +4716,8 @@
           animeRibbonMsgs = ['STARFALL AURORA', 'CONSTELACAO OK', 'CPU ' + animeRibbonCpu + '% · NOVA', pingTxt, 'METEOR SHOWER'];
         } else if (world === 'miku') {
           animeRibbonMsgs = ['MIKU 01 STAGE', 'VOCAL SYNTH OK', 'CPU ' + animeRibbonCpu + '% · 39HZ', pingTxt, '01 LIVE SYNC'];
+        } else if (world === 'fantasy') {
+          animeRibbonMsgs = ['ARCANE REALM', 'MANA LINK OK', 'CPU ' + animeRibbonCpu + '% · RUNA', pingTxt, 'GRIMORIO HUD'];
         } else {
           animeRibbonMsgs = ['SAKURA STORM', 'LINK TOKYO OK', 'CPU ' + animeRibbonCpu + '% · SAKURA', pingTxt, 'HANAMI HUD'];
         }
@@ -4612,11 +4753,11 @@
           }
         }
 
-        var rBg = world === 'lofi' ? 'rgba(41, 22, 56, 0.90)' : (world === 'starfall' ? 'rgba(10, 27, 61, 0.90)' : (world === 'miku' ? 'rgba(7, 34, 43, 0.90)' : 'rgba(37, 20, 73, 0.90)'));
-        var rBrd = world === 'lofi' ? 'rgba(255, 179, 138, 0.80)' : (world === 'starfall' ? 'rgba(127, 231, 255, 0.80)' : (world === 'miku' ? 'rgba(57, 197, 187, 0.85)' : 'rgba(255, 126, 212, 0.80)'));
-        var rStar = world === 'lofi' ? '#ffe066' : (world === 'starfall' ? '#6dffb0' : (world === 'miku' ? '#39c5bb' : '#ffd56b'));
-        var rSec = world === 'lofi' ? '#9fe3c9' : (world === 'starfall' ? 'rgba(220,255,120,0.65)' : (world === 'miku' ? '#ff2e88' : 'rgba(255,126,212,0.42)'));
-        var rTxt = world === 'lofi' ? '255,244,236' : (world === 'starfall' ? '240,251,255' : (world === 'miku' ? '238,255,254' : '255,245,253'));
+        var rBg = world === 'lofi' ? 'rgba(41, 22, 56, 0.90)' : (world === 'starfall' ? 'rgba(10, 27, 61, 0.90)' : (world === 'miku' ? 'rgba(7, 34, 43, 0.90)' : (world === 'fantasy' ? 'rgba(17, 28, 51, 0.92)' : 'rgba(37, 20, 73, 0.90)')));
+        var rBrd = world === 'lofi' ? 'rgba(255, 179, 138, 0.80)' : (world === 'starfall' ? 'rgba(127, 231, 255, 0.80)' : (world === 'miku' ? 'rgba(57, 197, 187, 0.85)' : (world === 'fantasy' ? 'rgba(244, 200, 88, 0.84)' : 'rgba(255, 126, 212, 0.80)')));
+        var rStar = world === 'lofi' ? '#ffe066' : (world === 'starfall' ? '#6dffb0' : (world === 'miku' ? '#39c5bb' : (world === 'fantasy' ? '#f4c858' : '#ffd56b')));
+        var rSec = world === 'lofi' ? '#9fe3c9' : (world === 'starfall' ? 'rgba(220,255,120,0.65)' : (world === 'miku' ? '#ff2e88' : (world === 'fantasy' ? 'rgba(76,242,178,0.85)' : 'rgba(255,126,212,0.42)')));
+        var rTxt = world === 'lofi' ? '255,244,236' : (world === 'starfall' ? '240,251,255' : (world === 'miku' ? '238,255,254' : (world === 'fantasy' ? '255,249,236' : '255,245,253')));
 
         drawRoundedBox(ctx, 1, 1, w - 2, h - 2, h * 0.48);
         ctx.fillStyle = rBg;
@@ -4640,7 +4781,7 @@
           if (animateStep) {
             var px = w - 10 - ((animeRibbonTick * 1.1) % Math.max(16, w * 0.42));
             var py = h * 0.5 + Math.sin(animeRibbonTick * 0.2) * (h * 0.22);
-            if (world === 'starfall') {
+            if (world === 'starfall' || world === 'fantasy') {
               ctx.fillStyle = rSec; ctx.beginPath(); ctx.arc(px, py, 2.2, 0, Math.PI * 2, false); ctx.fill();
             } else {
               drawCanvasSakuraPetal(ctx, px, py, 3.2, animeRibbonTick * 4, rSec, 1);
@@ -4814,6 +4955,41 @@
               ctx.fillRect(i * slt + 3, h - mbh, slt - 6, mbh);
             }
             drawEntTitle(ctx, w, h, tcx2, tcy2, elapsed, fade, 'HATSUNE MIKU  01', 'CYBER VOCAL STAGE  //  HP 7.1', '238,255,254', '57,197,187', '255,46,136', '121,196,199');
+            return;
+          }
+
+          if (world === 'fantasy') {
+            ctx.fillStyle = 'rgba(6, 10, 22, ' + (0.96 * fade).toFixed(2) + ')';
+            ctx.fillRect(0, 0, w, h);
+            var magR = minDim * (0.14 + 0.28 * ease);
+            ctx.strokeStyle = 'rgba(244, 200, 88, ' + (0.68 * fade).toFixed(2) + ')'; ctx.lineWidth = 2.2;
+            ctx.beginPath(); ctx.arc(cx, cy, magR, 0, Math.PI * 2, false); ctx.stroke();
+            ctx.strokeStyle = 'rgba(76, 242, 178, ' + (0.56 * fade).toFixed(2) + ')'; ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.arc(cx, cy, magR * 0.84, 0, Math.PI * 2, false); ctx.stroke();
+            ctx.strokeStyle = 'rgba(183, 123, 255, ' + (0.45 * fade).toFixed(2) + ')';
+            ctx.beginPath(); ctx.arc(cx, cy, magR * 0.52, 0, Math.PI * 2, false); ctx.stroke();
+
+            var drawETri = function (r0, ang0, col0) {
+              ctx.strokeStyle = col0; ctx.lineWidth = 1.4; ctx.beginPath();
+              for (var k = 0; k < 3; k++) {
+                var a0 = ang0 + k * (Math.PI * 2 / 3);
+                var vx = cx + Math.cos(a0) * r0, vy = cy + Math.sin(a0) * r0;
+                if (k === 0) ctx.moveTo(vx, vy); else ctx.lineTo(vx, vy);
+              }
+              ctx.closePath(); ctx.stroke();
+            };
+            var er1 = progress * 1.35, er2 = -progress * 1.10 + Math.PI / 3;
+            drawETri(magR * 0.84, er1, 'rgba(244, 200, 88, ' + (0.65 * fade).toFixed(2) + ')');
+            drawETri(magR * 0.84, er2, 'rgba(76, 242, 178, ' + (0.55 * fade).toFixed(2) + ')');
+            for (i = 0; i < 6; i++) {
+              var ea = (i * Math.PI / 3) + er1;
+              drawCanvasDiamondStar(ctx, cx + Math.cos(ea) * magR, cy + Math.sin(ea) * magR, 5.5, 'rgba(' + (i % 2 === 0 ? '76,242,178' : '244,200,88') + ',' + (0.92 * fade).toFixed(2) + ')');
+            }
+            var crestY = cy - 52, crestR = Math.max(15, minDim * 0.052) * Math.min(1, elapsed / 300);
+            ctx.fillStyle = 'rgba(76, 242, 178, ' + (0.25 * fade).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(cx, crestY, crestR * 1.65, 0, Math.PI * 2, false); ctx.fill();
+            drawCanvasDiamondStar(ctx, cx, crestY, crestR, 'rgba(244, 200, 88, ' + (0.94 * fade).toFixed(2) + ')');
+            drawCanvasDiamondStar(ctx, cx, crestY, crestR * 0.45, 'rgba(76, 242, 178, ' + (0.94 * fade).toFixed(2) + ')');
+            drawEntTitle(ctx, w, h, cx, cy, elapsed, fade, 'PHONEBOX  FANTASY', 'ARCANE REALM EDITION  //  HP 7.1', '255,249,236', '244,200,88', '76,242,178', '184,176,148');
             return;
           }
 

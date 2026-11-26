@@ -1,4 +1,4 @@
-# PhoneBox HP 7.1 — Aplicativo Android 100% Nativo (API 17 / v2.0.0)
+# PhoneBox HP 7.1 — Aplicativo Android 100% Nativo (API 17 / v2.1.0)
 
 Aplicativo Android **100% nativo em Java puro** (zero WebView, zero AndroidX/Jetpack, zero Kotlin stdlib, zero bibliotecas externas), projetado sob medida para o tablet **HP 7.1 1201** rodando **Android 4.2.2 Jelly Bean (API 17)** (`Quad-core Cortex-A7 1 GHz`, `1 GB RAM`, tela `7" 1024×600`, com a barra preta fixa de navegação do sistema em paisagem e retrato).
 
@@ -8,14 +8,15 @@ Conecta-se diretamente ao `PhoneBoxAgent` pela rede local privada (`HTTP`, porta
 
 ---
 
-## Destaques desta versão (`v2.0.0` / `versionCode=10`)
+## Destaques desta versão (`v2.1.0` / `versionCode=11`)
 
-- **Theme Studio v2.0 — 6 Mundos Animados com Galeria Visual (2×3) em Configurações:**
+- **Theme Studio v2.1 — 6 Mundos Animados em Galeria Visual (2×3) + Default Navy em Configurações:**
   - **Sakura Storm (`sakura` / alias `anime`):** céu crepuscular, lua crescente, montanhas, galho de cerejeira com 2 lanternas japonesas (`chōchin`) balançando, pétalas 3D com rajadas de vento, estrelas cadentes e cards em cristal translúcido.
   - **Lofi Room (`lofi`):** janela noturna chuvosa com skyline, fio de pisca-pisca quente, chuva inclinada + gotas lentas no vidro, abajur pêssego, vapor de chá, relâmpago distante suave, entrada com vinil girando e mini equalizador no topo.
   - **Starfall Aurora (`starfall`):** cortinas ondulantes de Aurora Boreal (esmeralda/violeta), constelações em ciano autodesenhadas (Orion, Cassiopeia, Cygnus), portal Torii nas colinas, vaga-lumes dourados e meteoros.
   - **Hatsune Miku 01 (`miku`):** palco vocaloid em ciano `#39C5BB` + magenta `#FF2E88`, ondas synth, equalizador de 22 bandas com picos, notas musicais desenhadas em Canvas, holograma translúcido da mascote (`miku_mascot.png`, ~58 KB seguro para 1 GB RAM) e entrada de palco dedicada. *(Artes `miku_mascot.png` / `theme_miku.png`: uso não-comercial de fã `© Crypton Future Media, INC. www.piapro.net`, excluídas da MIT.)*
-  - **Hack 2.0 (*Zero-Day Cyberdeck* — `theme/hack/`):** chuva Matrix em 3 camadas, scanlines CRT + cortes cromáticos RGB + jitter horizontal, boot interativo typewriter, terminal vivo na barra superior e engine global de glitch legível `h4ck3r`.
+  - **Arcane Fantasy (antasy):** reino arcano em ouro #F4C858 + esmeralda mana #4CF2B2, lua cheia com círculo mágico giratório (hexagrama rúnico), castelo com torres iluminadas, ilha flutuante, cristais de mana e fadas de luz subindo.
+  - **Hack 2.0 (*Zero-Day Cyberdeck* — 	heme/hack/):** chuva Matrix em 3 camadas, scanlines CRT + cortes cromáticos RGB + jitter horizontal, boot interativo typewriter, terminal vivo na barra superior e engine global de glitch legível `h4ck3r`.
   - **Default Navy (`default`):** tema base clássico limpo.
 - **Auto-Updater de APK integrado (`core/ApkUpdater.java`):** compara `versionCode` e `SHA-256` com o agente no PC, exibe banner/diálogo quando há atualização, baixa com barra de progresso, valida o `SHA-256` e aciona o instalador nativo do Android 4.2.2 (`ACTION_VIEW`).
 - **Compatibilidade real com Android 4.2.2 (API 17):** zero chamadas API 18+, glifos/notas/estrelas/lanternas/Torii desenhados nativamente com `Canvas Path` (zero quadrados `□` na fonte `DroidSans`), zero alocações em `onDraw()`, assinatura v1-only RSA 2048.

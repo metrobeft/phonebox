@@ -290,6 +290,7 @@ public class TopBarView extends LinearLayout {
         else if (c.isLofi) art = R.drawable.theme_lofi;
         else if (c.isStarfall) art = R.drawable.theme_starfall;
         else if (c.isMiku) art = R.drawable.theme_miku;
+        else if (c.isFantasy) art = R.drawable.theme_fantasy;
         else if (c.isHack) art = R.drawable.theme_hack;
         themeArt.setImageResource(art);
         boolean hideArtPort = lastPortrait && (c.isHack || c.isAnime);

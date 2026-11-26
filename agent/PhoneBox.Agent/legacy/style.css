@@ -2339,7 +2339,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #8bd0ff; outline-offs
 .theme-option { display: inline-block; vertical-align: top; width: 31.3%; margin: 0 1.4% 8px 0; padding: 5px; font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #203859; border: 1px solid #405d85; -webkit-border-radius: 6px; border-radius: 6px; cursor: pointer; }
 .orient-portrait .theme-option { width: 47.5%; margin: 0 1.8% 8px 0; }
 .theme-option img, .theme-option-default span { display: block; width: 100%; height: 48px; margin: 0 0 5px; object-fit: cover; background-color: #000; -webkit-border-radius: 4px; border-radius: 4px; }
-.theme-option-default span { background-color: #152641; border-bottom: 3px solid #8bd0ff; }
+.theme-option-default { display: block; width: 97%; margin: 2px 0 8px 0; padding: 6px 9px; }
+.theme-option-default span { display: inline-block; width: 34px; height: 18px; margin: 0 8px 0 0; vertical-align: middle; background-color: #152641; border: 1px solid #8bd0ff; border-bottom: 3px solid #8bd0ff; }
+.theme-option-default input { vertical-align: middle; margin-right: 4px; }
 .theme-effects-bar { padding-top: 6px; border-top: 1px solid #2b4267; margin-top: 4px; }
 .theme-effects-option { display: inline-block; padding: 6px 0; font-size: 11.5px; }
 
@@ -3218,3 +3220,58 @@ button:focus-visible, a:focus-visible { outline: 2px solid #8bd0ff; outline-offs
 .world-miku .nav-btn { color: #79c4c7 !important; border-right-color: rgba(33, 134, 136, 0.28); }
 .world-miku .nav-btn.active { background-color: rgba(13, 54, 68, 0.94) !important; color: #39c5bb !important; border-top-color: #39c5bb !important; text-shadow: 0 0 8px rgba(57, 197, 187, 0.72); -webkit-box-shadow: inset 0 2px 10px rgba(255, 46, 136, 0.22); box-shadow: inset 0 2px 10px rgba(255, 46, 136, 0.22); }
 .world-miku.nav-top .nav-btn.active, .nav-top .world-miku .nav-btn.active { border-top-color: transparent !important; border-bottom-color: #39c5bb !important; }
+
+/* ==================== LIVING WORLD OVERRIDES: ARCANE FANTASY REALM ==================== */
+#app.world-fantasy, .world-fantasy #anime-entrance { background-color: #060a16 !important; }
+.world-fantasy #topbar {
+  background-color: rgba(16, 23, 43, 0.93) !important;
+  border-bottom-color: rgba(244, 200, 88, 0.68) !important;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(76, 242, 178, 0.42), 0 2px 14px rgba(244, 200, 88, 0.20);
+  box-shadow: inset 0 -1px 0 rgba(76, 242, 178, 0.42), 0 2px 14px rgba(244, 200, 88, 0.20);
+}
+.world-fantasy .dot { border-color: #f4c858; }
+.world-fantasy .dot-ok { background-color: #4cf2b2; -webkit-box-shadow: 0 0 7px #4cf2b2; box-shadow: 0 0 7px #4cf2b2; }
+.world-fantasy .host-name { color: #fff9ec !important; text-shadow: 0 0 8px rgba(244, 200, 88, 0.72); }
+.world-fantasy #anime-tb-art { border-color: rgba(244, 200, 88, 0.82); background-color: #091022; -webkit-box-shadow: 0 0 8px rgba(244, 200, 88, 0.34); box-shadow: 0 0 8px rgba(244, 200, 88, 0.34); }
+.world-fantasy .card, .world-fantasy .pr-kpi-card, .world-fantasy .wx-gauge-card, .world-fantasy .wx-topbar, .world-fantasy .dk-topbar, .world-fantasy .cp-head {
+  background-color: rgba(17, 25, 46, 0.82) !important;
+  background-image: -webkit-linear-gradient(top, rgba(255, 242, 204, 0.12) 0%, rgba(244, 200, 88, 0.04) 28%, rgba(6, 10, 22, 0.0) 60%);
+  background-image: linear-gradient(180deg, rgba(255, 242, 204, 0.12) 0%, rgba(244, 200, 88, 0.04) 28%, rgba(6, 10, 22, 0.0) 60%);
+  border-color: #8c7442 !important;
+}
+.world-fantasy .card.card-clock, .world-fantasy .card.wx-hero-box, .world-fantasy .card.pr-list-card, .world-fantasy .card.dk-grid-card, .world-fantasy .card.dc-top-card, .world-fantasy .card.wx-desk-card {
+  background-color: rgba(30, 41, 71, 0.86) !important;
+  border-color: #f4c858 !important;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 231, 163, 0.30), 0 0 16px rgba(244, 200, 88, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 231, 163, 0.30), 0 0 16px rgba(244, 200, 88, 0.22);
+}
+.world-fantasy .card-title, .world-fantasy .m-label, .world-fantasy .pr-kpi-head { color: #f4c858 !important; }
+.world-fantasy .card-title { border-bottom-color: rgba(140, 116, 66, 0.72); }
+.world-fantasy .card-title::before, .world-fantasy .m-label::before, .world-fantasy .pr-kpi-head::before { background-color: #4cf2b2; -webkit-box-shadow: 0 0 6px rgba(76, 242, 178, 0.85); box-shadow: 0 0 6px rgba(76, 242, 178, 0.85); }
+.world-fantasy .clock-time, .world-fantasy .night-clock, .world-fantasy .wx-time-digits, .world-fantasy .wx-hero-temp, .world-fantasy .m-val { text-shadow: 0 0 12px rgba(244, 200, 88, 0.56); }
+.world-fantasy .clock-sec, .world-fantasy .night-sec, .world-fantasy .wx-t-sec { color: #4cf2b2 !important; text-shadow: 0 0 8px rgba(76, 242, 178, 0.62); }
+.world-fantasy .c-teal { color: #f4c858 !important; }
+.world-fantasy .c-green { color: #4cf2b2 !important; }
+.world-fantasy .c-sky, .world-fantasy .w-temp, .world-fantasy .wx-hero-temp { color: #6ad8ff !important; }
+.world-fantasy .c-purple { color: #b77bff !important; }
+.world-fantasy .c-amber { color: #ffd970 !important; }
+.world-fantasy .c-red { color: #ff5c7a !important; }
+.world-fantasy .bg-teal { background-color: #f4c858 !important; }
+.world-fantasy .bg-green { background-color: #4cf2b2 !important; }
+.world-fantasy .bg-sky { background-color: #6ad8ff !important; }
+.world-fantasy .bg-purple { background-color: #b77bff !important; }
+.world-fantasy .bg-amber { background-color: #ffd970 !important; }
+.world-fantasy .bg-red { background-color: #ff5c7a !important; }
+.world-fantasy .bar-bg, .world-fantasy .vol-track, .world-fantasy .wx-range-track { background-color: #0e1629 !important; border-color: #8c7442 !important; }
+.world-fantasy .bar-fill, .world-fantasy .vol-fill { -webkit-box-shadow: 0 0 8px rgba(244, 200, 88, 0.52); box-shadow: 0 0 8px rgba(244, 200, 88, 0.52); }
+.world-fantasy .tb-btn, .world-fantasy .m-btn:not(.m-btn-play), .world-fantasy .v-btn, .world-fantasy .mini-btn:not(.active), .world-fantasy .wx-subtab:not(.active), .world-fantasy .dc-btn:not(.dc-btn-leave), .world-fantasy .mix-ico-btn, .world-fantasy .dim-opt:not(.active) { background-color: rgba(34, 46, 79, 0.90) !important; border-color: #8c7442 !important; color: #fff9ec !important; }
+.world-fantasy .m-btn-play, .world-fantasy .wx-subtab.active, .world-fantasy .dc-subtab.active, .world-fantasy .dc-chip.active, .world-fantasy .mini-btn.active, .world-fantasy .dim-opt.active { background-color: #f4c858 !important; border-color: #ffe394 !important; color: #141006 !important; -webkit-box-shadow: 0 0 10px rgba(244, 200, 88, 0.50); box-shadow: 0 0 10px rgba(244, 200, 88, 0.50); }
+.world-fantasy .sc-btn { background-color: rgba(23, 33, 59, 0.88) !important; border-color: #8c7442 !important; border-bottom-color: #4cf2b2 !important; }
+.world-fantasy .chart-canvas, .world-fantasy .wx-h-canvas { background-color: rgba(10, 17, 33, 0.85) !important; border-color: #8c7442 !important; }
+.world-fantasy .loc-pill, .world-fantasy .cw-loc-badge { background-color: rgba(61, 48, 20, 0.92) !important; border-color: #f4c858 !important; color: #fff9ec !important; }
+.world-fantasy .modal-card, .world-fantasy .theme-settings-card { background-color: rgba(17, 25, 46, 0.96) !important; border-color: #f4c858 !important; -webkit-box-shadow: 0 0 28px rgba(244, 200, 88, 0.30); box-shadow: 0 0 28px rgba(244, 200, 88, 0.30); }
+.world-fantasy .theme-option { background-color: #17213b; border-color: #8c7442; }
+.world-fantasy #navbar { background-color: rgba(8, 13, 28, 0.96) !important; border-top-color: rgba(244, 200, 88, 0.65) !important; }
+.world-fantasy .nav-btn { color: #b8b094 !important; border-right-color: rgba(140, 116, 66, 0.28); }
+.world-fantasy .nav-btn.active { background-color: rgba(30, 41, 71, 0.94) !important; color: #f4c858 !important; border-top-color: #f4c858 !important; text-shadow: 0 0 8px rgba(244, 200, 88, 0.70); -webkit-box-shadow: inset 0 2px 10px rgba(76, 242, 178, 0.22); box-shadow: inset 0 2px 10px rgba(76, 242, 178, 0.22); }
+.world-fantasy.nav-top .nav-btn.active, .nav-top .world-fantasy .nav-btn.active { border-top-color: transparent !important; border-bottom-color: #f4c858 !important; }

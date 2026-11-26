@@ -120,6 +120,12 @@ public final class AnimeHeaderRibbonView extends View {
             starColor = 0xFF39C5BB;
             secondaryColor = 0xEEFF2E88;
             textRgb = 0x00EEFFFE;
+        } else if ("fantasy".equals(world)) {
+            bgPaint.setColor(0xE0111C33);
+            borderPaint.setColor(0xCCF4C858);
+            starColor = 0xFFF4C858;
+            secondaryColor = 0xDD4CF2B2;
+            textRgb = 0x00FFF9EC;
         } else {
             bgPaint.setColor(0xE0251449);
             borderPaint.setColor(0xCCFF7ED4);
@@ -148,6 +154,12 @@ public final class AnimeHeaderRibbonView extends View {
             messages[2] = "CPU " + lastCpu + "% · 39HZ";
             messages[3] = lastPing >= 0 ? ("PING " + lastPing + "ms") : "PING --ms";
             messages[4] = "01 LIVE SYNC";
+        } else if ("fantasy".equals(world)) {
+            messages[0] = "ARCANE REALM";
+            messages[1] = lastOnline ? "MANA LINK OK" : "RECONECTANDO...";
+            messages[2] = "CPU " + lastCpu + "% · RUNA";
+            messages[3] = lastPing >= 0 ? ("PING " + lastPing + "ms") : "PING --ms";
+            messages[4] = "GRIMORIO HUD";
         } else {
             messages[0] = "SAKURA STORM";
             messages[1] = lastOnline ? "LINK TOKYO OK" : "RECONECTANDO...";
@@ -228,7 +240,7 @@ public final class AnimeHeaderRibbonView extends View {
                 float px = w - 8f * density - ((tick * 1.1f) % Math.max(12f * density, w * 0.42f));
                 float py = h * 0.5f + (float) Math.sin(tick * 0.2f) * (h * 0.22f);
                 accent2Paint.setColor(secondaryColor);
-                if ("starfall".equals(world)) {
+                if ("starfall".equals(world) || "fantasy".equals(world)) {
                     canvas.drawCircle(px, py, 2.2f * density, accent2Paint);
                 } else {
                     float ps = 3.2f * density;

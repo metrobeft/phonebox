@@ -274,6 +274,24 @@ public final class AnimeSkyBackgroundView extends View {
                     Shader.TileMode.CLAMP));
             moonPaint.setColor(0xD87FE7FF);
             moonCutPaint.setColor(0xFF04171F);
+        } else if ("fantasy".equals(world)) {
+            skyPaint.setShader(new LinearGradient(
+                    0f, 0f, 0f, h,
+                    new int[] { 0xFF130B2A, 0xFF0E1733, 0xFF081222, 0xFF02050B },
+                    new float[] { 0f, 0.42f, 0.80f, 1f },
+                    Shader.TileMode.CLAMP));
+            glowPaint.setShader(new RadialGradient(
+                    w * 0.78f, h * 0.22f, diag * 0.44f,
+                    new int[] { 0x38F4C858, 0x1CB77BFF, 0x00060A16 },
+                    new float[] { 0f, 0.48f, 1f },
+                    Shader.TileMode.CLAMP));
+            glow2Paint.setShader(new RadialGradient(
+                    w * 0.20f, h * 0.82f, diag * 0.42f,
+                    new int[] { 0x364CF2B2, 0x146AD8FF, 0x00060A16 },
+                    new float[] { 0f, 0.52f, 1f },
+                    Shader.TileMode.CLAMP));
+            moonPaint.setColor(0xEBFFF6DC);
+            moonCutPaint.setColor(0xFF121230);
         } else {
             // sakura
             skyPaint.setShader(new LinearGradient(
@@ -304,6 +322,8 @@ public final class AnimeSkyBackgroundView extends View {
             starPalette = new int[] { 0x00FFFFFF, 0x007FE7FF, 0x006DFFB0, 0x00FFE066, 0x00B57CFF };
         } else if ("miku".equals(world)) {
             starPalette = new int[] { 0x0039C5BB, 0x007FE7FF, 0x00FF2E88, 0x00EEFFFE };
+        } else if ("fantasy".equals(world)) {
+            starPalette = new int[] { 0x00FFF6DC, 0x00F4C858, 0x004CF2B2, 0x00B77BFF, 0x006AD8FF };
         } else {
             starPalette = new int[] { 0x00FFF6FD, 0x00FFD56B, 0x007CE8FF, 0x00FFB8E8 };
         }
@@ -324,6 +344,8 @@ public final class AnimeSkyBackgroundView extends View {
             partPalette = new int[] { 0x00DCFF78, 0x006DFFB0, 0x007FE7FF, 0x00FFE066 };
         } else if ("miku".equals(world)) {
             partPalette = new int[] { 0x0039C5BB, 0x007FE7FF, 0x00FF2E88, 0x005BF5B8 };
+        } else if ("fantasy".equals(world)) {
+            partPalette = new int[] { 0x00F4C858, 0x004CF2B2, 0x00FFE999, 0x00B77BFF };
         } else {
             partPalette = new int[] { 0x00FF7ED4, 0x00FFA8E2, 0x00FFD1F0, 0x00E49BFF };
         }
@@ -386,6 +408,17 @@ public final class AnimeSkyBackgroundView extends View {
             if (respawnEdge) {
                 ptX[i] = r % Math.max(1, w);
                 ptY[i] = h + 14f * density;
+            }
+        } else if ("fantasy".equals(world)) {
+            // Fadas de luz & brasas arcanas subindo suavemente
+            ptSize[i] = (2.2f + (r % 4) * 0.85f) * density;
+            ptVx[i] = (((r % 9) - 4) * 0.14f) * density;
+            ptVy[i] = -(0.42f + (r % 6) * 0.16f) * density;
+            ptAngle[i] = r % 360;
+            ptSpin[i] = 1.6f;
+            if (respawnEdge) {
+                ptX[i] = r % Math.max(1, w);
+                ptY[i] = h + 12f * density;
             }
         } else {
             // Pétalas de sakura com giro 3D
@@ -489,6 +522,18 @@ public final class AnimeSkyBackgroundView extends View {
             return;
         }
 
+        if ("fantasy".equals(world)) {
+            for (int i = 0; i < PARTICLE_COUNT; i++) {
+                ptX[i] += ptVx[i] + (float) Math.sin(timeSec * 1.7f + ptPhase[i]) * 0.60f * density;
+                ptY[i] += ptVy[i] * boost;
+                if (ptY[i] < -16f * density || ptX[i] < -18f * density || ptX[i] > w + 18f * density) {
+                    resetParticle(i, true, w, h);
+                }
+            }
+            stepMeteor(w, h, now, 3200L);
+            return;
+        }
+
         // Default living world: sakura
         float gust = (float) Math.sin(timeSec * 0.7f) * 0.55f;
         for (int i = 0; i < PARTICLE_COUNT; i++) {
@@ -533,6 +578,8 @@ public final class AnimeSkyBackgroundView extends View {
             drawStarfallScene(canvas, w, h);
         } else if ("miku".equals(world)) {
             drawMikuScene(canvas, w, h);
+        } else if ("fantasy".equals(world)) {
+            drawFantasyScene(canvas, w, h);
         } else {
             drawSakuraScene(canvas, w, h);
         }
@@ -899,6 +946,186 @@ public final class AnimeSkyBackgroundView extends View {
         strokePaint.setColor(color);
         strokePaint.setStrokeWidth(width);
         canvas.drawPath(workPath, strokePaint);
+    }
+
+    // ==================== WORLD 5: ARCANE FANTASY REALM ====================
+    private void drawFantasyScene(Canvas canvas, int w, int h) {
+        // 1. Enchanted starry twilight
+        drawStars(canvas, 0.90f);
+
+        // 2. Luminous giant fantasy moon framed by a rotating Arcane Magic Circle (upper-right)
+        float mx = w * 0.78f;
+        float my = h * 0.23f;
+        float moonR = Math.min(w, h) * 0.068f;
+        shapePaint.setColor(0x1EF4C858);
+        canvas.drawCircle(mx, my, moonR * 2.15f, shapePaint);
+        shapePaint.setColor(0x28FFF6DC);
+        canvas.drawCircle(mx, my, moonR * 1.38f, shapePaint);
+        canvas.drawCircle(mx, my, moonR, moonPaint);
+
+        // Rotating arcane magic circle rings + dual inscribed triangles (hexagram sigil)
+        float magicR = Math.min(w, h) * 0.165f;
+        double rot = running ? (timeSec * 0.24) : 0.35;
+        strokePaint.setStrokeWidth(1.5f * density);
+        strokePaint.setColor(0x6AF4C858);
+        canvas.drawCircle(mx, my, magicR, strokePaint);
+        strokePaint.setStrokeWidth(1.0f * density);
+        strokePaint.setColor(0x524CF2B2);
+        canvas.drawCircle(mx, my, magicR * 0.84f, strokePaint);
+        strokePaint.setColor(0x3CB77BFF);
+        canvas.drawCircle(mx, my, magicR * 1.12f, strokePaint);
+
+        drawArcaneTriangle(canvas, mx, my, magicR * 0.84f, rot, 0x5CF4C858);
+        drawArcaneTriangle(canvas, mx, my, magicR * 0.84f, -rot + Math.PI / 3.0, 0x4C4CF2B2);
+
+        for (int i = 0; i < 6; i++) {
+            double ang = rot + i * (Math.PI / 3.0);
+            float ox = mx + (float) Math.cos(ang) * magicR;
+            float oy = my + (float) Math.sin(ang) * magicR;
+            shapePaint.setColor(i % 2 == 0 ? 0xA84CF2B2 : 0xB8F4C858);
+            drawDiamondStar(canvas, ox, oy, 3.8f * density, shapePaint);
+        }
+
+        // 3. Arcane spell comet streaking across sky
+        drawMeteor(canvas, 0x00F4C858, 0x004CF2B2, 0x00FFF9EC);
+
+        // 4. Misty dark fantasy cliffs & silhouetted castle citadel with warm glowing tower windows
+        workPath.reset();
+        workPath.moveTo(0f, h);
+        workPath.lineTo(0f, h * 0.82f);
+        workPath.lineTo(w * 0.14f, h * 0.86f);
+        workPath.lineTo(w * 0.34f, h * 0.89f);
+        workPath.lineTo(w * 0.56f, h * 0.78f);
+        workPath.lineTo(w * 0.78f, h * 0.85f);
+        workPath.lineTo(w, h * 0.80f);
+        workPath.lineTo(w, h);
+        workPath.close();
+        shapePaint.setColor(0xCC060A15);
+        canvas.drawPath(workPath, shapePaint);
+
+        // Silhouetted fantasy citadel spires on right-center cliff
+        drawFantasyCitadel(canvas, w * 0.58f, h * 0.80f, Math.min(w, h) * 0.16f);
+
+        // Small hovering floating rock island on upper-left
+        float islandBob = running ? (float) Math.sin(timeSec * 1.4f) * 4.5f * density : 0f;
+        float ix = w * 0.16f;
+        float iy = h * 0.74f + islandBob;
+        float isz = Math.min(w, h) * 0.065f;
+        workPath.reset();
+        workPath.moveTo(ix - isz, iy);
+        workPath.lineTo(ix + isz, iy);
+        workPath.lineTo(ix + isz * 0.45f, iy + isz * 0.75f);
+        workPath.lineTo(ix, iy + isz * 1.05f);
+        workPath.lineTo(ix - isz * 0.55f, iy + isz * 0.65f);
+        workPath.close();
+        shapePaint.setColor(0xC80A1124);
+        canvas.drawPath(workPath, shapePaint);
+        drawManaCrystal(canvas, ix - isz * 0.25f, iy, 12f * density, -12f);
+        drawManaCrystal(canvas, ix + isz * 0.22f, iy, 16f * density, 10f);
+
+        // Glowing faceted mana crystals along lower-left and lower-right cliffs
+        drawManaCrystal(canvas, w * 0.06f, h * 0.86f, 20f * density, -16f);
+        drawManaCrystal(canvas, w * 0.10f, h * 0.88f, 14f * density, 14f);
+        drawManaCrystal(canvas, w * 0.91f, h * 0.84f, 22f * density, 15f);
+        drawManaCrystal(canvas, w * 0.87f, h * 0.87f, 15f * density, -12f);
+
+        // 5. Rising luminous golden & mana-emerald fairy wisps
+        for (int i = 0; i < PARTICLE_COUNT; i++) {
+            float pulse = running ? (0.45f + 0.55f * (float) Math.abs(Math.sin(timeSec * 2.4f + ptPhase[i]))) : 0.72f;
+            shapePaint.setColor((Math.round(pulse * 52f) << 24) | ptColor[i]);
+            canvas.drawCircle(ptX[i], ptY[i], ptSize[i] * 2.7f, shapePaint);
+            shapePaint.setColor((Math.round(pulse * 225f) << 24) | ptColor[i]);
+            if (i % 3 == 0) {
+                drawDiamondStar(canvas, ptX[i], ptY[i], ptSize[i] * 1.4f, shapePaint);
+            } else {
+                canvas.drawCircle(ptX[i], ptY[i], ptSize[i], shapePaint);
+            }
+        }
+    }
+
+    private void drawArcaneTriangle(Canvas canvas, float cx, float cy, float r, double angleRad, int color) {
+        workPath.reset();
+        for (int i = 0; i < 3; i++) {
+            double a = angleRad + i * (Math.PI * 2.0 / 3.0);
+            float vx = cx + (float) Math.cos(a) * r;
+            float vy = cy + (float) Math.sin(a) * r;
+            if (i == 0) workPath.moveTo(vx, vy);
+            else workPath.lineTo(vx, vy);
+        }
+        workPath.close();
+        strokePaint.setStrokeWidth(1.2f * density);
+        strokePaint.setColor(color);
+        canvas.drawPath(workPath, strokePaint);
+    }
+
+    private void drawFantasyCitadel(Canvas canvas, float cx, float baseY, float s) {
+        shapePaint.setColor(0xE8080D1D);
+        // Main keep body
+        canvas.drawRect(cx - s * 0.42f, baseY - s * 0.48f, cx + s * 0.42f, baseY + 12f * density, shapePaint);
+        // Central tall gothic spire
+        canvas.drawRect(cx - s * 0.14f, baseY - s * 0.88f, cx + s * 0.14f, baseY - s * 0.44f, shapePaint);
+        workPath.reset();
+        workPath.moveTo(cx - s * 0.18f, baseY - s * 0.88f);
+        workPath.lineTo(cx, baseY - s * 1.32f);
+        workPath.lineTo(cx + s * 0.18f, baseY - s * 0.88f);
+        workPath.close();
+        canvas.drawPath(workPath, shapePaint);
+        // Left & right flanking towers
+        canvas.drawRect(cx - s * 0.48f, baseY - s * 0.72f, cx - s * 0.28f, baseY - s * 0.35f, shapePaint);
+        workPath.reset();
+        workPath.moveTo(cx - s * 0.52f, baseY - s * 0.72f);
+        workPath.lineTo(cx - s * 0.38f, baseY - s * 1.04f);
+        workPath.lineTo(cx - s * 0.24f, baseY - s * 0.72f);
+        workPath.close();
+        canvas.drawPath(workPath, shapePaint);
+
+        canvas.drawRect(cx + s * 0.28f, baseY - s * 0.68f, cx + s * 0.48f, baseY - s * 0.35f, shapePaint);
+        workPath.reset();
+        workPath.moveTo(cx + s * 0.24f, baseY - s * 0.68f);
+        workPath.lineTo(cx + s * 0.38f, baseY - s * 0.98f);
+        workPath.lineTo(cx + s * 0.52f, baseY - s * 0.68f);
+        workPath.close();
+        canvas.drawPath(workPath, shapePaint);
+
+        // Warm glowing golden gothic castle windows
+        float flicker = running ? (0.82f + 0.18f * (float) Math.sin(timeSec * 3.1f)) : 0.92f;
+        shapePaint.setColor((Math.round(flicker * 225f) << 24) | 0x00F4C858);
+        float ww = Math.max(2.2f * density, s * 0.055f);
+        float wh = Math.max(4.5f * density, s * 0.11f);
+        canvas.drawRect(cx - ww * 0.5f, baseY - s * 0.74f, cx + ww * 0.5f, baseY - s * 0.74f + wh, shapePaint);
+        canvas.drawRect(cx - s * 0.38f - ww * 0.5f, baseY - s * 0.60f, cx - s * 0.38f + ww * 0.5f, baseY - s * 0.60f + wh * 0.85f, shapePaint);
+        canvas.drawRect(cx + s * 0.38f - ww * 0.5f, baseY - s * 0.56f, cx + s * 0.38f + ww * 0.5f, baseY - s * 0.56f + wh * 0.85f, shapePaint);
+        canvas.drawRect(cx - s * 0.18f, baseY - s * 0.34f, cx - s * 0.18f + ww, baseY - s * 0.34f + wh * 0.8f, shapePaint);
+        canvas.drawRect(cx + s * 0.12f, baseY - s * 0.34f, cx + s * 0.12f + ww, baseY - s * 0.34f + wh * 0.8f, shapePaint);
+    }
+
+    private void drawManaCrystal(Canvas canvas, float bx, float by, float hLen, float tiltDeg) {
+        canvas.save();
+        canvas.translate(bx, by);
+        canvas.rotate(tiltDeg);
+        float halfW = hLen * 0.24f;
+        // Soft emerald aura
+        shapePaint.setColor(0x304CF2B2);
+        canvas.drawCircle(0f, -hLen * 0.5f, hLen * 0.72f, shapePaint);
+        // Faceted crystal prism
+        workPath.reset();
+        workPath.moveTo(-halfW, 2f * density);
+        workPath.lineTo(-halfW * 0.82f, -hLen * 0.68f);
+        workPath.lineTo(0f, -hLen);
+        workPath.lineTo(halfW * 0.82f, -hLen * 0.68f);
+        workPath.lineTo(halfW, 2f * density);
+        workPath.close();
+        shapePaint.setColor(0xB84CF2B2);
+        canvas.drawPath(workPath, shapePaint);
+        // Bright specular facet
+        workPath.reset();
+        workPath.moveTo(0f, -hLen);
+        workPath.lineTo(halfW * 0.82f, -hLen * 0.68f);
+        workPath.lineTo(0f, 0f);
+        workPath.close();
+        shapePaint.setColor(0xC8A8FFE2);
+        canvas.drawPath(workPath, shapePaint);
+        canvas.restore();
     }
 
     // ==================== SHARED PRIMITIVES (ZERO ALLOCATIONS) ====================

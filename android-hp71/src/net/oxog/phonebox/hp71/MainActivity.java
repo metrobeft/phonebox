@@ -749,13 +749,13 @@ public final class MainActivity extends Activity implements
     }
 
     private void showSettingsDialog() {
-        final String[] ids = { "sakura", "lofi", "starfall", "miku", "hack", "default" };
-        final String[] labels = { "Sakura Storm", "Lofi Room", "Starfall Aurora", "Hatsune Miku 01", "Hack Cyberdeck", "Default Navy" };
+        final String[] ids = { "sakura", "lofi", "starfall", "miku", "fantasy", "hack", "default" };
+        final String[] labels = { "Sakura Storm", "Lofi Room", "Starfall Aurora", "Hatsune Miku 01", "Arcane Fantasy", "Hack Cyberdeck", "Default Navy" };
         final int[] banners = {
                 R.drawable.theme_anime, R.drawable.theme_lofi, R.drawable.theme_starfall,
-                R.drawable.theme_miku, R.drawable.theme_hack, 0
+                R.drawable.theme_miku, R.drawable.theme_fantasy, R.drawable.theme_hack, 0
         };
-        final int[] accents = { 0xFFFF7ED4, 0xFFFFB38A, 0xFF7FE7FF, 0xFF39C5BB, 0xFF00FF66, 0xFF8BD0FF };
+        final int[] accents = { 0xFFFF7ED4, 0xFFFFB38A, 0xFF7FE7FF, 0xFF39C5BB, 0xFFF4C858, 0xFF00FF66, 0xFF8BD0FF };
 
         final ThemeDimens d = theme.dimens();
         LinearLayout box = new LinearLayout(this);
@@ -789,31 +789,25 @@ public final class MainActivity extends Activity implements
             }
         };
 
-        for (int row = 0; row < ids.length; row += 2) {
+        // 6 mundos animados em grade simétrica 2x3
+        for (int row = 0; row < 6; row += 2) {
             LinearLayout rowBox = new LinearLayout(this);
             rowBox.setOrientation(LinearLayout.HORIZONTAL);
             LinearLayout.LayoutParams rowLp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             rowLp.bottomMargin = d.dp(7);
-            for (int col = 0; col < 2 && (row + col) < ids.length; col++) {
+            for (int col = 0; col < 2; col++) {
                 final int idx = row + col;
                 LinearLayout tile = new LinearLayout(this);
                 tile.setOrientation(LinearLayout.VERTICAL);
                 tile.setPadding(d.dp(5), d.dp(5), d.dp(5), d.dp(6));
                 tile.setClickable(true);
 
-                if (banners[idx] != 0) {
-                    ImageView img = new ImageView(this);
-                    img.setImageResource(banners[idx]);
-                    img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    tile.addView(img, new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, d.dp(50)));
-                } else {
-                    View navyPreview = new View(this);
-                    navyPreview.setBackground(DrawableFactory.roundedRect(0xFF152641, 0xFF8BD0FF, d.dp(1), d.dp(4)));
-                    tile.addView(navyPreview, new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, d.dp(50)));
-                }
+                ImageView img = new ImageView(this);
+                img.setImageResource(banners[idx]);
+                img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                tile.addView(img, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, d.dp(48)));
 
                 TextView lbl = new TextView(this);
                 lbl.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
@@ -843,10 +837,42 @@ public final class MainActivity extends Activity implements
             }
             box.addView(rowBox, rowLp);
         }
+
+        // Default Navy em barra limpa de largura total abaixo dos 6 mundos animados
+        final int defIdx = 6;
+        LinearLayout defTile = new LinearLayout(this);
+        defTile.setOrientation(LinearLayout.HORIZONTAL);
+        defTile.setGravity(Gravity.CENTER_VERTICAL);
+        defTile.setPadding(d.dp(10), d.dp(7), d.dp(10), d.dp(7));
+        defTile.setClickable(true);
+        View navySwatch = new View(this);
+        navySwatch.setBackground(DrawableFactory.roundedRect(0xFF152641, 0xFF8BD0FF, d.dp(1), d.dp(4)));
+        LinearLayout.LayoutParams swLp = new LinearLayout.LayoutParams(d.dp(34), d.dp(18));
+        swLp.rightMargin = d.dp(10);
+        defTile.addView(navySwatch, swLp);
+        TextView defLbl = new TextView(this);
+        defLbl.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        defLbl.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f);
+        defTile.addView(defLbl, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        tileCards[defIdx] = defTile;
+        tileTitles[defIdx] = defLbl;
+        defTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedId[0] = ids[defIdx];
+                prefs.setLocalTheme(ids[defIdx]);
+                applyPanelTheme();
+                refreshSelection.run();
+            }
+        });
+        LinearLayout.LayoutParams defRowLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        defRowLp.bottomMargin = d.dp(6);
+        box.addView(defTile, defRowLp);
         refreshSelection.run();
 
         CheckBox effects = new CheckBox(this);
-        effects.setText("Animar mundos (Matrix/Glitch, Sakura, Lofi, Aurora, Miku)");
+        effects.setText("Animar mundos (Matrix, Sakura, Lofi, Aurora, Miku, Fantasia)");
         effects.setChecked(prefs.themeEffectsEnabled());
         effects.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
             @Override
