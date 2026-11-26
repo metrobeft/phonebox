@@ -11,6 +11,7 @@ android/app/build/
 android/local.properties
 android/.idea/
 android/.kotlin/
+android-hp71/build/
 *.iml
 
 # Signing keys never belong in the repo
@@ -47,6 +48,14 @@ tools/ui-tests/test-results/
 /.wrongstack/*
 !/.wrongstack/project.json
 
+# Local AI assistant tooling & personal local overrides (never push to public repo)
+.agents/
+.codex/
+.impeccable/
+plan.md
+local.config.ps1
+android-hp71/local.config.ps1
+agent/PhoneBox.Agent/config.local.json
 
 *.log
 *.txt

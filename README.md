@@ -1,6 +1,78 @@
 <p align="center"><img src="agent/PhoneBox.Agent/phonebox.ico" width="72" alt="PhoneBox icon"></p>
 
-<h1 align="center">PhoneBox</h1>
+<h1 align="center">PhoneBox — Edição HP 7.1 (Fork Comunitário Open-Source)</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Fork%20de-ersinkoc%2Fphonebox-1f6feb" alt="Fork de ersinkoc/phonebox">
+  <img src="https://img.shields.io/badge/Android%204.2.2-API%2017%20Nativo-3ddc84" alt="Android 4.2.2 API 17">
+  <img src="https://img.shields.io/badge/Legacy%20Web-ES5%20%2F%20WebKit%20534-ff7ed4" alt="Legacy Web ES5">
+  <img src="https://img.shields.io/badge/Windows-.NET%2010-512bd4" alt="Windows .NET 10">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License"></a>
+</p>
+
+> **Aviso de transparência e créditos open-source:**
+> Este repositório é um **fork pessoal e comunitário (não-oficial)** baseado no projeto original [**PhoneBox**](https://github.com/ersinkoc/phonebox), criado por **Ersin KOÇ** sob a **[Licença MIT](LICENSE)**.
+> Todo o crédito pela arquitetura base do PhoneBox pertence ao autor original. Este fork preserva integralmente a licença MIT e a documentação original (`docs/`), adicionando uma edição completa voltada para **tablets Android antigos** — em especial o **HP 7.1 1201 (Android 4.2.2 Jelly Bean / API 17, 1024×600, 1 GB RAM)** — com aplicativo nativo em Java puro, painel Web ES5 e temas animados exclusivos.
+> *Binários/builds deste fork não são assinados pela SignPath Foundation nem representam releases oficiais de `ersinkoc/phonebox`.*
+
+---
+
+## O que este fork HP 7.1 adiciona sobre o PhoneBox original
+
+| Área | Modificações e melhorias incluídas neste fork |
+|---|---|
+| **APK 100% Nativo (`android-hp71/`, v1.5.0 / API 17)** | Aplicativo reescrito do zero em **Java puro + Android Views/Canvas** (zero WebView, zero AndroidX, zero Kotlin stdlib, ~306 KB), compilado com `d8 --min-api 17` e assinado em v1 RSA 2048. Totalmente adaptado à **barra de navegação preta fixa** do Android 4.2.2 em paisagem (`1024×552`) e retrato (`600×976`), com brilho real de hardware + dimmer noturno 2%, gestos de swipe e troca de abas pelos botões físicos de volume. Veja [android-hp71/README.md](android-hp71/README.md). |
+| **Auto-Updater Integrado de APK** | Endpoint `/api/legacy/apk-info` + metadados `apk-meta.json` (`versionCode`, `versionName`, tamanho, `SHA-256`) + classe `ApkUpdater.java`: o app instalado verifica automaticamente se existe uma versão mais nova no PC, exibe banner/diálogo, baixa com progresso, valida o **SHA-256** e abre o instalador nativo do Android 4.2.2 (com fallback para navegador e botão manual em Configurações). |
+| **Modo Web Local Legado (`agent/PhoneBox.Agent/legacy/`)** | Servidor HTTP dedicado na porta **`8788`** (restrito à rede privada RFC1918), interface **100% ES5 puro / WebKit 534.30** sem CSS Grid, Flexbox, CSS Variables ou TLS moderno no tablet. Endpoint unificado `/api/legacy/sync`, proxy de clima Open-Meteo pelo PC e botão direto **↓ BAIXAR APK**. |
+| **Tema Hack 2.0 (*Zero-Day Cyberdeck*) — Web + APK** | Redesign completo em preto puro `#000000` (integrado à barra preta do Android 4.2.2): chuva digital Matrix em 3 camadas de profundidade + pulso radar, scanlines CRT + cortes cromáticos RGB + jitter horizontal + varredura laser na troca de aba, animação interativa de boot typewriter (toque para pular), terminal vivo na barra superior e engine global de texto glitch legível (`h4ck3r`). |
+| **Tema Anime 2.0 (*Sakura Midnight / Neon Tokyo HUD*) — Web + APK** | Arte original cel-shaded (`theme_anime.png`), céu crepuscular animado com lua crescente, 42 estrelas cintilantes, 20 pétalas de cerejeira (Sakura) e estrelas cadentes, cards translúcidos em cristal cel-shaded, overlay de brilhos com varredura sakura-ouro na troca de aba, animação de entrada *Sakura Midnight Bloom* (toque para pular) e faixa estelar na barra superior com CPU/Ping ao vivo. |
+| **7 Abas Especializadas + Sync 1:1 com `settings.html`** | **Início** (relógio, clima, mídia com seleção aprimorada SMTC, volume mestre, CPU/GPU/RAM/Rede), **Sistema** (gráficos ao vivo, hardware e discos), **Atalhos** (Stream Deck com ícones oficiais do Windows + Mixer por aplicativo), **Processos** (KPIs visuais + encerramento em 2 toques), **IA** (cotas Claude/Codex/Antigravity com polling exclusivo de 5s na aba + sessões + modal global Allow/Deny), **Discord** escalável (chamada ativa, busca, filtros, canais, notificações) e **Clima/Hora** (curva 12h, previsão 7 dias, Sol/Lua, fusos mundiais, calendário e Relógio de Mesa). Prévia ao vivo no editor do PC em `1024×552` / `600×976`. |
+| **Scripts Windows & Privacidade** | Scripts prontos ([scripts/install.ps1](scripts/install.ps1), [scripts/allow-tablet-firewall.ps1](scripts/allow-tablet-firewall.ps1), [iniciar.bat](iniciar.bat), [Iniciar-PhoneBox.cmd](Iniciar-PhoneBox.cmd), [stop.bat](stop.bat)), expansão de variáveis `%LOCALAPPDATA%` nos atalhos e separação limpa entre arquivos de exemplo ([config.example.json](agent/PhoneBox.Agent/config.example.json), [local.config.example.ps1](android-hp71/local.config.example.ps1)) e configurações pessoais (`%APPDATA%\PhoneBox\config.json`, `*.keystore` ignorados no Git). |
+
+---
+
+## Como usar este fork no Windows + Tablet HP 7.1
+
+### 1. Instalar e iniciar o Agente no PC (Windows 10/11)
+Requer **.NET 10 SDK** para compilar a partir do código-fonte:
+
+```powershell
+# Compila, publica em %LOCALAPPDATA%\PhoneBox\app e inicia na bandeja do Windows
+.\scripts\install.ps1
+```
+
+- Se o Firewall do Windows bloquear a porta `8788` na rede local, execute uma vez como Administrador:
+  ```powershell
+  .\scripts\allow-tablet-firewall.ps1
+  ```
+- Abra o editor de configurações no PC: **`http://127.0.0.1:8765/`**
+  - Sua configuração pessoal (cidade/clima, atalhos, Discord, páginas) é salva fora do repositório em `%APPDATA%\PhoneBox\config.json`. Veja o modelo comentado em [agent/PhoneBox.Agent/config.example.json](agent/PhoneBox.Agent/config.example.json).
+- Para iniciar/reiniciar ou parar rapidamente depois de instalado, use [iniciar.bat](iniciar.bat), [Iniciar-PhoneBox.cmd](Iniciar-PhoneBox.cmd) ou [stop.bat](stop.bat).
+
+### 2. Abrir no Tablet HP 7.1 (Web ou APK Nativo)
+- **Modo Web (sem instalar nada):** abra no navegador do tablet na mesma rede Wi-Fi:
+  ```text
+  http://<IP-LOCAL-DO-PC>:8788
+  ```
+- **APK Nativo (recomendado para melhor fluidez no Android 4.2.2):**
+  1. No tablet, ative **Configurações → Segurança → Fontes desconhecidas**.
+  2. Acesse `http://<IP-LOCAL-DO-PC>:8788/legacy/PhoneBox-HP71.apk` (ou toque em **↓ BAIXAR APK** no painel web) e instale.
+  3. No app instalado, toque em **Config.** → **Conexão do PC** e informe o IP local do seu PC (porta padrão `8788`).
+  4. Para alternar entre **Default**, **Hack** e **Anime** (ou testar as animações), toque em **Config.** (APK) ou **`⚙`** (Web).
+  5. Para compilar seu próprio APK a partir de `android-hp71/`, consulte [android-hp71/README.md](android-hp71/README.md).
+
+### 3. Segurança do modo LAN (`8788`)
+- Restrito por padrão apenas a IPs de rede privada RFC1918 (`AllowPrivateLanOnly = true`).
+- Nunca expõe `/api/settings`, `/api/restart`, pareamento ou webhooks de escrita na porta `8788`.
+- `updates.auto` vem desativado por padrão para evitar que releases do upstream sobrescrevam este fork HP 7.1.
+
+---
+
+## Documentação do Projeto Original (PhoneBox Upstream)
+
+Abaixo está preservada a documentação original do [**ersinkoc/phonebox**](https://github.com/ersinkoc/phonebox) como referência completa dos recursos base (app Android 5+ em Kotlin, pareamento USB/Wi-Fi, Linux/macOS, 128 widgets, templates e guias em `docs/`).
+
+---
 
 <p align="center">
   <b>English</b> ·
