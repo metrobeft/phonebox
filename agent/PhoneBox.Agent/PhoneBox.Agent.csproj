@@ -65,6 +65,9 @@
     <!-- the phone's panel, served at /panel/ for the live preview in the layout editor -->
     <EmbeddedResource Include="..\..\android\app\src\main\assets\www\*.*" LogicalName="www/%(Filename)%(Extension)" />
     <EmbeddedResource Include="..\..\android\app\src\main\assets\www\widgets\*.*" LogicalName="www/widgets/%(Filename)%(Extension)" />
+    <!-- legacy local-LAN web panel for older tablets (HP 7.1 1201 / Android 4.2.2) -->
+    <EmbeddedResource Include="legacy\*.*" LogicalName="legacy/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="legacy\icons\*.*" LogicalName="legacy/icons/%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>

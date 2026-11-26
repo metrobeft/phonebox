@@ -12,9 +12,20 @@ string[] SameOrigins = [$"http://127.0.0.1:{Port}", $"http://localhost:{Port}"];
 if (args.Contains("--print-install-dir")) { Console.WriteLine(AppPaths.InstallDir); return; }
 
 // Single instance: a second launch opens the running instance's settings page and exits.
-// After a restart the previous instance may still be shutting down, so wait for it briefly.
+// With --replace (used by the Start Menu shortcut), any background instance is stopped first so the new interactive one takes over.
+if (args.Contains("--replace"))
+{
+    var myPid = Environment.ProcessId;
+    foreach (var proc in System.Diagnostics.Process.GetProcessesByName("PhoneBoxAgent"))
+    {
+        try { if (proc.Id != myPid) { proc.Kill(); proc.WaitForExit(5000); } }
+        catch { }
+        finally { proc.Dispose(); }
+    }
+}
+// After a restart or --replace the previous instance may still be shutting down, so wait for it briefly.
 var single = new Mutex(false, endpoint.MutexName);
-var waitMs = args.Contains("--restart") ? 15_000 : 0;
+var waitMs = args.Contains("--restart") || args.Contains("--replace") ? 15_000 : 0;
 bool firstInstance;
 try { firstInstance = single.WaitOne(waitMs); }
 catch (AbandonedMutexException) { firstInstance = true; }
@@ -34,6 +45,8 @@ var configStore = new ConfigStore(configPath);
 configStore.PersistGenerated(); // keep the Wi-Fi token stable across restarts
 var lanCfg = configStore.Get().Lan;
 var lanCert = lanCfg.Enabled && lanCfg.Port != Port ? Lan.Certificate(configDir) : null;
+var legacyCfg = configStore.Get().LegacyWeb;
+var legacyActive = legacyCfg.Enabled && legacyCfg.Port != Port && (lanCert is null || legacyCfg.Port != lanCfg.Port);
 // USB uses the same certificate as Wi-Fi; the agent hands its fingerprint to the app over adb (see UsbLink.cs)
 var usbCert = lanCert ?? Lan.Certificate(configDir);
 var usb = new UsbLink(UsbLink.FreeLoopbackPort(), Lan.Fingerprint(usbCert));
@@ -53,6 +66,8 @@ builder.WebHost.ConfigureKestrel(k =>
     k.Listen(IPAddress.Loopback, usb.Port, l => l.UseHttps(usbCert));
     // Wi-Fi / Tailscale: HTTPS with a pinned self-signed certificate, token required (see Lan.cs).
     if (lanCert is not null) k.Listen(IPAddress.Any, lanCfg.Port, l => l.UseHttps(lanCert));
+    // Legacy local-LAN HTTP web mode (HP 7.1 1201 / Android 4.2.2): restricted to private LAN clients (see LegacyWeb.cs).
+    if (legacyActive) k.Listen(IPAddress.Any, legacyCfg.Port);
 });
 builder.Logging.ClearProviders();
 builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
@@ -65,7 +80,9 @@ builder.Services.AddSingleton(endpoint);
 builder.Services.AddSingleton(usb);
 builder.Services.AddSingleton<AudioControl>();
 builder.Services.AddSingleton<AppCatalog>();
-builder.Services.AddSingleton(_ => new ShortcutIconUploads(Path.Combine(configDir, "icons")));
+var iconsDir = Path.Combine(configDir, "icons");
+LegacyWeb.SeedDefaultIcons(iconsDir);
+builder.Services.AddSingleton(_ => new ShortcutIconUploads(iconsDir));
 builder.Services.AddSingleton<PairingCodes>();
 builder.Services.AddSingleton<SpotifyControl>();
 builder.Services.AddSingleton<ControlDeck>();
@@ -241,6 +258,15 @@ app.Use(async (ctx, next) =>
             return;
         }
     }
+    else if (legacyActive && ctx.Connection.LocalPort == legacyCfg.Port)
+    {
+        if (!LegacyWeb.AuthorizeRequest(configStore.Get().LegacyWeb, ctx.Connection.RemoteIpAddress,
+            ctx.Request.Method, ctx.Request.Path, ctx.Request.Host.Value ?? "", origin))
+        {
+            ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return;
+        }
+    }
     else
     {
         var host = ctx.Request.Host.Host;
@@ -253,19 +279,24 @@ app.Use(async (ctx, next) =>
             return;
         }
     }
-    if (ctx.Request.Path.StartsWithSegments("/api/state") && ctx.Request.Headers.ContainsKey("X-PhoneBox-App"))
+    if ((ctx.Request.Path.StartsWithSegments("/api/state") || ctx.Request.Path == "/api/legacy/sync") && ctx.Request.Headers.ContainsKey("X-PhoneBox-App"))
         Interlocked.Exchange(ref ApprovalStore.PhoneLastSeen, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
     if (ctx.Request.Headers.TryGetValue("X-PhoneBox-Device", out var device))
     {
+        var clientVia = ctx.Connection.LocalPort == usb.Port ? "USB"
+            : legacyActive && ctx.Connection.LocalPort == legacyCfg.Port ? "LAN Web"
+            : ctx.Connection.LocalPort == Port ? "local"
+            : "Wi-Fi";
         var problem = PhoneRegistry.Touch(device.ToString(), ctx.Request.Headers["X-PhoneBox-Model"].ToString(),
-            ctx.Connection.LocalPort == usb.Port ? "USB" : ctx.Connection.LocalPort == Port ? "local" : "Wi-Fi", ctx.Request.Headers["X-PhoneBox-WebView"].ToString());
+            clientVia, ctx.Request.Headers["X-PhoneBox-WebView"].ToString());
         if (problem is not null) app.Logger.LogWarning("WebView: {Problem}", problem);
     }
-    if (ctx.Request.Headers.TryGetValue("X-PhoneBox-App", out var appVersion) && appVersion.ToString().Length is > 0 and < 32)
+    if (ctx.Request.Headers.TryGetValue("X-PhoneBox-App", out var appVersion) && appVersion.ToString().Length is > 0 and < 32
+        && !string.Equals(appVersion.ToString(), "legacy-web", StringComparison.OrdinalIgnoreCase))
         UpdateService.AppVersion = appVersion.ToString();
     ctx.Response.Headers.CacheControl = "no-store";
     // only the panel may be framed, and only by the settings page itself (the live preview)
-    ctx.Response.Headers["X-Frame-Options"] = ctx.Request.Path.StartsWithSegments("/panel") ? "SAMEORIGIN" : "DENY";
+    ctx.Response.Headers["X-Frame-Options"] = ctx.Request.Path.StartsWithSegments("/panel") || ctx.Request.Path.StartsWithSegments("/legacy") ? "SAMEORIGIN" : "DENY";
     await next();
 });
 
@@ -333,6 +364,23 @@ app.MapGet("/api/lan", (ConfigStore cfg) => Results.Json(new
     fingerprint = lanCert is null ? null : Lan.Fingerprint(lanCert),
 }));
 
+app.MapGet("/api/legacy/info", (ConfigStore cfg) =>
+{
+    var cur = cfg.Get().LegacyWeb;
+    var effectivePort = legacyActive ? legacyCfg.Port : cur.Port;
+    return Results.Json(new
+    {
+        configured = cur.Enabled,
+        active = legacyActive,
+        port = effectivePort,
+        allowPrivateLanOnly = cur.AllowPrivateLanOnly,
+        restartNeeded = cur.Enabled != legacyActive || (legacyActive && cur.Port != legacyCfg.Port),
+        urls = LegacyWeb.LocalUrls(effectivePort),
+    });
+});
+app.MapGet("/api/legacy/weather", (ConfigStore cfg, CancellationToken ct) => LegacyWeb.GetWeatherAsync(cfg.Get().Weather, ct));
+app.MapGet("/api/legacy/apk-info", () => Results.Json(LegacyWeb.GetApkInfo()));
+
 app.MapGet("/api/update", (UpdateService upd, ConfigStore cfg) => Results.Json(new { status = upd.Status(), auto = cfg.Get().Updates.Auto, installed = UpdateService.RunningInstalled }));
 // Settings › General: install the phone app on a phone that does not have it yet (local only).
 app.MapPost("/api/phone/install", async (UpdateService upd) =>
@@ -347,12 +395,73 @@ app.MapPost("/api/restart", (IHostApplicationLifetime life) =>
     return Results.Ok();
 });
 
-// ---------------------------------------------------------------- settings UI (browser)
-app.MapGet("/", () =>
+// ---------------------------------------------------------------- settings UI (browser) & legacy tablet web UI
+app.MapGet("/", (HttpContext ctx) =>
 {
+    if (legacyActive && ctx.Connection.LocalPort == legacyCfg.Port)
+        return LegacyWeb.ServeAsset("index.html", ctx.Response);
     using var s = AppPaths.Resource("settings.html")!;
     using var r = new StreamReader(s);
     return Results.Content(r.ReadToEnd(), "text/html; charset=utf-8");
+});
+app.MapMethods("/legacy/{*file}", ["GET", "HEAD"], (string? file, HttpContext ctx) =>
+{
+    if (string.IsNullOrEmpty(file) && !ctx.Request.Path.Value!.EndsWith('/'))
+        return Results.Redirect("/legacy/" + ctx.Request.QueryString);
+    return LegacyWeb.ServeAsset(file, ctx.Response);
+});
+app.MapGet("/api/legacy/sync", async (int? page, string? cfg, string? liveAi, long? ev, HttpContext ctx,
+    ConfigStore cfgStore, ShortcutIconUploads icons, ApprovalStore approvals, ControlDeck deck,
+    ProcessMonitor procs, QuotaMonitor quotas, SessionMonitor sessions, GitHubMonitor gh,
+    PushStore push, DiscordMonitor discord, CancellationToken ct) =>
+{
+    var currentVer = cfgStore.Version.ToString();
+    var currentCfg = cfgStore.Get();
+    var devId = ctx.Request.Headers["X-PhoneBox-Device"].ToString();
+    var includeCfg = string.IsNullOrEmpty(cfg) || cfg != currentVer;
+    var pg = page ?? 0;
+
+    var includeAi = pg == 4 && liveAi is "1" or "true";
+    if (includeAi)
+    {
+        try { await Task.WhenAny(quotas.RefreshLiveAsync(CancellationToken.None), Task.Delay(1200, ct)); }
+        catch { }
+    }
+
+    var weatherData = await LegacyWeb.GetWeatherObjectAsync(currentCfg.Weather, ct);
+    object? controlsData = pg == 2 ? await deck.Snapshot(ct) : null;
+    object? procsData = null;
+    if (pg == 3)
+    {
+        var allProcs = procs.Snapshot();
+        var topByRam = allProcs.OrderByDescending(g => g.MemMb).ThenByDescending(g => g.Cpu).Take(30);
+        var topByCpu = allProcs.OrderByDescending(g => g.Cpu).ThenByDescending(g => g.MemMb).Take(30);
+        var merged = topByRam.Concat(topByCpu).DistinctBy(g => g.Name, StringComparer.OrdinalIgnoreCase).Take(50).ToList();
+        procsData = new { total = allProcs.Sum(g => g.Count), groupCount = allProcs.Count, allowKill = currentCfg.AllowKill(), groups = merged };
+    }
+    object? quotasData = pg == 4 ? new { providers = quotas.Snapshot(), overview = quotas.Overview() } : null;
+    object? workData = pg == 4 ? WorkFeed.Build(sessions, gh) : null;
+    object? pushData = pg == 4 || push.Version > 0 ? new { version = push.Version, items = push.Snapshot() } : null;
+    object? discordData = pg == 5 ? new { enabled = currentCfg.Discord.Enabled, snapshot = discord.Snapshot(), control = DiscordMonitor.ControlAllowed(currentCfg) } : null;
+
+    return Results.Json(new
+    {
+        state = State(ctx.RequestServices, ev),
+        config = includeCfg ? new
+        {
+            version = currentVer,
+            config = currentCfg.ToPublic(devId, s => icons.Revision(s.Id) is { } up ? (up, true) : (ShortcutIcons.Revision(s), false)),
+        } : null,
+        approvals = new { items = approvals.Snapshot() },
+        weather = weatherData,
+        controls = controlsData,
+        procs = procsData,
+        quotas = quotasData,
+        work = workData,
+        push = pushData,
+        discord = discordData,
+        apk = LegacyWeb.GetApkInfo(),
+    });
 });
 // The phone's panel (embedded at build time) for the live preview in the layout editor; local port only.
 app.MapGet("/panel/{*file}", (string? file, HttpRequest req) =>
@@ -402,6 +511,8 @@ app.MapPut("/api/settings", async (HttpRequest req, ConfigStore cfg, ControlDeck
     var body = await r.ReadToEndAsync();
     if (LanPortCollidesWithLocal(body, Port))
         return Results.BadRequest(new { error = $"Wi-Fi port cannot be the same as the local port ({Port})" });
+    if (LegacyWeb.PortCollides(body, Port))
+        return Results.BadRequest(new { error = $"Legacy tablet web port cannot collide with the local port ({Port}) or active Wi-Fi port" });
     if (LanKeysShared(body))
         return Results.BadRequest(new { error = "The Wi-Fi key and the webhook key must be different: make a new key for one of them" });
     AgentConfig? proposed = null;
@@ -440,6 +551,7 @@ app.MapPut("/api/settings", async (HttpRequest req, ConfigStore cfg, ControlDeck
     deck.ReconcileRadios(waitForGate: true);
     icons.Cleanup(() => cfg.Get().Shortcuts.Select(s => s.Id)); // drop uploads for shortcuts that got deleted
     ShortcutIcons.ClearHasIconCache();
+    StateSignal.Poke();
     log.LogInformation("settings saved");
     return Results.Ok(new { version = savedVersion.ToString(CultureInfo.InvariantCulture) });
 });
@@ -496,13 +608,14 @@ app.MapGet("/api/info", (AdbReverse adb, ConfigStore cfg) => Results.Json(new
     configPath = cfg.Path,
     logPath = AppPaths.LogPath,
     adb = AdbReverse.FindAdb(cfg.Get().AdbPath),
-    // USB (adb) or a live stream from the phone in the last few seconds, which covers Wi-Fi / Tailscale too
+    // USB (adb) or a live stream / poll from the phone or legacy web tablet in the last few seconds
     connected = adb.Connected || ApprovalStore.PhoneConnected,
-    via = adb.Connected ? "USB" : ApprovalStore.PhoneConnected ? "Wi-Fi" : null,
+    via = adb.Connected ? "USB" : ApprovalStore.PhoneConnected ? (PhoneRegistry.LatestVia() ?? "Wi-Fi") : null,
     devices = adb.AllDevices,
     appMissing = adb.MissingApp,
     usbProblem = adb.UsbProblem,
     webviewProblem = WebViewDoctor.DiagnoseRecent(PhoneRegistry.All(), DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()),
+    interactiveDesktop = Shortcuts.IsInteractiveDesktop(),
 }));
 
 app.MapPost("/api/phone/open", async (AdbReverse adb) => { await adb.OpenPanelAsync(); return Results.Ok(); });
@@ -961,20 +1074,32 @@ app.MapPost("/api/volume", (int? level, string? op, AudioControl audio) =>
     return ok ? Results.Json(audio.Current()) : Results.BadRequest();
 });
 
-app.MapGet("/api/quotas", (QuotaMonitor q) => Results.Json(new { providers = q.Snapshot(), overview = q.Overview() }));
+app.MapGet("/api/quotas", async (string? live, QuotaMonitor q, CancellationToken ct) =>
+{
+    if (live is "true" or "1") await q.RefreshLiveAsync(ct);
+    return Results.Json(new { providers = q.Snapshot(), overview = q.Overview() });
+});
 
 app.MapGet("/api/work", (SessionMonitor s, GitHubMonitor gh) => Results.Json(WorkFeed.Build(s, gh)));
 
 app.MapGet("/api/proxy", (string? url, CancellationToken ct) => WidgetFeedProxy.FetchAsync(url, ct));
 
-app.MapGet("/api/procs", (ProcessMonitor procs, int? top) =>
+app.MapGet("/api/procs", (ProcessMonitor procs, ConfigStore cfg, int? top, string? sort) =>
 {
     var all = procs.Snapshot();
-    return Results.Json(new { total = all.Sum(g => g.Count), groupCount = all.Count, groups = all.Take(Math.Clamp(top ?? 40, 1, 200)) });
+    var limit = Math.Clamp(top ?? 40, 1, 200);
+    IEnumerable<ProcGroup> ordered = string.Equals(sort, "ram", StringComparison.OrdinalIgnoreCase)
+        ? all.OrderByDescending(g => g.MemMb).ThenByDescending(g => g.Cpu)
+        : all;
+    return Results.Json(new { total = all.Sum(g => g.Count), groupCount = all.Count, allowKill = cfg.Get().AllowKill(), groups = ordered.Take(limit) });
 });
 
-app.MapGet("/api/procs/icon", (string name, ProcessMonitor procs) =>
-    procs.Icon(name) is { } png ? Results.File(png, "image/png") : Results.NotFound());
+app.MapGet("/api/procs/icon", (string name, ProcessMonitor procs, HttpResponse res) =>
+{
+    if (procs.Icon(name) is not { } png) return Results.NotFound();
+    res.Headers.CacheControl = "private, max-age=86400";
+    return Results.File(png, "image/png");
+});
 
 app.MapGet("/api/procs/detail", (string name, ProcessMonitor procs) => Results.Json(procs.Detail(name)));
 
@@ -1039,8 +1164,16 @@ app.MapDelete("/api/settings/shortcut-icon", (string id, HttpRequest req, Config
 });
 
 app.Lifetime.ApplicationStarted.Register(() =>
+{
     app.Logger.LogInformation("PhoneBox agent {Version} ready on http://127.0.0.1:{Port}, phone USB port {UsbPort} (config: {Path})",
-        AppPaths.Version, Port, usb.Port, configPath));
+        AppPaths.Version, Port, usb.Port, configPath);
+    if (legacyActive)
+    {
+        var urls = LegacyWeb.LocalUrls(legacyCfg.Port);
+        app.Logger.LogInformation("Legacy tablet web ready on {Urls} (private LAN only: {PrivateOnly})",
+            urls.Count > 0 ? string.Join(", ", urls) : $"http://0.0.0.0:{legacyCfg.Port}", legacyCfg.AllowPrivateLanOnly);
+    }
+});
 
 app.Run();
 

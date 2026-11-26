@@ -297,8 +297,22 @@ public static class Shortcuts
 
     private static void Start(Shortcut sc)
     {
-        var psi = new ProcessStartInfo(Home(sc.Cmd), Home(sc.Args ?? "")) { UseShellExecute = true };
-        if (!string.IsNullOrEmpty(sc.Cwd)) psi.WorkingDirectory = Home(sc.Cwd);
+        var cmd = Home(sc.Cmd).Trim();
+        var args = Home(sc.Args ?? "");
+        var psi = new ProcessStartInfo(cmd, args)
+        {
+            UseShellExecute = true,
+            WindowStyle = ProcessWindowStyle.Normal,
+            ErrorDialog = false,
+        };
+        var isShellOrUri = cmd.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+            || cmd.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)
+            || cmd.Contains("://", StringComparison.Ordinal);
+        if (!isShellOrUri && !string.IsNullOrWhiteSpace(sc.Cwd))
+        {
+            var cwd = Home(sc.Cwd);
+            if (Directory.Exists(cwd)) psi.WorkingDirectory = cwd;
+        }
 #if WINDOWS
         LetTheNewWindowComeForward();
         try
@@ -352,11 +366,39 @@ public static class Shortcuts
         _ => [],
     };
 
-    /// <summary>"~" at the start of a path means the home folder (Linux / macOS style).</summary>
-    private static string Home(string s) =>
-        s == "~" || s.StartsWith("~/") ? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + s[1..] : s.Replace(" ~/", " " + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/");
+    /// <summary>"~" at the start of a path means the home folder (Linux / macOS style), and %VAR% expands Windows environment variables.</summary>
+    private static string Home(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return s;
+        var expanded = s == "~" || s.StartsWith("~/")
+            ? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + s[1..]
+            : s.Replace(" ~/", " " + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/");
+#if WINDOWS
+        if (expanded.Contains('%')) expanded = Environment.ExpandEnvironmentVariables(expanded);
+#endif
+        return expanded;
+    }
 
 #if WINDOWS
+    /// <summary>True when running on the normal interactive Windows desktop ("Default"), false when started in a hidden/isolated desktop.</summary>
+    public static bool IsInteractiveDesktop()
+    {
+        try
+        {
+            var desk = GetThreadDesktop(GetCurrentThreadId());
+            if (desk == 0) return true;
+            var buf = new byte[256];
+            if (!GetUserObjectInformation(desk, 2 /* UOI_NAME */, buf, buf.Length, out var needed) || needed < 2) return true;
+            var name = System.Text.Encoding.Unicode.GetString(buf, 0, Math.Min(buf.Length, needed - 2));
+            return string.Equals(name, "Default", StringComparison.OrdinalIgnoreCase);
+        }
+        catch { return true; }
+    }
+    [DllImport("kernel32.dll")] private static extern int GetCurrentThreadId();
+    [DllImport("user32.dll")] private static extern nint GetThreadDesktop(int threadId);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern bool GetUserObjectInformation(nint hObj, int nIndex, byte[] pvInfo, int nLength, out int lpnLengthNeeded);
+
     /// <summary>
     /// Windows keeps a program started by a background process (the agent answering the phone) behind the window in use,
     /// flashing in the taskbar (#322). A zero-pixel mouse move makes the agent the process that received the last input,
@@ -389,6 +431,8 @@ public static class Shortcuts
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern nint SendMessage(nint hWnd, uint msg, nint wParam, nint lParam);
     [DllImport("user32.dll")] private static extern bool DestroyWindow(nint hWnd);
 #else
+    public static bool IsInteractiveDesktop() => true;
+
     private static void Unix(string tool, params string[] args)
     {
         if (Sh.Run(tool, args) is null && Sh.Which(tool) is null) throw new InvalidOperationException($"{tool} is not installed");
@@ -400,6 +444,8 @@ public static class Shortcuts
 public static class Keys
 {
     public const byte VK_VOLUME_MUTE = 0xAD;
+    public const byte VK_MEDIA_NEXT_TRACK = 0xB0;
+    public const byte VK_MEDIA_PREV_TRACK = 0xB1;
     public const byte VK_MEDIA_PLAY_PAUSE = 0xB3;
 
     public static void Tap(byte vk)

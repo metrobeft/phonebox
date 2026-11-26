@@ -30,4 +30,14 @@ public static class PhoneRegistry
     }
 
     public static IReadOnlyCollection<PhoneSeen> All() => Seen.Values.ToList();
+
+    public static string? LatestVia(long maxAgeMs = 15_000)
+    {
+        var now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        return Seen.Values
+            .Where(p => now - p.LastSeen <= maxAgeMs)
+            .OrderByDescending(p => p.LastSeen)
+            .Select(p => p.Via)
+            .FirstOrDefault();
+    }
 }

@@ -47,7 +47,8 @@ public sealed partial class DiscordMonitor(ConfigStore config, ILogger<DiscordMo
     internal bool NotificationsOn { get => _notesWanted; set => _notesWanted = value; }
 
     internal static bool NotificationsWanted(AgentConfig cfg) =>
-        cfg.Widgets(enabledPagesOnly: true).Any(w => w.Type == "discord" && w.Bool("notifications") != false);
+        cfg.Widgets(enabledPagesOnly: true).Any(w => w.Type == "discord" && w.Bool("notifications") != false)
+        || (cfg.Discord.AllowControl && !cfg.Widgets(enabledPagesOnly: false).Any(w => w.Type == "discord"));
 
     /// <summary>
     /// The subscription follows the settings once per pass; this also checks the settings right now, so turning

@@ -1,0 +1,47 @@
+{
+  // Exemplo de configuracao pessoal para o PhoneBox — Edicao HP 7.1.
+  // O arquivo ativo usado pelo agente no Windows fica FORA do repositorio em:
+  //   %APPDATA%\PhoneBox\config.json
+  // Voce tambem pode editar tudo visualmente em http://127.0.0.1:8765/.
+
+  "deviceSerial": null,
+  "adbPath": null,
+
+  // Localizacao para o clima (Open-Meteo, sem chave de API)
+  "weather": {
+    "city": "Rio de Janeiro, Brasil",
+    "lat": -22.9068,
+    "lon": -43.1729,
+    "unit": "celsius",
+    "model": ""
+  },
+
+  "claude": { "phoneApprovals": true, "shareSessionTitles": true, "shareConversation": true },
+  "ping": { "host": "1.1.1.1", "adapters": [] },
+  "discord": { "enabled": false, "clientId": null, "clientSecret": null, "allowControl": false },
+  "cursor": { "sessions": false },
+  "antigravity": { "sessions": true, "shareSessionTitles": true },
+  "codexBar": { "codexLiveQuota": false },
+  "opencode": { "phoneApprovals": false, "sessions": false, "timeoutSec": 90, "alwaysCountdownSec": 10, "watchWsl": false, "shareSessionTitles": false },
+  "steam": { "enabled": false, "steamId": null, "apiKey": null },
+
+  // Modo Web Local / API para tablets Android 4.2.2 (restrito a rede privada RFC1918)
+  "legacyWeb": { "enabled": true, "port": 8788, "allowPrivateLanOnly": true },
+
+  // Auto-update do upstream desativado por padrao para nao sobrescrever este fork HP 7.1
+  "updates": { "auto": false, "repo": "metrobeft/phonebox" },
+
+  "night": { "enabled": true, "start": "00:30", "end": "07:30", "brightness": 0.02 },
+  "display": { "showSeconds": true, "idleReturnSec": 90, "vibrate": true, "finishToast": true, "volumeKeys": true, "pixelShift": false, "controlsTop": false, "idleDimMin": 0, "language": "auto" },
+
+  // Atalhos de exemplo (variaveis como %LOCALAPPDATA% sao expandidas automaticamente no Windows)
+  "shortcuts": [
+    { "id": "explorer",    "label": "Este Computador", "icon": "\ud83d\udcbb", "color": "#e5b84b", "cmd": "shell:MyComputerFolder" },
+    { "id": "vscode",      "label": "VS Code",         "icon": "\ud83d\udcdd", "color": "#2f80ed", "cmd": "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe" },
+    { "id": "antigravity", "label": "Antigravity",     "icon": "\ud83d\ude80", "color": "#38bdf8", "cmd": "%LOCALAPPDATA%\\Programs\\Antigravity\\Antigravity.exe" },
+    { "id": "calc",        "label": "Calculadora",     "icon": "\ud83e\uddee", "color": "#0ea5e9", "cmd": "calc.exe" },
+    { "id": "taskmgr",     "label": "Task Manager",    "icon": "\ud83d\udcca", "color": "#22c55e", "cmd": "C:\\Windows\\System32\\taskmgr.exe" },
+    { "id": "monitoroff",  "label": "Screen Off",      "icon": "\ud83c\udf19", "color": "#6366f1", "cmd": "builtin:monitor-off" },
+    { "id": "lock",        "label": "Lock",            "icon": "\ud83d\udd12", "color": "#ef4444", "cmd": "builtin:lock" }
+  ]
+}

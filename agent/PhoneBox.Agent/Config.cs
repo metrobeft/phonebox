@@ -17,6 +17,8 @@ public sealed class AgentConfig
     public NightConfig Night { get; set; } = new();
     public DisplayConfig Display { get; set; } = new();
     public LanConfig Lan { get; set; } = new();
+    /// <summary>Local-LAN HTTP web mode for older tablets such as HP 7.1 1201 (Android 4.2.2).</summary>
+    public LegacyWebConfig LegacyWeb { get; set; } = new();
     public UpdateConfig Updates { get; set; } = new();
     public ClaudeConfig Claude { get; set; } = new();
     /// <summary>Cursor agent-transcript sessions on the AI sessions widget (off by default).</summary>
@@ -121,9 +123,9 @@ public sealed class AgentConfig
 
 public sealed class WeatherConfig
 {
-    public string City { get; set; } = "Tallinn";
-    public double Lat { get; set; } = 59.437;
-    public double Lon { get; set; } = 24.745;
+    public string City { get; set; } = "Rio de Janeiro, Brasil";
+    public double Lat { get; set; } = -22.9068;
+    public double Lon { get; set; } = -43.1729;
     /// <summary>
     /// "celsius" or "fahrenheit": how the panel shows temperatures. The forecast is always fetched in °C and converted
     /// on the phone, so a change applies to the cached forecast too and Custom HTML widgets keep Open-Meteo's values.
@@ -183,7 +185,7 @@ public sealed class DisplayConfig
     /// <summary>default, amoled, midnight, warm or graphite.</summary>
     public string Theme { get; set; } = "default";
     /// <summary>Accent colour (background glow, page dots), e.g. "#2dd4bf".</summary>
-    public string Accent { get; set; } = "#2dd4bf";
+    public string Accent { get; set; } = "#8bd0ff";
     /// <summary>Tint the background with the album art's colour while music plays.</summary>
     public bool ArtTint { get; set; } = true;
     /// <summary>Screen brightness follows the room (the phone's light sensor).</summary>
@@ -237,11 +239,20 @@ public sealed class LanConfig
     public string? WebhookToken { get; set; }
 }
 
+public sealed class LegacyWebConfig
+{
+    /// <summary>Serve the Android 4.2.2 / HP 7.1 compatible web panel over HTTP on the private local network.</summary>
+    public bool Enabled { get; set; } = true;
+    public int Port { get; set; } = 8788;
+    /// <summary>Accept connections only from private RFC1918 LAN / loopback addresses.</summary>
+    public bool AllowPrivateLanOnly { get; set; } = true;
+}
+
 public sealed class UpdateConfig
 {
-    /// <summary>Install new GitHub releases automatically (phone app over USB, agent in place).</summary>
-    public bool Auto { get; set; } = true;
-    public string Repo { get; set; } = "ersinkoc/phonebox";
+    /// <summary>Install new GitHub releases automatically (disabled by default in this private HP 7.1 fork).</summary>
+    public bool Auto { get; set; } = false;
+    public string Repo { get; set; } = "metrobeft/phonebox";
 }
 
 public sealed class ClaudeConfig
@@ -646,6 +657,8 @@ public sealed partial class ConfigStore(string path)
         c.Display.MinDwellSec = Math.Clamp(c.Display.MinDwellSec, 0, 600);
         c.Display.HoldMaxMin = Math.Clamp(c.Display.HoldMaxMin, 0, 1440);
         c.Lan ??= new();
+        c.LegacyWeb ??= new();
+        c.LegacyWeb.Port = Math.Clamp(c.LegacyWeb.Port, 1024, 65535);
         c.Updates ??= new();
         c.Ping ??= new();
         c.Ping.Host = c.Ping.Host?.Trim() ?? "";
@@ -657,7 +670,7 @@ public sealed partial class ConfigStore(string path)
         c.OpenCode ??= new();
         c.OpenCode.TimeoutSec = Math.Clamp(c.OpenCode.TimeoutSec, 10, 3600);
         c.OpenCode.AlwaysCountdownSec = Math.Clamp(c.OpenCode.AlwaysCountdownSec, 0, 60);
-        if (string.IsNullOrWhiteSpace(c.Updates.Repo)) c.Updates.Repo = "ersinkoc/phonebox";
+        if (string.IsNullOrWhiteSpace(c.Updates.Repo)) c.Updates.Repo = "metrobeft/phonebox";
         c.Lan.Port = Math.Clamp(c.Lan.Port, 1024, 65535);
         if (string.IsNullOrWhiteSpace(c.Lan.Token)) c.Lan.Token = NewToken();
         if (string.IsNullOrWhiteSpace(c.Lan.WebhookToken)) c.Lan.WebhookToken = NewToken();

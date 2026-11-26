@@ -61,6 +61,7 @@ if ($programs -and (Test-Path $programs)) {
         $shell = New-Object -ComObject WScript.Shell
         $lnk = $shell.CreateShortcut((Join-Path $programs 'PhoneBox.lnk'))
         $lnk.TargetPath = $exe
+        $lnk.Arguments = '--replace'
         $lnk.WorkingDirectory = $app
         $lnk.Description = 'PhoneBox agent'
         $lnk.Save()

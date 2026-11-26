@@ -42,47 +42,71 @@ public sealed partial class SystemMonitor(ILogger<SystemMonitor> log, ConfigStor
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
+        try { _disks = SafeReadDisks(_disks); } catch { }
+        try
+        {
+            var (mUsed, mTot) = Memory();
+            const double Gb0 = 1024d * 1024 * 1024;
+            _snap = new PcSnapshot(0, _cpuTemp, _cpuName, Math.Round(mUsed / Gb0, 1), Math.Round(mTot / Gb0, 1),
+                null, 0, 0, _disks, Environment.TickCount64 / 1000, []);
+        }
+        catch { }
+
         _ = Task.Run(() => GpuLoop(ct), ct);
         _ = Task.Run(() => CpuTempLoop(ct), ct);
+        _ = Task.Run(() => DiskLoop(ct), ct);
 
         var (idle0, total0) = CpuTimes();
         var net0 = NetBytes(Chosen());
         var t0 = Stopwatch.GetTimestamp();
-        var tick = 0;
 
         while (!ct.IsCancellationRequested)
         {
             await Task.Delay(1000, ct);
+            try
+            {
+                var (idle1, total1) = CpuTimes();
+                var total = total1 - total0;
+                double? cpu = total > 0 ? Math.Clamp(100.0 * (total - (idle1 - idle0)) / total, 0, 100) : null;
+                (idle0, total0) = (idle1, total1);
 
-            var (idle1, total1) = CpuTimes();
-            var total = total1 - total0;
-            double? cpu = total > 0 ? Math.Clamp(100.0 * (total - (idle1 - idle0)) / total, 0, 100) : null;
-            (idle0, total0) = (idle1, total1);
+                var net1 = NetBytes(Chosen());
+                var t1 = Stopwatch.GetTimestamp();
+                var secs = Math.Max(0.001, (t1 - t0) / (double)Stopwatch.Frequency);
+                var (down, up) = NetworkRates(net0, net1, secs);
+                (net0, t0) = (net1, t1);
 
-            var net1 = NetBytes(Chosen());
-            var t1 = Stopwatch.GetTimestamp();
-            var secs = Math.Max(0.001, (t1 - t0) / (double)Stopwatch.Frequency);
-            var (down, up) = NetworkRates(net0, net1, secs);
-            (net0, t0) = (net1, t1);
+                var (memUsed, memTotal) = Memory();
+                const double Gb = 1024d * 1024 * 1024;
+                var gpus = Gpus.Compose(_nvidia, _lhmGpus, _osGpus);
 
-            if (tick++ % 15 == 0) _disks = ReadDisks();
+                _snap = new PcSnapshot(
+                    Cpu: cpu is { } c ? Math.Round(c, 1) : null,
+                    CpuTemp: _cpuTemp,
+                    CpuName: _cpuName,
+                    RamUsedGb: Math.Round(memUsed / Gb, 1),
+                    RamTotalGb: Math.Round(memTotal / Gb, 1),
+                    Gpu: gpus.FirstOrDefault(),
+                    NetDownBps: Math.Round(down),
+                    NetUpBps: Math.Round(up),
+                    Disks: _disks,
+                    UptimeSec: Environment.TickCount64 / 1000,
+                    Gpus: gpus);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                log.LogDebug("system monitor tick: {Msg}", ex.Message);
+            }
+        }
+    }
 
-            var (memUsed, memTotal) = Memory();
-            const double Gb = 1024d * 1024 * 1024;
-            var gpus = Gpus.Compose(_nvidia, _lhmGpus, _osGpus);
-
-            _snap = new PcSnapshot(
-                Cpu: cpu is { } c ? Math.Round(c, 1) : null,
-                CpuTemp: _cpuTemp,
-                CpuName: _cpuName,
-                RamUsedGb: Math.Round(memUsed / Gb, 1),
-                RamTotalGb: Math.Round(memTotal / Gb, 1),
-                Gpu: gpus.FirstOrDefault(),
-                NetDownBps: Math.Round(down),
-                NetUpBps: Math.Round(up),
-                Disks: _disks,
-                UptimeSec: Environment.TickCount64 / 1000,
-                Gpus: gpus);
+    private async Task DiskLoop(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            try { _disks = SafeReadDisks(_disks); }
+            catch (Exception ex) when (ex is not OperationCanceledException) { log.LogDebug("disks: {Msg}", ex.Message); }
+            await Task.Delay(TimeSpan.FromSeconds(15), ct);
         }
     }
 
@@ -389,20 +413,49 @@ public sealed partial class SystemMonitor(ILogger<SystemMonitor> log, ConfigStor
         return (received / seconds, sent / seconds);
     }
 
+    private static IReadOnlyList<DiskInfo> SafeReadDisks(IReadOnlyList<DiskInfo> fallback)
+    {
+        try
+        {
+            var list = ReadDisks();
+            return list.Count > 0 ? list : fallback;
+        }
+        catch { return fallback; }
+    }
+
     private static IReadOnlyList<DiskInfo> ReadDisks()
     {
         const double Gb = 1024d * 1024 * 1024;
-        var drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Fixed && d.IsReady && SafeSize(d) > 2 * Gb);
-        if (!OperatingSystem.IsWindows())
-            // Linux / macOS: real volumes only (no snaps, boot partitions or macOS system snapshots)
-            drives = drives.Where(d => d.Name == "/" || d.Name.StartsWith("/home") || d.Name.StartsWith("/mnt/") || d.Name.StartsWith("/media/")
-                                       || d.Name.StartsWith("/Volumes/") || d.Name.StartsWith("/data"))
-                .Where(d => !d.Name.Contains("/wsl") && !d.Name.Contains("docker") && !d.Name.StartsWith("/mnt/c") && d.Name.Length > 0)
-                .DistinctBy(d => (SafeSize(d), d.TotalFreeSpace / (1L << 30)));
-        return drives
-            .Select(d => new DiskInfo(DiskLabel(d.Name), Math.Round((d.TotalSize - d.TotalFreeSpace) / Gb), Math.Round(d.TotalSize / Gb)))
-            .Take(6)
-            .ToList();
+        var results = new List<(DiskInfo Info, long Size, long FreeBucket)>();
+        DriveInfo[] allDrives;
+        try { allDrives = DriveInfo.GetDrives(); }
+        catch { return []; }
+
+        foreach (var d in allDrives)
+        {
+            try
+            {
+                if (d.DriveType != DriveType.Fixed || !d.IsReady) continue;
+                var total = d.TotalSize;
+                if (total <= 2 * Gb) continue;
+                var free = d.TotalFreeSpace;
+                if (!OperatingSystem.IsWindows())
+                {
+                    var n = d.Name;
+                    if (!(n == "/" || n.StartsWith("/home") || n.StartsWith("/mnt/") || n.StartsWith("/media/")
+                          || n.StartsWith("/Volumes/") || n.StartsWith("/data"))) continue;
+                    if (n.Contains("/wsl") || n.Contains("docker") || n.StartsWith("/mnt/c") || n.Length == 0) continue;
+                }
+                var info = new DiskInfo(DiskLabel(d.Name), Math.Round((total - free) / Gb), Math.Round(total / Gb));
+                results.Add((info, total, free / (1L << 30)));
+            }
+            catch { /* a single sleeping or inaccessible drive must not drop all other disks */ }
+        }
+
+        var enumerable = OperatingSystem.IsWindows()
+            ? results.Select(r => r.Info)
+            : results.DistinctBy(r => (r.Size, r.FreeBucket)).Select(r => r.Info);
+        return enumerable.Take(6).ToList();
     }
 
     private static long SafeSize(DriveInfo d) { try { return d.TotalSize; } catch { return 0; } }

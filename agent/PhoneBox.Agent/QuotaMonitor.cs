@@ -168,6 +168,8 @@ public sealed partial class QuotaMonitor(ConfigStore config, ILogger<QuotaMonito
     private int _claudeFailures;          // consecutive failed requests, for the back-off
     private long _nextCodexBar;
     private long _nextAntigravity;
+    private long _lastLiveAntigravityAt;
+    private readonly SemaphoreSlim _liveGate = new(1, 1);
     private volatile IReadOnlyList<QuotaProvider> _external = [];
     private volatile QuotaOverview? _overview;
 
@@ -191,6 +193,33 @@ public sealed partial class QuotaMonitor(ConfigStore config, ILogger<QuotaMonito
             .Select(p => CodexBar.Select(null, p, now))
             .OfType<QuotaProvider>();
         return core.Concat(extra).Select(p => Rolled(p, now)).ToList();
+    }
+
+    /// <summary>
+    /// Refreshes local quota sources on demand when the AI quotas tab is actively open on the tablet (at most every 4 s),
+    /// while preserving external API rate-limit schedules.
+    /// </summary>
+    public async Task RefreshLiveAsync(CancellationToken ct)
+    {
+        if (Environment.TickCount64 - Interlocked.Read(ref _lastLiveAntigravityAt) < 4_000) return;
+        if (!await _liveGate.WaitAsync(0, ct)) return;
+        try
+        {
+            var tick = Environment.TickCount64;
+            if (tick - Interlocked.Read(ref _lastLiveAntigravityAt) < 4_000) return;
+            Interlocked.Exchange(ref _lastLiveAntigravityAt, tick);
+            var ok = await RefreshAntigravity(ct);
+            _nextAntigravity = Environment.TickCount64 + (ok ? 60_000 : 30_000);
+            CodexTick();
+            if (_claude is null || _claudeAwaitingToken) _claudeCredsReadAt = 0;
+            try { await ClaudeTickAsync(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ct); }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
+            catch (Exception ex) { log.LogDebug("claude live quota check: {Msg}", ex.Message); }
+        }
+        finally
+        {
+            _liveGate.Release();
+        }
     }
 
     /// <summary>A window whose reset time has passed started over: the last reading (kept while the tool is not used) no longer applies.</summary>

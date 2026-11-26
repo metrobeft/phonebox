@@ -9,6 +9,9 @@ public sealed record MediaSnapshot(string App, string Title, string Artist, stri
     [System.Text.Json.Serialization.JsonIgnore]
     public long SampledAt { get; init; }
 
+    /// <summary>True when album cover artwork is currently cached and available at /api/art.</summary>
+    public bool HasArt => ArtId > 0;
+
     /// <summary>
     /// How old PosMs is at the moment this is serialized. The phone adds it to what it counts from the arrival, so a
     /// sample that waited for the next 1 s tick (and one a second old when the monitor read it) is not shown late.

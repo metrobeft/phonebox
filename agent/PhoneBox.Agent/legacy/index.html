@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1427">
+<title>PhoneBox · HP 7.1</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/legacy/style.css">
+</head>
+<body class="orient-landscape">
+<div id="app">
+  <!-- Full-screen Matrix Digital Rain background (Hack theme) -->
+  <canvas id="hack-matrix-bg" aria-hidden="true"></canvas>
+  <!-- Full-screen Twilight Sakura Sky background (Anime theme) -->
+  <canvas id="anime-sky-bg" aria-hidden="true"></canvas>
+
+  <!-- Top Status Bar -->
+  <header id="topbar">
+    <div class="tb-left">
+      <span id="conn-dot" class="dot dot-wait"></span>
+      <span id="host-name" class="host-name">PhoneBox</span>
+      <span id="tb-mini" class="tb-mini"></span>
+      <img id="hack-tb-art" src="/legacy/theme_hack.png" alt="" aria-hidden="true">
+      <canvas id="hack-tb-term" width="166" height="26" aria-hidden="true"></canvas>
+      <img id="anime-tb-art" src="/legacy/theme_anime.png" alt="" aria-hidden="true">
+      <canvas id="anime-tb-ribbon" width="166" height="26" aria-hidden="true"></canvas>
+    </div>
+    <div class="tb-right">
+      <span id="tb-privacy" class="priv-badge hidden"></span>
+      <a id="btn-apk" href="/legacy/PhoneBox-HP71.apk" download="PhoneBox-HP71.apk" class="tb-btn tb-btn-apk" title="Baixar App Nativo Android 4.2.2 (.apk)">&#8595; BAIXAR APK</a>
+      <button type="button" id="btn-settings" class="tb-btn" title="Configurações" aria-label="Configurações" aria-haspopup="dialog">&#9881;</button>
+      <button type="button" id="btn-orient" class="tb-btn" title="Alternar proporção">AUTO</button>
+      <button type="button" id="btn-dim" class="tb-btn" title="Escurecer tela">LUZ</button>
+      <button type="button" id="btn-full" class="tb-btn" title="Tela cheia">TELA</button>
+    </div>
+  </header>
+
+  <!-- Offline Banner -->
+  <div id="offline-bar" class="offline-bar hidden">PC desconectado — tentando reconectar na rede local...</div>
+
+  <!-- Main Viewport -->
+  <main id="viewport">
+
+    <!-- PAGE 0: HOME -->
+    <section id="page-home" class="page active">
+      <div class="home-top clearfix">
+        <!-- Clock & Weather -->
+        <div class="card card-clock" data-goto="6" style="cursor:pointer" title="Toque para abrir Clima, Hora e Localização completa">
+          <div class="clearfix">
+            <div style="float:left">
+              <div class="clock-time" id="home-clock">--:--</div>
+              <div class="clock-sec" id="home-sec">:00</div>
+            </div>
+            <div class="right" style="text-align:right;margin-top:4px">
+              <span class="loc-pill" id="home-loc">Rio de Janeiro, Brasil</span>
+              <div id="home-rain-badge" style="margin-top:4px"></div>
+            </div>
+          </div>
+          <div class="clock-date" id="home-date">Carregando...</div>
+          <div class="weather-row clearfix" id="home-weather">
+            <div class="home-wx-ico" id="home-wx-ico"></div>
+            <div class="home-wx-main">
+              <div class="clearfix">
+                <span class="w-temp" id="w-temp">--°C</span>
+                <span class="w-meta" id="w-meta">Carregando clima...</span>
+              </div>
+              <div class="w-sub" id="w-sub">Sensação --° · Umidade --% · Vento -- km/h</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Media & Master Volume -->
+        <div class="card card-media">
+          <div class="media-head clearfix">
+            <div class="media-art-wrap" id="media-art-wrap">
+              <img id="media-art" class="media-art hidden" alt="">
+              <div id="media-art-empty" class="media-art-empty">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5b6e8c" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+              </div>
+            </div>
+            <div class="media-info">
+              <div class="media-app" id="media-app">MÍDIA</div>
+              <div class="media-title" id="media-title">Nada tocando</div>
+              <div class="media-artist" id="media-artist">Reproduza algo no PC</div>
+            </div>
+          </div>
+
+          <div class="media-btns clearfix">
+            <button type="button" class="m-btn" id="m-prev" aria-label="Anterior">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#f2f7ff"><polygon points="19 20 9 12 19 4 19 20"></polygon><rect x="5" y="4" width="3" height="16"></rect></svg>
+            </button>
+            <button type="button" class="m-btn m-btn-play" id="m-play" aria-label="Play ou Pausar">
+              <svg id="ico-play" width="22" height="22" viewBox="0 0 24 24" fill="#0b1427"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+              <svg id="ico-pause" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="#0b1427"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            </button>
+            <button type="button" class="m-btn" id="m-next" aria-label="Próxima">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#f2f7ff"><polygon points="5 4 15 12 5 20 5 4"></polygon><rect x="16" y="4" width="3" height="16"></rect></svg>
+            </button>
+          </div>
+
+          <div class="vol-row clearfix">
+            <button type="button" class="v-btn v-ico-btn" id="v-mute" aria-label="Mudo" title="Mudo">
+              <svg id="ico-vol-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+              <svg id="ico-vol-mute" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+            </button>
+            <button type="button" class="v-btn v-step" id="v-down" aria-label="Diminuir volume">−</button>
+            <div class="vol-track-wrap" id="v-track">
+              <div class="vol-track">
+                <div class="vol-fill" id="v-fill" style="width:0%"></div>
+              </div>
+              <span class="vol-pct" id="v-pct">--%</span>
+            </div>
+            <button type="button" class="v-btn v-step" id="v-up" aria-label="Aumentar volume">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Metric Tiles -->
+      <div class="home-metrics clearfix">
+        <div class="metric-col">
+          <div class="card card-metric" data-goto="1">
+            <div class="m-head clearfix">
+              <span class="m-label">CPU</span>
+              <span class="m-val c-teal" id="h-cpu">--%</span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill bg-teal" id="h-cpu-bar" style="width:0%"></div></div>
+            <canvas id="spark-cpu" class="spark" width="200" height="44"></canvas>
+            <div class="m-sub" id="h-cpu-sub">--</div>
+          </div>
+        </div>
+
+        <div class="metric-col">
+          <div class="card card-metric" data-goto="1">
+            <div class="m-head clearfix">
+              <span class="m-label">GPU</span>
+              <span class="m-val c-green" id="h-gpu">--%</span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill bg-green" id="h-gpu-bar" style="width:0%"></div></div>
+            <div class="m-kv clearfix">
+              <span id="h-gpu-temp">--°C</span>
+              <span id="h-gpu-pwr" class="right">-- W</span>
+            </div>
+            <div class="m-sub" id="h-gpu-sub">VRAM --</div>
+          </div>
+        </div>
+
+        <div class="metric-col">
+          <div class="card card-metric" data-goto="1">
+            <div class="m-head clearfix">
+              <span class="m-label">MEMÓRIA RAM</span>
+              <span class="m-val c-purple" id="h-ram">--%</span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill bg-purple" id="h-ram-bar" style="width:0%"></div></div>
+            <div class="m-kv clearfix">
+              <span id="h-ram-used">-- GB</span>
+              <span id="h-ram-tot" class="right">/ -- GB</span>
+            </div>
+            <div class="m-sub" id="h-ram-sub">Livre: -- GB</div>
+          </div>
+        </div>
+
+        <div class="metric-col">
+          <div class="card card-metric" data-goto="1">
+            <div class="m-head clearfix">
+              <span class="m-label">REDE &amp; PING</span>
+              <span class="m-val c-sky" id="h-ping">-- ms</span>
+            </div>
+            <div class="net-lines">
+              <div class="net-line clearfix"><span class="net-tag c-teal">DOWN</span><span class="right" id="h-down">--</span></div>
+              <div class="net-line clearfix"><span class="net-tag c-amber">UP</span><span class="right" id="h-up">--</span></div>
+            </div>
+            <div class="m-sub" id="h-priv">Microfone / Câmera: livres</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 1: SYSTEM -->
+    <section id="page-system" class="page">
+      <div class="sys-charts clearfix">
+        <div class="sys-col-half">
+          <div class="card card-chart">
+            <div class="card-title clearfix">
+              <span>CPU &amp; RAM (ao vivo)</span>
+              <span class="right legend">
+                <i class="lg-dot bg-teal"></i>CPU <b id="s-cpu">--%</b>
+                <i class="lg-dot bg-purple"></i>RAM <b id="s-ram">--%</b>
+              </span>
+            </div>
+            <canvas id="chart-cpu" class="chart-canvas" width="440" height="130"></canvas>
+            <div class="chart-foot clearfix">
+              <span id="s-cpu-name">--</span>
+              <span class="right" id="s-uptime">Uptime: --</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sys-col-half">
+          <div class="card card-chart">
+            <div class="card-title clearfix">
+              <span>GPU &amp; TEMPERATURA</span>
+              <span class="right legend">
+                <i class="lg-dot bg-green"></i>Uso <b id="s-gpu">--%</b>
+                <i class="lg-dot bg-amber"></i>Temp <b id="s-gpu-temp">--°C</b>
+              </span>
+            </div>
+            <canvas id="chart-gpu" class="chart-canvas" width="440" height="130"></canvas>
+            <div class="chart-foot clearfix">
+              <span id="s-gpu-name">--</span>
+              <span class="right" id="s-gpu-extra">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sys-bottom clearfix">
+        <div class="sys-col-disks">
+          <div class="card">
+            <div class="card-title clearfix">
+              <span>ARMAZENAMENTO (DISCOS)</span>
+              <span class="right muted" id="s-disk-count"></span>
+            </div>
+            <div id="disks-list" class="disks-list">Carregando discos...</div>
+          </div>
+        </div>
+
+        <div class="sys-col-details">
+          <div class="card">
+            <div class="card-title">DETALHES DO HARDWARE</div>
+            <div id="hw-details" class="kv-table"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: DECK / SHORTCUTS (PURE ICON STREAM DECK + ICON MIXER) -->
+    <section id="page-deck" class="page">
+      <div class="dk-topbar clearfix">
+        <div class="dk-tb-left">
+          <span class="cw-loc-badge">ATALHOS DO PC</span>
+          <span class="dk-tb-count" id="deck-count">15 ícones</span>
+        </div>
+        <div class="dk-tb-right">
+          <span class="muted" style="font-size:11px">Toque no ícone para abrir no PC</span>
+        </div>
+      </div>
+
+      <div class="card dk-grid-card">
+        <div id="shortcuts-grid" class="shortcuts-grid clearfix">Carregando atalhos...</div>
+      </div>
+
+      <div class="card dk-mixer-card" id="mixer-card">
+        <div class="card-title clearfix">
+          <span>MIXER POR APLICATIVO</span>
+          <button type="button" class="mini-btn right" id="btn-mixer-refresh" title="Atualizar mixer">↻</button>
+        </div>
+        <div id="mixer-list" class="mixer-list">Nenhum aplicativo com áudio ativo.</div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: PROCESSES (REDESIGN VISUAL COM KPI CARDS, ÍCONES E BARRAS GRÁFICAS) -->
+    <section id="page-procs" class="page">
+      <div class="wx-topbar clearfix">
+        <div class="wx-tb-left">
+          <span class="cw-loc-badge">GERENCIADOR DE PROCESSOS</span>
+          <span class="pr-tb-meta" id="procs-meta">Carregando...</span>
+        </div>
+        <div class="wx-tb-tabs">
+          <button type="button" class="wx-subtab active" id="sort-ram">Por RAM</button>
+          <button type="button" class="wx-subtab" id="sort-cpu">Por CPU</button>
+          <button type="button" class="mini-btn" id="btn-procs-limit" title="Alternar quantidade">Top 15</button>
+          <button type="button" class="mini-btn" id="btn-procs-refresh" title="Atualizar processos">↻</button>
+        </div>
+      </div>
+
+      <div class="process-layout clearfix">
+        <div class="card pr-list-card">
+          <div class="pr-col-head clearfix">
+            <div class="pr-c-app">APLICATIVO / PROCESSO</div>
+            <div class="pr-c-cpu">CPU</div>
+            <div class="pr-c-ram">RAM</div>
+            <div class="pr-c-act">AÇÃO</div>
+          </div>
+          <div id="procs-list" class="procs-list"></div>
+        </div>
+        <div class="pr-kpi-row clearfix" id="pr-kpis"></div>
+      </div>
+    </section>
+
+    <!-- PAGE 4: AI & WORK -->
+    <section id="page-ai" class="page">
+      <div class="ai-grid clearfix">
+        <div class="ai-col">
+          <div class="card">
+            <div class="card-title clearfix">
+              <span>COTAS DE IA <span id="ai-quota-stamp" class="muted" style="font-weight:normal;margin-left:6px;text-transform:none"></span></span>
+              <button type="button" class="mini-btn right" id="btn-ai-refresh">Atualizar</button>
+            </div>
+            <div id="quotas-list" class="list-box">Verificando cotas...</div>
+          </div>
+
+        </div>
+
+        <div class="ai-col">
+          <div class="card">
+            <div class="card-title">SESSÕES DE IA &amp; GITHUB</div>
+            <div id="work-list" class="list-box">Nenhuma sessão ativa no momento.</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Mensagens e webhooks</div>
+            <div id="push-list" class="list-box">Nenhum valor recebido.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5: DISCORD (REDESIGN ESCALÁVEL PARA MUITOS SERVIDORES, CANAIS E USUÁRIOS) -->
+    <section id="page-discord" class="page">
+      <div class="card dc-top-card">
+        <div class="dc-top-row clearfix">
+          <div class="dc-top-title-wrap">
+            <span class="cw-loc-badge">DISCORD</span>
+            <span id="dc-badge" class="pill-tag">VERIFICANDO...</span>
+          </div>
+          <div class="dc-top-act">
+            <button type="button" class="mini-btn" id="btn-dc-refresh" title="Atualizar Discord">↻</button>
+          </div>
+        </div>
+
+        <div id="dc-call-banner" class="dc-call-banner">
+          <div class="dc-call-title" id="dc-call-title">Verificando conexão com o Discord Desktop...</div>
+          <div class="dc-call-sub" id="dc-call-sub">Abra o Discord no PC para sincronizar chamadas e canais.</div>
+        </div>
+
+        <div class="dc-controls clearfix" id="dc-controls">
+          <button type="button" class="dc-btn" id="dc-mute">Microfone</button>
+          <button type="button" class="dc-btn" id="dc-deafen">Áudio</button>
+          <button type="button" class="dc-btn" id="dc-inputmode">Modo Voz</button>
+          <button type="button" class="dc-btn dc-btn-leave" id="dc-leave">Sair da Call</button>
+        </div>
+      </div>
+
+      <div class="dc-grid clearfix">
+        <!-- Left Column: Active Call Members (Bounded Scroll + 2-Col Compact Grid for Large Calls) -->
+        <div class="dc-col dc-col-left">
+          <div class="card dc-panel-card">
+            <div class="card-title clearfix dc-panel-head">
+              <span>NA CALL <span class="c-green" id="dc-speaking-count" style="margin-left:4px;text-transform:none"></span></span>
+              <button type="button" class="dc-filter-pill right" id="dc-only-speaking">Só falando</button>
+            </div>
+            <div id="dc-members-scroll" class="dc-scroll-box">
+              <div id="dc-members" class="list-box">Ninguém em chamada no momento.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Sub-tabs (Canais dos Servidores | Notificações) with Bounded Internal Scroll -->
+        <div class="dc-col dc-col-right">
+          <div class="card dc-panel-card">
+            <div class="dc-subtabs clearfix">
+              <button type="button" class="dc-subtab active" id="dc-tab-chans" data-dctab="chans">Canais <span id="dc-chan-count" class="dc-tab-cnt"></span></button>
+              <button type="button" class="dc-subtab" id="dc-tab-notifs" data-dctab="notifs">Notificações <span id="dc-notif-count" class="dc-tab-cnt"></span></button>
+            </div>
+
+            <!-- Sub-panel: Servers & Voice Channels -->
+            <div id="dc-panel-chans" class="dc-subpanel active">
+              <div id="dc-guild-chips" class="dc-chips-wrap"></div>
+              <div class="dc-filter-bar clearfix">
+                <div class="dc-search-wrap">
+                  <input type="text" id="dc-search" class="dc-search-inp" placeholder="Buscar servidor, canal ou pessoa..." autocomplete="off">
+                  <button type="button" id="dc-search-clear" class="dc-search-clr hidden" title="Limpar busca">×</button>
+                </div>
+                <button type="button" class="dc-filter-pill dc-occ-btn" id="dc-only-occupied">Com gente</button>
+              </div>
+              <div id="dc-channels-scroll" class="dc-scroll-box">
+                <div id="dc-channels" class="list-box">Nenhum canal de voz listado.</div>
+              </div>
+            </div>
+
+            <!-- Sub-panel: Recent Notifications -->
+            <div id="dc-panel-notifs" class="dc-subpanel">
+              <div id="dc-notifs-scroll" class="dc-scroll-box">
+                <div id="dc-notifs" class="list-box">Nenhuma notificação recente do Discord.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 6: CLIMA, TEMPO, LOCALIZAÇÃO & RELÓGIO (REDESIGN VISUAL MODULAR) -->
+    <section id="page-night" class="page">
+      <!-- Sleek Top Header & Sub-View Switcher -->
+      <div class="wx-topbar clearfix">
+        <div class="wx-tb-left">
+          <span class="cw-loc-badge" id="n-loc-badge">RIO DE JANEIRO, BRASIL</span>
+          <span class="wx-tb-clock" id="wx-mini-clock">--:--</span>
+          <span id="wx-top-rain"></span>
+        </div>
+        <div class="wx-tb-tabs">
+          <button type="button" class="wx-subtab active" data-wxtab="0">Clima &amp; Previsão</button>
+          <button type="button" class="wx-subtab" data-wxtab="1">Hora, Sol &amp; Lua</button>
+          <button type="button" class="wx-subtab" data-wxtab="2">Relógio de Mesa</button>
+          <button type="button" class="mini-btn" id="btn-weather-refresh" title="Atualizar clima">↻</button>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW 0: CLIMA & PREVISÃO (VISUAL WEATHER STATION) -->
+      <div id="wx-view-0" class="wx-subview active">
+        <!-- Top Row: Hero Weather Card (38%) + 4 Graphical Gauge Tiles (62%) -->
+        <div class="wx-top-row clearfix">
+          <div class="wx-hero-col">
+            <div class="card wx-hero-box">
+              <div class="clearfix">
+                <div class="wx-hero-svg" id="wx-hero-svg"></div>
+                <div class="wx-hero-info">
+                  <div class="wx-hero-temp" id="wx-hero-temp">--°C</div>
+                  <div class="wx-hero-cond" id="wx-hero-cond">Carregando...</div>
+                  <div class="wx-hero-feels" id="wx-hero-feels">Sensação térmica: --°C</div>
+                </div>
+              </div>
+              <div class="wx-rain-banner" id="wx-rain-banner">Verificando condição de chuva...</div>
+              <div class="wx-today-range">
+                <div class="clearfix wx-tr-labels">
+                  <span>Mín <b id="wx-tr-lo">--°</b></span>
+                  <span class="muted" id="wx-tr-sun">Sol --:-- às --:--</span>
+                  <span class="right">Máx <b id="wx-tr-hi">--°</b></span>
+                </div>
+                <div class="wx-range-track">
+                  <div class="wx-range-fill" id="wx-tr-bar" style="left:0%;width:100%"></div>
+                  <div class="wx-range-dot" id="wx-tr-dot" style="left:50%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wx-gauges-col">
+            <div class="wx-gauges-grid clearfix" id="wx-gauges">
+              <!-- Populated with 4 graphical gauge cards (Chuva, Umidade, UV/Sol, Vento/Ar) -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row: 12-Hour Graphical Curve & Strip (50%) + 7-Day Range Bars (50%) -->
+        <div class="wx-bot-row clearfix">
+          <div class="wx-half-col">
+            <div class="card wx-forecast-card">
+              <div class="card-title clearfix">
+                <span>PRÓXIMAS 12 HORAS · CURVA TÉRMICA &amp; CHUVA</span>
+                <span class="right c-sky" id="wx-h12-summary"></span>
+              </div>
+              <canvas id="wx-hourly-canvas" class="wx-h-canvas" width="440" height="84"></canvas>
+              <div id="cw-hourly" class="wx-h-strip clearfix"></div>
+            </div>
+          </div>
+
+          <div class="wx-half-col">
+            <div class="card wx-forecast-card">
+              <div class="card-title clearfix">
+                <span>PREVISÃO DE 7 DIAS · <span id="cw-city-title">RIO DE JANEIRO, BR</span></span>
+                <span class="right muted">Mín / Amplitude / Máx</span>
+              </div>
+              <div id="cw-daily" class="wx-daily-bars"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW 1: HORA, SOL/LUA, RELÓGIOS MUNDIAIS & CALENDÁRIO -->
+      <div id="wx-view-1" class="wx-subview">
+        <div class="wx-bot-row clearfix">
+          <div class="wx-half-col">
+            <div class="card">
+              <div class="card-title clearfix">
+                <span>HORA LOCAL &amp; LOCALIZAÇÃO</span>
+                <span class="right c-teal">UTC-3 · Brasília</span>
+              </div>
+              <div class="wx-time-box">
+                <div class="wx-time-digits">
+                  <span id="wx-t-clock">--:--</span><span class="wx-t-sec" id="wx-t-sec">:00</span>
+                </div>
+                <div class="cw-wordclock" id="n-wordclock">--</div>
+                <div class="cw-loc-sub" id="n-loc-detail">Rio de Janeiro, Brasil · Lat -22.9068 · Lon -43.1729</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">CICLO SOLAR &amp; FASE DA LUA (BARRAS GRÁFICAS)</div>
+              <div id="cw-sunmoon"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">PROGRESSO DO TEMPO (DIA · SEMANA · MÊS · ANO)</div>
+              <div id="cw-progress"></div>
+            </div>
+          </div>
+
+          <div class="wx-half-col">
+            <div class="card">
+              <div class="card-title">RELÓGIOS MUNDIAIS &amp; FUSOS</div>
+              <div id="cw-worldclock" class="cw-wc-grid clearfix"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" id="cw-cal-title">CALENDÁRIO DO MÊS</div>
+              <div id="cw-calendar"></div>
+            </div>
+
+            <div id="cw-custom-widgets"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW 2: RELÓGIO DE MESA / MODO NOTURNO LIMPO -->
+      <div id="wx-view-2" class="wx-subview">
+        <div class="card wx-desk-card">
+          <div class="wx-desk-clock-wrap">
+            <span class="night-clock" id="n-clock">--:--</span>
+            <span class="night-sec" id="n-sec">00</span>
+          </div>
+          <div class="night-date" id="n-date">--</div>
+          <div class="wx-desk-weather">
+            <span id="n-weather-ico" style="vertical-align:middle;margin-right:8px"></span>
+            <span class="night-weather" id="n-weather">--°C · Rio de Janeiro, Brasil</span>
+          </div>
+          <div class="cw-hero-feels" id="n-weather-sub">Sensação --° · Mín --° / Máx --°</div>
+          <div class="night-stats" id="n-stats">CPU --% · GPU --°C · RAM --%</div>
+          <div class="night-media" id="n-media"></div>
+          <div class="night-dim-bar">
+            <span class="muted">Brilho da Tela:</span>
+            <button type="button" class="dim-opt" data-dim="0">100%</button>
+            <button type="button" class="dim-opt" data-dim="0.35">65%</button>
+            <button type="button" class="dim-opt" data-dim="0.60">40%</button>
+            <button type="button" class="dim-opt" data-dim="0.82">18%</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Tab Navigation -->
+  <nav id="navbar" class="clearfix">
+    <button type="button" class="nav-btn active" data-page="0">
+      <svg class="nav-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5L12 3l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>
+      <span>Início</span>
+    </button>
+    <button type="button" class="nav-btn" data-page="1">
+      <svg class="nav-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8M12 16v4"></path></svg>
+      <span>Sistema</span>
+    </button>
+    <button type="button" class="nav-btn" data-page="2">
+      <svg class="nav-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+      <span>Atalhos</span>
+    </button>
+    <button type="button" class="nav-btn" data-page="3">
+      <svg class="nav-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+      <span>Processos</span>
+    </button>
+    <button type="button" class="nav-btn" data-page="4">
+      <svg class="nav-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9 12 2"></polygon></svg>
+      <span>IA</span>
+    </button>
+    <button type="button" class="nav-btn" data-page="5">
+      <svg class="nav-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      <span>Discord</span>
+    </button>
+    <button type="button" class="nav-btn" data-page="6">
+      <svg class="nav-ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>
+      <span>Clima/Hora</span>
+    </button>
+  </nav>
+
+  <!-- Full-screen CRT & Visual Glitch overlay (Hack theme, touch-transparent) -->
+  <canvas id="hack-glitch-fx" aria-hidden="true"></canvas>
+
+  <!-- Full-screen Sakura Sparkle & Tab Sweep overlay (Anime theme, touch-transparent) -->
+  <canvas id="anime-sparkle-fx" aria-hidden="true"></canvas>
+
+  <!-- Interactive Typewriter Breach Boot sequence (Hack theme, click/tap to skip) -->
+  <div id="hack-boot" class="hidden" aria-hidden="true">
+    <canvas id="hack-boot-canvas"></canvas>
+  </div>
+
+  <!-- Interactive Sakura Midnight Bloom entrance (Anime theme, click/tap to skip) -->
+  <div id="anime-entrance" class="hidden" aria-hidden="true">
+    <canvas id="anime-entrance-canvas"></canvas>
+  </div>
+</div>
+
+<!-- Night Dimmer Overlay -->
+<div id="dimmer"></div>
+
+<!-- Toast Feedback -->
+<div id="toast" class="toast hidden"></div>
+
+<div id="theme-settings" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="theme-title">
+  <div class="modal-card theme-settings-card">
+    <button type="button" id="close-settings" class="tb-btn right" aria-label="Fechar configurações">Fechar</button>
+    <h2 id="theme-title">Configurações</h2>
+    <fieldset class="theme-options">
+      <legend>Tema do painel</legend>
+      <label class="theme-option"><img src="/legacy/theme_anime.png" alt=""><input type="radio" name="panel-theme" value="anime"> Anime</label>
+      <label class="theme-option"><img src="/legacy/theme_hack.png" alt=""><input type="radio" name="panel-theme" value="hack"> Hack</label>
+      <label class="theme-option theme-option-default"><span aria-hidden="true"></span><input type="radio" name="panel-theme" value="default"> Default</label>
+    </fieldset>
+    <div class="theme-effects-bar clearfix">
+      <label class="theme-effects-option"><input id="theme-effects" type="checkbox"> Animar temas (Hack: Matrix/Glitch · Anime: Sakura/Estrelas)</label>
+      <button type="button" id="btn-hack-test" class="tb-btn right">Testar Animação</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI Permission Approval Modal -->
+<div id="approval-modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-head" id="ap-source">Aprovação de IA</div>
+    <div class="modal-sub" id="ap-project"></div>
+    <div class="modal-tool" id="ap-tool"></div>
+    <pre class="modal-detail" id="ap-detail"></pre>
+    <div class="modal-actions clearfix">
+      <button type="button" class="ap-btn ap-deny" id="ap-deny">NEGAR</button>
+      <button type="button" class="ap-btn ap-allow" id="ap-allow">PERMITIR</button>
+    </div>
+  </div>
+</div>
+
+<script src="/legacy/app.js"></script>
+</body>
+</html>
+

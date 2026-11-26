@@ -45,6 +45,7 @@ public sealed class ProcessMonitor(ILogger<ProcessMonitor> log, SessionMonitor s
     private readonly int _cores = Environment.ProcessorCount;
     private readonly ConcurrentDictionary<string, (string Title, string? Path)> _meta = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, byte[]?> _icons = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, long> _iconMissUntil = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<int, string?> _args = new();
 
     private Dictionary<int, TimeSpan> _lastCpu = [];
@@ -56,6 +57,10 @@ public sealed class ProcessMonitor(ILogger<ProcessMonitor> log, SessionMonitor s
     public IReadOnlyList<ProcGroup> Snapshot()
     {
         Touch();
+        if (_groups.Count == 0 && _lastTs == 0)
+        {
+            try { Sample(); } catch { }
+        }
         return _groups;
     }
 
@@ -285,6 +290,10 @@ public sealed class ProcessMonitor(ILogger<ProcessMonitor> log, SessionMonitor s
             }
         }
         log.LogInformation("terminated all {Name}: {Killed} ok, {Failed} failed", name, killed, failed);
+        if (killed > 0)
+        {
+            try { Sample(); } catch { }
+        }
         if (killed == 0 && failed == 0) return new(0, 0, "process not found");
         return new(killed, failed, killed == 0 ? "access denied (it may be running as administrator)" : null);
     }
@@ -332,6 +341,10 @@ public sealed class ProcessMonitor(ILogger<ProcessMonitor> log, SessionMonitor s
                 catch { skipped++; }
             }
             log.LogInformation("terminated {Name} (pid {Pid}) and {Children} child processes ({Skipped} left running)", name, pid, killed - 1, skipped);
+            if (killed > 0)
+            {
+                try { Sample(); } catch { }
+            }
             return new(killed, skipped, null);
         }
     }
@@ -378,7 +391,10 @@ public sealed class ProcessMonitor(ILogger<ProcessMonitor> log, SessionMonitor s
 
     public byte[]? Icon(string name)
     {
+        if (string.IsNullOrWhiteSpace(name)) return null;
         if (_icons.TryGetValue(name, out var cached) && cached is not null) return cached;
+        var nowTick = Environment.TickCount64;
+        if (_iconMissUntil.TryGetValue(name, out var until) && nowTick < until) return null;
         if (!_meta.TryGetValue(name, out var meta) || meta.Path is null)
         {
             foreach (var p in Process.GetProcessesByName(name))
@@ -413,7 +429,15 @@ public sealed class ProcessMonitor(ILogger<ProcessMonitor> log, SessionMonitor s
             catch { }
         }
 #endif
-        if (png is not null) _icons[name] = png;
+        if (png is not null)
+        {
+            _icons[name] = png;
+            _iconMissUntil.TryRemove(name, out _);
+        }
+        else
+        {
+            _iconMissUntil[name] = nowTick + 5 * 60_000L;
+        }
         return png;
     }
 

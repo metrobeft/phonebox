@@ -53,7 +53,7 @@ public sealed class Tray : IHostedService
         Strings.GetString(key, culture) ?? throw new MissingManifestResourceException(key);
 
     private string Tooltip(CultureInfo culture) =>
-        Text(_adb.Connected ? "tooltipConnected" : "tooltipWaiting", culture);
+        Text(_adb.Connected || ApprovalStore.PhoneConnected ? "tooltipConnected" : "tooltipWaiting", culture);
 
     private void Run()
     {
@@ -75,6 +75,12 @@ public sealed class Tray : IHostedService
         menu.Items.Add(new ToolStripSeparator());
         var settings = new ToolStripMenuItem("", null, (_, _) => OpenUrl(SettingsUrl)) { Font = new Font(menu.Font, FontStyle.Bold) };
         menu.Items.Add(settings);
+        var openLegacy = menu.Items.Add("Tablet Web (HP 7.1)", null, (_, _) =>
+        {
+            var lw = _config.Get().LegacyWeb;
+            var url = lw.Enabled ? LegacyWeb.LocalUrls(lw.Port).FirstOrDefault() ?? $"{SettingsUrl}/legacy/" : $"{SettingsUrl}/legacy/";
+            OpenUrl(url);
+        });
         // cancelled while Windows is ending the session (no adb is started then, for at most a minute): nothing to show
         var openPanel = menu.Items.Add("", null, async (_, _) => { try { await _adb.OpenPanelAsync(); } catch (OperationCanceledException) { } });
         menu.Items.Add(new ToolStripSeparator());
@@ -96,7 +102,9 @@ public sealed class Tray : IHostedService
             quit.Text = Text("quit", culture);
             status.Text = _adb.Connected
                 ? string.Format(culture, Text("connected", culture), _adb.Devices)
-                : Text("disconnected", culture);
+                : ApprovalStore.PhoneConnected
+                    ? string.Format(culture, Text("connected", culture), PhoneRegistry.LatestVia() ?? "LAN Web")
+                    : Text("disconnected", culture);
             _icon!.Text = Tooltip(culture);
             autostart.Checked = File.Exists(AppPaths.StartupShortcut);
         };

@@ -8,12 +8,12 @@
   "adbPath": null,
 
   // Weather location (Open-Meteo, no API key required) and the temperature unit: "celsius" or "fahrenheit"
-  "weather": { "city": "Tallinn", "lat": 59.437, "lon": 24.745, "unit": "celsius", "model": "" },
+  "weather": { "city": "Rio de Janeiro, Brasil", "lat": -22.9068, "lon": -43.1729, "unit": "celsius", "model": "" },
 
   // Claude Code chats in the sessions widget. Both are off, because they come from your prompts: "shareSessionTitles" shows each
   // chat's title on the phone (without it only the folder name is shown and no title is read); "shareConversation" lets the phone
   // open a session's recent messages and steps (nothing is read from a chat file and nothing is sent).
-  "claude": { "shareSessionTitles": false, "shareConversation": false },
+  "claude": { "phoneApprovals": true, "shareSessionTitles": true, "shareConversation": true },
 
   // Ping target for the ping metric and the "ping high" rule, every 5 s (empty = off)
   "ping": { "host": "1.1.1.1", "adapters": [] },
@@ -21,8 +21,8 @@
   "discord": { "enabled": false, "clientId": null, "clientSecret": null, "allowControl": false },
   // Cursor agent chats on the AI sessions widget (off by default)
   "cursor": { "sessions": false },
-  // Antigravity chats on the AI sessions widget (off by default)
-  "antigravity": { "sessions": false, "shareSessionTitles": false },
+  // Antigravity chats on the AI sessions widget (enabled by default in this HP 7.1 fork)
+  "antigravity": { "sessions": true, "shareSessionTitles": true },
   // Live Codex quotas read through the Codex CLI (off by default; Settings › General › AI quotas & CodexBar)
   "codexBar": { "codexLiveQuota": false },
   // OpenCode permission prompts on the phone: Allow (once or always) and Deny, read from OpenCode's
@@ -33,6 +33,11 @@
   "console": { "profiles": [] },
   // Steam friends widget: enter your SteamID64 and a user Web API key in Settings › General (see docs/STEAM.md)
   "steam": { "enabled": false, "steamId": null, "apiKey": null },
+
+  // Local-LAN web tablet mode (HTTP, ES5 UI for HP 7.1 1201 / Android 4.2.2)
+  "legacyWeb": { "enabled": true, "port": 8788, "allowPrivateLanOnly": true },
+  // HP 7.1 community fork: automatic updates disabled by default so upstream releases never overwrite this edition
+  "updates": { "auto": false, "repo": "metrobeft/phonebox" },
 
   // Night mode: between these times the screen dims and only the clock stays. Tap to wake it for 30 s.
   "night": { "enabled": true, "start": "00:30", "end": "07:30", "brightness": 0.02 },
@@ -53,31 +58,62 @@
   // music, clock, focus, world, dashboard, devops, feeds, ambient, markets, daily, status, calm) and is replaced by
   // its widgets on the first save.
   "pages": [
-    { "template": "home" },
-    { "template": "ai" },
-    { "template": "work" },
-    { "template": "system" },
-    { "template": "procs" },
-    { "template": "deck" },
-    { "template": "music" },
-    { "template": "focus", "enabled": false },
-    { "template": "world", "enabled": false }
+    { "id": "home", "title": "Início", "icon": "🏠", "enabled": true, "widgets": [
+      { "id": "clock", "type": "clock", "x": 0, "y": 0, "w": 6, "h": 4, "options": { "status": true, "weather": true, "date": true } },
+      { "id": "media", "type": "media", "x": 6, "y": 0, "w": 6, "h": 4 },
+      { "id": "stat", "type": "stat", "x": 0, "y": 4, "w": 3, "h": 2, "options": { "metric": "cpu" } },
+      { "id": "stat-2", "type": "stat", "x": 3, "y": 4, "w": 3, "h": 2, "options": { "metric": "gpu" } },
+      { "id": "stat-3", "type": "stat", "x": 6, "y": 4, "w": 3, "h": 2, "options": { "metric": "ram" } },
+      { "id": "stat-4", "type": "stat", "x": 9, "y": 4, "w": 3, "h": 2, "options": { "metric": "net" } }
+    ]},
+    { "id": "system", "title": "Sistema", "icon": "📊", "enabled": true, "widgets": [
+      { "id": "chart", "type": "chart", "x": 0, "y": 0, "w": 6, "h": 3, "options": { "metrics": ["cpu", "ram"] } },
+      { "id": "chart-2", "type": "chart", "x": 6, "y": 0, "w": 6, "h": 3, "options": { "metrics": ["gpu", "gputemp"] } },
+      { "id": "meters", "type": "meters", "x": 0, "y": 3, "w": 7, "h": 3 },
+      { "id": "gpu", "type": "gpu", "x": 7, "y": 3, "w": 5, "h": 3, "options": { "adapter": "0" } }
+    ]},
+    { "id": "deck", "title": "Atalhos", "icon": "🎛️", "enabled": true, "widgets": [
+      { "id": "shortcuts", "type": "shortcuts", "x": 0, "y": 0, "w": 12, "h": 4, "options": { "columns": 7 } },
+      { "id": "audio-mixer", "type": "audio-mixer", "x": 0, "y": 4, "w": 12, "h": 2, "options": { "layout": "horizontal" } }
+    ]},
+    { "id": "procs", "title": "Processos", "icon": "⚙️", "enabled": true, "widgets": [
+      { "id": "processes", "type": "processes", "x": 0, "y": 0, "w": 12, "h": 6, "options": { "allowKill": true } }
+    ]},
+    { "id": "ai", "title": "IA", "icon": "✳️", "enabled": true, "widgets": [
+      { "id": "quotas", "type": "quotas", "x": 0, "y": 0, "w": 6, "h": 4, "options": { "providers": ["claude", "codex", "antigravity"], "rotate": false, "pageSize": 0, "rotateInterval": 5 } },
+      { "id": "sessions", "type": "sessions", "x": 6, "y": 0, "w": 6, "h": 4 },
+      { "id": "push", "type": "push", "x": 0, "y": 4, "w": 6, "h": 2, "options": { "key": "demo", "title": "Webhooks" } },
+      { "id": "github", "type": "github", "x": 6, "y": 4, "w": 6, "h": 2 }
+    ]},
+    { "id": "discord", "title": "Discord", "icon": "💬", "enabled": true, "widgets": [
+      { "id": "discord", "type": "discord", "x": 0, "y": 0, "w": 12, "h": 6, "options": { "channels": true, "notifications": true, "control": true } }
+    ]},
+    { "id": "world", "title": "Clima/Hora", "icon": "⛅", "enabled": true, "widgets": [
+      { "id": "weather", "type": "weather", "x": 0, "y": 0, "w": 5, "h": 3 },
+      { "id": "air", "type": "air", "x": 5, "y": 0, "w": 4, "h": 3 },
+      { "id": "sun", "type": "sun", "x": 9, "y": 0, "w": 3, "h": 3 },
+      { "id": "forecast", "type": "forecast", "x": 0, "y": 3, "w": 6, "h": 3, "options": { "mode": "hourly" } },
+      { "id": "worldclock", "type": "worldclock", "x": 6, "y": 3, "w": 6, "h": 3, "options": { "zones": ["Rio de Janeiro=America/Sao_Paulo", "Lisboa=Europe/Lisbon", "Londres=Europe/London", "Nova York=America/New_York", "Berlim=Europe/Berlin", "Tóquio=Asia/Tokyo"] } }
+    ]}
   ],
 
   // Shortcut keys. The phone only sends the "id"; commands live in this file only.
   // cmd: a program, a URL / shell: / ms-settings: address, or builtin:lock | builtin:monitor-off | builtin:mute
   "shortcuts": [
-    { "id": "terminal",   "label": "Terminal",     "icon": "\u2328\ufe0f", "color": "#4b5563", "cmd": "wt.exe" },
-    { "id": "explorer",   "label": "Files",        "icon": "\ud83d\udcc1", "color": "#e5b84b", "cmd": "explorer.exe" },
-    { "id": "vscode",     "label": "VS Code",      "icon": "\ud83d\udcdd", "color": "#2f80ed", "cmd": "shell:AppsFolder\\Microsoft.VisualStudioCode" },
-    { "id": "browser",    "label": "Browser",      "icon": "\ud83c\udf10", "color": "#0ea5e9", "cmd": "https://github.com" },
-    { "id": "spotify",    "label": "Spotify",      "icon": "\ud83c\udfa7", "color": "#1db954", "cmd": "shell:AppsFolder\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0!Spotify" },
-    { "id": "calc",       "label": "Calculator",   "icon": "\ud83e\uddee", "color": "#64748b", "cmd": "calc.exe" },
-    { "id": "settings",   "label": "Settings",     "icon": "\u2699\ufe0f", "color": "#94a3b8", "cmd": "ms-settings:" },
-    { "id": "snip",       "label": "Snip",         "icon": "\u2702\ufe0f", "color": "#14b8a6", "cmd": "ms-screenclip:" },
-    { "id": "taskmgr",    "label": "Task Manager", "icon": "\ud83d\udcca", "color": "#22c55e", "cmd": "taskmgr.exe" },
-    { "id": "mute",       "label": "Mute",         "icon": "\ud83d\udd07", "color": "#f59e0b", "cmd": "builtin:mute" },
-    { "id": "monitoroff", "label": "Screen Off",   "icon": "\ud83c\udf19", "color": "#6366f1", "cmd": "builtin:monitor-off" },
-    { "id": "lock",       "label": "Lock",         "icon": "\ud83d\udd12", "color": "#ef4444", "cmd": "builtin:lock" }
+    { "id": "wsl",        "label": "WSL",             "icon": "\ud83d\udc27", "color": "#f97316", "cmd": "shell:AppsFolder\\CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc!ubuntu" },
+    { "id": "explorer",   "label": "Este Computador", "icon": "\ud83d\udcbb", "color": "#e5b84b", "cmd": "shell:MyComputerFolder" },
+    { "id": "vscode",     "label": "VS Code",         "icon": "\ud83d\udcdd", "color": "#2f80ed", "cmd": "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe" },
+    { "id": "brave",      "label": "Brave",           "icon": "\ud83e\udd81", "color": "#fb542b", "cmd": "C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe" },
+    { "id": "spotify",     "label": "Spotify",         "icon": "\ud83c\udfa7", "color": "#1db954", "cmd": "shell:AppsFolder\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0!Spotify" },
+    { "id": "steam",       "label": "Steam",           "icon": "\ud83c\udfae", "color": "#1b2838", "cmd": "steam://open/main" },
+    { "id": "riot",        "label": "Riot Client",     "icon": "\ud83c\udfaf", "color": "#d13639", "cmd": "C:\\Riot Games\\Riot Client\\RiotClientServices.exe" },
+    { "id": "claude",      "label": "Claude",          "icon": "\u2733\ufe0f", "color": "#d97757", "cmd": "shell:AppsFolder\\Claude_pzs8sxrjxfjjc!Claude" },
+    { "id": "antigravity", "label": "Antigravity",     "icon": "\ud83d\ude80", "color": "#38bdf8", "cmd": "%LOCALAPPDATA%\\Programs\\Antigravity\\Antigravity.exe" },
+    { "id": "calc",        "label": "Calculator",      "icon": "\ud83e\uddee", "color": "#0ea5e9", "cmd": "calc.exe" },
+    { "id": "settings",   "label": "Settings",        "icon": "\u2699\ufe0f", "color": "#64748b", "cmd": "ms-settings:" },
+    { "id": "snip",       "label": "PrintScreen",     "icon": "\u2702\ufe0f", "color": "#14b8a6", "cmd": "ms-screenclip:" },
+    { "id": "taskmgr",    "label": "Task Manager",    "icon": "\ud83d\udcca", "color": "#22c55e", "cmd": "C:\\Windows\\System32\\taskmgr.exe" },
+    { "id": "monitoroff", "label": "Screen Off",      "icon": "\ud83c\udf19", "color": "#6366f1", "cmd": "builtin:monitor-off" },
+    { "id": "lock",       "label": "Lock",            "icon": "\ud83d\udd12", "color": "#ef4444", "cmd": "builtin:lock" }
   ]
 }

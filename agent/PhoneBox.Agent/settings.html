@@ -7,21 +7,21 @@
 <link rel="icon" href="/favicon.ico">
 <style>
 :root {
-  --bg: #f4f5f7; --panel: #ffffff; --panel-2: #f8f9fb; --line: #e3e6eb; --text: #14171c; --muted: #6b7280;
-  --accent: #0f9d8a; --accent-ink: #ffffff; --danger: #dc2626; --ok: #16a34a; --warn: #d97706;
+  --bg: #ecf2fa; --panel: #fcfdff; --panel-2: #e2ecf9; --line: #c4d4eb; --text: #132a4a; --muted: #405b7e;
+  --accent: #21558e; --accent-ink: #ffffff; --danger: #dc2626; --ok: #16a34a; --warn: #d97706;
   --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.04);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #0c0e12; --panel: #14171d; --panel-2: #1a1e25; --line: #262b34; --text: #e8ecf1; --muted: #8a94a3;
-    --accent: #2dd4bf; --accent-ink: #062b26; --shadow: none; color-scheme: dark; }
+  :root { --bg: #0b1427; --panel: #152641; --panel-2: #203859; --line: #354f76; --text: #f2f7ff; --muted: #b2c5e1;
+    --accent: #8bd0ff; --accent-ink: #0b1427; --shadow: none; color-scheme: dark; }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
 button, input, select, textarea { font: inherit; color: inherit; }
 header {
   position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px;
-  padding: 12px 24px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px);
+  padding: 12px 24px; background: var(--panel);
   border-bottom: 1px solid var(--line);
 }
 header img { width: 28px; height: 28px; }
@@ -78,28 +78,59 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 .switch input:checked + span { background: var(--accent); }
 .switch input:checked + span::after { left: 21px; }
 
-/* pages: layout editor */
-.pages-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px; align-items: start; }
-#pageTabs { position: sticky; top: 76px; display: flex; flex-direction: column; gap: 4px; }
-.ptab { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 9px; cursor: pointer; border: 1px solid transparent; user-select: none; }
-.ptab:hover { background: var(--panel-2); }
-.ptab.on { background: var(--panel); border-color: var(--line); box-shadow: var(--shadow); font-weight: 600; }
-.ptab.off .pt-name, .ptab.off .pt-ico { opacity: .4; text-decoration: line-through; }
+/* pages: HP 7.1 tablet page manager & layout editor */
+.pages-layout { display: grid; grid-template-columns: 235px minmax(0, 1fr); gap: 18px; align-items: start; }
+#pageTabs { position: sticky; top: 76px; display: flex; flex-direction: column; gap: 5px; }
+.ptab { display: flex; align-items: center; gap: 9px; padding: 8px 11px; border-radius: 11px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); user-select: none; transition: border-color .15s ease, background .15s ease; }
+.ptab:hover { background: var(--panel-2); border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.ptab.on { background: color-mix(in srgb, var(--accent) 12%, var(--panel)); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); box-shadow: var(--shadow); font-weight: 600; }
+.ptab.off { opacity: .55; }
+.ptab.off .pt-name { text-decoration: line-through; }
 .ptab.dragging { opacity: .4; }
 .ptab.over { outline: 2px dashed var(--accent); }
-.pt-num { width: 20px; color: var(--muted); font-size: 12px; text-align: right; }
-.pt-ico { font-size: 16px; }
-.pt-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pt-n { font-size: 11px; color: var(--muted); background: var(--panel-2); border-radius: 6px; padding: 0 6px; }
+.pt-num { width: 20px; height: 20px; border-radius: 6px; background: var(--panel-2); color: var(--muted); font-size: 11px; font-weight: 700; display: inline-grid; place-items: center; flex: none; }
+.ptab.on .pt-num { background: var(--accent); color: var(--accent-ink); }
+.pt-ico { font-size: 17px; flex: none; }
+.pt-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.pt-name { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pt-sub { font-size: 10.5px; color: var(--muted); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pt-n { font-size: 10.5px; color: var(--muted); background: var(--panel-2); border-radius: 6px; padding: 1px 6px; flex: none; }
+.pt-home { color: var(--accent); font-weight: 700; }
+.tablet-strip { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); margin-bottom: 14px; }
+.tablet-strip .ts-badge { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+.tablet-strip .ts-url { font-family: Consolas, monospace; font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; padding: 3px 9px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--line); }
+.tablet-strip .ts-url:hover { border-color: var(--accent); color: var(--accent); }
+.desktop-warn { padding: 12px 16px; border-radius: 12px; background: color-mix(in srgb, var(--warn) 14%, var(--panel)); border: 1px solid color-mix(in srgb, var(--warn) 50%, var(--line)); color: var(--text); font-size: 13px; line-height: 1.5; margin-bottom: 14px; }
+.desktop-warn b { color: var(--warn); }
+.tb-ctrl-card { margin-top: 14px; }
+.tb-ctrl-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.tb-ctrl-head h3 { margin: 0; font-size: 15.5px; }
+.tb-ctrl-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; align-items: start; }
+.tb-ctrl-box { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; }
+.tb-ctrl-box h4 { margin: 0 0 2px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.tb-sc-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.tb-sc-mini { width: 34px; height: 34px; border-radius: 8px; background: #111722; border: 1px solid var(--line); display: inline-grid; place-items: center; overflow: hidden; }
+.tb-sc-mini img { width: 22px; height: 22px; object-fit: contain; }
+.tb-chip-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.tb-chip { font-size: 12px; padding: 4px 9px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); color: var(--text); }
+.tb-adv-details { margin-top: 10px; }
+.tb-adv-details summary { font-size: 13px; font-weight: 600; color: var(--muted); }
+.tb-custom-wlist { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+.tb-custom-wbtn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); cursor: pointer; font-size: 12.5px; }
+.tb-custom-wbtn.sel { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel-2)); font-weight: 600; }
+@media (max-width: 900px) { .tb-ctrl-grid { grid-template-columns: 1fr; } }
 .canvas-wrap { display: flex; justify-content: center; }
-.stage-bar { display: flex; align-items: center; gap: 12px; margin: 0 0 8px; flex-wrap: wrap; }
+.stage-bar { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; flex-wrap: wrap; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
 .seg button { border: 0; background: var(--panel); padding: 6px 13px; cursor: pointer; font: inherit; font-size: 13px; color: var(--text); }
 .seg button.on { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
 #pageEditor.live .layout-hint { display: none; }
-.preview { position: relative; aspect-ratio: 780 / 360; overflow: hidden; border-radius: 10px; background: #000; }
-.preview iframe { position: absolute; left: 0; top: 0; width: 780px; height: 360px; border: 0; transform-origin: 0 0; }
-.phone { width: 100%; max-width: 860px; padding: 14px 18px; border-radius: 28px; background: #06080b; border: 1px solid #22262e; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.preview { position: relative; aspect-ratio: 1024 / 600; overflow: hidden; border-radius: 8px; background: #000; border: 1px solid #354f76; }
+.preview iframe { position: absolute; left: 0; top: 0; width: 1024px; height: 552px; border: 0; transform-origin: 0 0; }
+.preview.portrait { aspect-ratio: 600 / 1024; max-width: 390px; margin: 0 auto; }
+.preview.portrait iframe { width: 600px; height: 976px; }
+.phone { width: 100%; max-width: 920px; padding: 14px 18px; border-radius: 24px; background: #06080b; border: 1px solid #22262e; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.key .ki-img { width: 42px; height: 42px; object-fit: contain; display: block; }
 /* Match the panel's saved grid coordinates regardless of the interface language. */
 [dir="rtl"] .canvas, [dir="rtl"] .mini { direction: ltr; }
 [dir="rtl"] .canvas > *, [dir="rtl"] .mini > * { direction: rtl; }
@@ -465,6 +496,26 @@ nav a.on::before { color: var(--accent); }
   .grid2 { grid-template-columns: 1fr; }
   .deck { --cols: 3 !important; }
 }
+/* Shared PhoneBox workstation styling. */
+.layout { grid-template-columns: 192px minmax(0, 1fr); gap: 28px; }
+.layout > nav { background: var(--panel-2); padding: 8px; border: 1px solid var(--line); }
+nav a, .btn, .btn.sm, .icon-btn, .card, .tablet-strip,
+input[type=text], input[type=number], input[type=time], select, textarea { border-radius: 4px; }
+.card { box-shadow: none; }
+a.btn { display: inline-block; color: var(--text); text-decoration: none; }
+a.btn.primary { color: var(--accent-ink); }
+h2 { font-size: clamp(24px, 3vw, 34px); line-height: 1.15; letter-spacing: -.02em; }
+.card h3 { font-size: 16px; }
+.lead { max-width: 68ch; }
+.tablet-strip { padding: 14px 16px; background: var(--panel-2); gap: 10px; }
+.tablet-strip .ts-badge, .tablet-strip .ts-url { border-radius: 4px; }
+.tablet-strip .ts-url { overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 760px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .layout > nav { position: static; flex-flow: row wrap; }
+  header { flex-wrap: wrap; }
+}
 </style>
 </head>
 <body>
@@ -477,6 +528,7 @@ nav a.on::before { color: var(--accent); }
   <select id="langSel" data-i18n-title="lang.label" title="Language" aria-label="Language" style="padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-size:12.5px;max-width:160px"></select>
   <span class="dirty" role="status" data-i18n-title="s.unsavedChanges" title="Unsaved changes"><i class="dirty-dot"></i><span data-i18n="s.unsavedChanges">Unsaved changes</span></span>
   <button class="btn primary" id="restartBtn" hidden title="Wi-Fi settings change after a restart" data-i18n="s.restartApply" data-i18n-title="s.restartApplyTitle">Restart to apply</button>
+  <a class="btn" id="openTabletBtn" href="/legacy/" target="_blank" rel="noopener" title="Abrir painel exato do Tablet HP 7.1 em nova aba">Abrir Tablet</a>
   <button class="btn" id="openPhone" data-i18n="s.openOnPhone">Open on phone</button>
   <button class="btn" id="revert" disabled data-i18n="s.revert">Revert</button>
   <button class="btn primary" id="save" disabled data-i18n="s.save">Save</button>
@@ -494,17 +546,27 @@ nav a.on::before { color: var(--accent); }
 
   <main>
     <section id="pages" class="on">
-      <h2 data-i18n="s.nav.pages">Pages</h2>
-      <p class="lead" data-i18n="s.pages.lead">Each page is a 12 × 6 grid of widgets. Pick a page on the left, arrange its widgets on the phone below and set their options.
-        Drag pages to reorder them; the first one is the home page the panel returns to when idle. On the phone, swipe, use the volume keys,
-        or tap the dots (or long-press a page) for an overview of all pages.</p>
+      <h2>Páginas do Tablet (HP 7.1)</h2>
+      <p class="lead">Organize as abas do HP 7.1 e confira a versão web em paisagem ou retrato. Selecione uma aba para editar seus controles.</p>
+      <div class="desktop-warn" id="desktopWarn" hidden>
+        <b>Atenção (Sessão em segundo plano):</b> O agente foi iniciado fora da área de trabalho principal do Windows. Para que todos os atalhos de programas (<code>VS Code</code>, <code>Brave</code>, <code>Gerenciador de Tarefas</code>, etc.) e o ícone na bandeja apareçam na sua tela, abra o atalho <b>PhoneBox</b> no Menu Iniciar do Windows (ele substitui esta instância automaticamente).
+      </div>
+      <div class="tablet-strip" id="tabletStrip">
+        <span class="ts-badge">Tablet HP 7.1 · Rede Local</span>
+        <a class="ts-url" id="tabletStripUrl" href="/legacy/" target="_blank" rel="noopener">http://&lt;IP-LOCAL-DO-PC&gt;:8788</a>
+        <span class="hint" id="tabletStripMeta">Rede local · prévia com a área útil do HP 7.1</span>
+        <span class="spacer"></span>
+        <a class="btn sm primary" href="/legacy/PhoneBox-HP71.apk" download="PhoneBox-HP71.apk" title="Baixar aplicativo 100% nativo para HP 7.1 (Android 4.2.2 / API 17)">Baixar APK Nativo (HP 7.1)</a>
+        <a class="btn sm" href="/legacy/" target="_blank" rel="noopener">Abrir Painel Web</a>
+      </div>
       <div class="pages-layout">
         <div id="pageTabs"></div>
         <div id="pageEditor">
           <div id="peHead"></div>
           <div id="stage">
             <div class="stage-bar">
-              <div class="seg" id="stageSeg"><button data-v="layout" class="on" data-i18n="s.pages.layout">Layout</button><button data-v="live" data-i18n="s.pages.livePreview">Live preview</button></div>
+              <div class="seg" id="stageSeg"><button data-v="live" class="on">Prévia web</button><button data-v="layout">Grade 12×6</button></div>
+              <div class="seg" id="orientSeg" title="Proporção do preview do Tablet"><button data-o="landscape" class="on">Paisagem</button><button data-o="portrait">Retrato</button></div>
               <span class="hint" id="stageHint"></span>
             </div>
             <div class="canvas-wrap"><div class="phone"><div class="canvas" id="canvas"></div><div class="preview" id="previewBox" hidden></div></div></div>
@@ -702,7 +764,7 @@ nav a.on::before { color: var(--accent); }
           <div class="field" style="margin:0"><label data-i18n="lang.label">Language</label>
             <select data-bind="display.language" id="displayLangSel"></select></div>
           <div class="field" style="margin:0"><label data-i18n="s.display.theme">Theme</label>
-            <select data-bind="display.theme"><option value="default" data-i18n="s.display.theme.default">Default</option><option value="amoled" data-i18n="s.display.theme.amoled">AMOLED black</option><option value="midnight" data-i18n="s.display.theme.midnight">Midnight blue</option><option value="warm" data-i18n="s.display.theme.warm">Warm</option><option value="graphite" data-i18n="s.display.theme.graphite">Graphite</option></select></div>
+            <select data-bind="display.theme"><option value="default" data-i18n="s.display.theme.default">Default</option><option value="hack">Hack (Cyberdeck / Matrix)</option><option value="anime">Anime</option><option value="amoled" data-i18n="s.display.theme.amoled">AMOLED black</option><option value="midnight" data-i18n="s.display.theme.midnight">Midnight blue</option><option value="warm" data-i18n="s.display.theme.warm">Warm</option><option value="graphite" data-i18n="s.display.theme.graphite">Graphite</option></select></div>
           <div class="field" style="margin:0"><label data-i18n="s.display.accent">Accent colour</label><input type="color" data-bind="display.accent" style="width:56px;height:36px;padding:2px"></div>
           <label class="check" style="margin-bottom:8px"><input type="checkbox" data-bind="display.artTint"> <span data-i18n="s.display.artTint">Tint the background with the album art</span></label>
         </div>
@@ -847,6 +909,21 @@ nav a.on::before { color: var(--accent); }
         <h3 data-i18n="s.phones.title">Phones</h3>
         <p class="hint" style="margin:0 0 12px" data-i18n="s.phones.lead">Several phones (or a phone and a tablet) can use this computer at once, over USB or Wi-Fi. Give each one a name and choose the pages it shows; a phone shows all pages until you choose.</p>
         <div id="phoneList"><p class="hint" data-i18n="s.phones.empty">No phone has connected yet.</p></div>
+      </div>
+      <div class="card">
+        <h3>Tablet Web Local (HP 7.1 / Android 4.2.2)</h3>
+        <div class="row" style="margin-bottom:8px"><label class="switch"><input type="checkbox" data-bind="legacyWeb.enabled"><span></span></label> <span>Ativar painel web local (HTTP + ES5, sem APK)</span></div>
+        <div class="row" style="margin-bottom:8px"><label class="switch"><input type="checkbox" data-bind="legacyWeb.allowPrivateLanOnly"><span></span></label> <span>Restringir acesso somente à rede local privada</span></div>
+        <p class="hint" style="margin:0 0 12px">Serve um painel web completo otimizado para o <b>HP 7.1 1201 (Android 4.2.2)</b> em proporção horizontal (1024×600) e vertical (600×1024), sem precisar de cabo USB ou APK. Abra o endereço abaixo no navegador do tablet.</p>
+        <div class="grid2">
+          <div class="field"><label>Porta HTTP local</label><input type="number" min="1024" max="65535" data-bind="legacyWeb.port" data-type="int"></div>
+          <div class="field"><label>Endereço para abrir no tablet</label><div id="legacyUrls" class="hint">—</div></div>
+        </div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <a class="btn primary" href="/legacy/PhoneBox-HP71.apk" download="PhoneBox-HP71.apk">Baixar APK Nativo (HP 7.1)</a>
+          <a class="btn" href="/legacy/" target="_blank" rel="noopener">Abrir preview web do tablet</a>
+          <span class="hint" id="legacyStatus"></span>
+        </div>
       </div>
       <div class="card">
         <h3 data-i18n="s.wifi.title">Wi-Fi &amp; Tailscale</h3>
@@ -1202,8 +1279,8 @@ const widgetDef = (type) => catalog.widgets.find((w) => w.type === type) || { ty
 const curPage = () => cfg.pages[selPage];
 
 function deckCols() {
-  for (const p of cfg.pages) for (const w of p.widgets || []) if (w.type === 'shortcuts') return w.options?.columns || 4;
-  return 4;
+  for (const p of cfg.pages) for (const w of p.widgets || []) if (w.type === 'shortcuts') return w.options?.columns || 7;
+  return 7;
 }
 
 function optVal(w, o) { return w.options && o.key in w.options ? w.options[o.key] : o.default; }
@@ -1327,20 +1404,61 @@ function fitPages(pages) {
   return list;
 }
 
+const TABLET_TAB_INFO = {
+  home: { badge: 'Aba HP 7.1', desc: 'Relógio, Clima, Mídia, Volume e 4 cards ao vivo (CPU, GPU, RAM, Rede)' },
+  system: { badge: 'Aba HP 7.1', desc: 'Gráficos ao vivo de CPU/RAM e GPU/Temp, Discos de Armazenamento e Hardware' },
+  deck: { badge: 'Aba HP 7.1', desc: 'Stream Deck com ícones oficiais do Windows + Mixer por aplicativo' },
+  procs: { badge: 'Aba HP 7.1', desc: '4 KPIs visuais + lista de aplicativos com ícones, barras de CPU/RAM e encerramento' },
+  ai: { badge: 'Aba HP 7.1', desc: 'Cotas de IA (atualização 5s exclusiva), Sessões, GitHub e Webhooks' },
+  discord: { badge: 'Aba HP 7.1', desc: 'Chamada ativa, quem está falando, controles de voz, canais e notificações' },
+  world: { badge: 'Aba HP 7.1', desc: 'Estação climática visual (12h + 7 dias), Hora/Sol/Lua, Fusos e Relógio de Mesa' },
+};
+
+function tabletTabKind(p) {
+  const id = String(p?.id || '').toLowerCase();
+  if (id === 'home') return 'home';
+  if (id === 'system' || id === 'dashboard' || id === 'status') return 'system';
+  if (id === 'deck' || id === 'shortcuts' || id === 'audio-deck' || id === 'system-deck') return 'deck';
+  if (id === 'procs' || id === 'processes') return 'procs';
+  if (id === 'ai' || id === 'codexbar' || id === 'work' || id === 'devops') return 'ai';
+  if (id === 'discord') return 'discord';
+  if (id === 'world' || id === 'clock' || id === 'ambient' || id === 'nightstand') return 'world';
+  return 'custom';
+}
+
+function ensurePageWidget(p, type, fallbackOpts = {}) {
+  p.widgets ??= [];
+  let w = p.widgets.find((x) => x.type === type);
+  if (!w) {
+    const d = widgetDef(type);
+    w = { id: type, type, x: 0, y: 0, w: d.w || 6, h: d.h || 3, options: { ...defaultOptions(type), ...fallbackOpts } };
+    p.widgets.push(w);
+  }
+  w.options ??= { ...fallbackOpts };
+  return w;
+}
+
 function renderPages() {
   if (selPage >= cfg.pages.length) selPage = Math.max(0, cfg.pages.length - 1);
   const list = $('pageTabs');
   list.replaceChildren(...cfg.pages.map((p, i) => {
+    const kind = tabletTabKind(p);
+    const homeFlag = isHome(p);
+    const subTxt = p.enabled === false ? 'Oculta no tablet' : (homeFlag ? 'Principal · ' + (TABLET_TAB_INFO[kind]?.badge || 'Personalizada') : (TABLET_TAB_INFO[kind]?.badge || 'Personalizada'));
     const row = h('div', { class: 'ptab' + (i === selPage ? ' on' : '') + (p.enabled === false ? ' off' : ''), draggable: 'true', 'data-i': i,
       onclick: () => { selPage = i; selWidget = -1; renderPages(); } },
-      h('span', { class: 'pt-num' }, String(i + 1)), h('span', { class: 'pt-ico' }, rich(p.icon || '◻')), h('span', { class: 'pt-name' }, p.title || '(untitled)'),
-      h('span', { class: 'pt-n' }, String((p.widgets || []).length)));
+      h('span', { class: 'pt-num' }, String(i + 1)),
+      h('span', { class: 'pt-ico' }, rich(p.icon || '◻')),
+      h('span', { class: 'pt-meta' },
+        h('span', { class: 'pt-name' }, p.title || '(sem nome)'),
+        h('span', { class: 'pt-sub' + (homeFlag ? ' pt-home' : '') }, subTxt)),
+      kind === 'custom' ? h('span', { class: 'pt-n' }, String((p.widgets || []).length)) : null);
     dragSort(row, cfg.pages, (from, to) => { selPage = to; renderPages(); changed(); });
     return row;
-  }), h('button', { class: 'btn', style: { width: '100%', marginTop: '8px' }, onclick: () => openTemplates(null) }, t('s.js.newPage')),
+  }), h('button', { class: 'btn', style: { width: '100%', marginTop: '8px' }, onclick: () => openTemplates(null) }, '+ Nova página personalizada'),
     h('div', { class: 'row', style: { gap: '6px', marginTop: '8px' } },
-      h('button', { class: 'btn sm', style: { flex: '1' }, title: t('s.js.saveAllPages'), onclick: () => exportPages(cfg.pages, 'phonebox-pages') }, icon('download', 'm'), t('s.js.export')),
-      h('button', { class: 'btn sm', style: { flex: '1' }, title: t('s.js.loadPages'), onclick: importPages }, icon('upload', 'm'), t('s.js.import'))));
+      h('button', { class: 'btn sm', style: { flex: '1' }, title: t('s.js.saveAllPages'), onclick: () => exportPages(cfg.pages, 'phonebox-pages') }, icon('download', 'm'), 'Exportar'),
+      h('button', { class: 'btn sm', style: { flex: '1' }, title: t('s.js.loadPages'), onclick: importPages }, icon('upload', 'm'), 'Importar')));
   renderPageEditor();
 }
 
@@ -1353,61 +1471,263 @@ function fillHomeSelect() {
   sel.value = cfg.display.homePage || '';
 }
 
+function renderTabletTabControls(p, kind) {
+  const info = TABLET_TAB_INFO[kind];
+  const card = h('div', { class: 'card tb-ctrl-card' });
+  const head = h('div', { class: 'tb-ctrl-head' },
+    h('div', {},
+      h('h3', {}, `${p.icon || ''} Controles da aba "${p.title || kind}" no Tablet HP 7.1`.trim()),
+      h('div', { class: 'hint' }, info?.desc || '')),
+    h('span', { class: 'ts-badge', style: { fontSize: '11px', padding: '3px 9px', borderRadius: '99px', background: 'color-mix(in srgb, var(--accent) 14%, transparent)', color: 'var(--accent)', fontWeight: '700' } }, 'Preview ao vivo 1:1'));
+  card.append(head);
+
+  const grid = h('div', { class: 'tb-ctrl-grid' });
+  const mkSwitch = (label, checked, onChange, hint = '') => h('div', {},
+    h('label', { class: 'check', style: { margin: 0 } },
+      h('input', { type: 'checkbox', checked: !!checked, onchange: (e) => { onChange(e.target.checked); changed(); } }),
+      h('span', {}, label)),
+    hint ? h('div', { class: 'hint', style: { marginLeft: '23px', marginTop: '2px' } }, hint) : null);
+
+  if (kind === 'home') {
+    const clk = ensurePageWidget(p, 'clock', { status: true, weather: true, date: true });
+    const left = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Relógio & Informações no Início'),
+      mkSwitch('Mostrar segundos no relógio', cfg.display.showSeconds !== false, (v) => { cfg.display.showSeconds = v; }),
+      mkSwitch('Mostrar data completa e fuso de Brasília', clk.options.date !== false, (v) => { clk.options.date = v; }),
+      mkSwitch('Mostrar clima ao vivo no card do relógio', clk.options.weather !== false, (v) => { clk.options.weather = v; }),
+      h('div', { class: 'field', style: { marginBottom: 0, marginTop: '4px' } },
+        h('label', {}, 'Formato da hora'),
+        h('select', { onchange: (e) => { cfg.display.hour12 = e.target.value === 'true'; changed(); } },
+          h('option', { value: 'false', selected: cfg.display.hour12 !== true && cfg.display.hour12 !== 'true' }, '24 horas (ex.: 16:30)'),
+          h('option', { value: 'true', selected: cfg.display.hour12 === true || cfg.display.hour12 === 'true' }, '12 horas (ex.: 04:30 PM)'))));
+
+    const themeSel = h('select', { onchange: (e) => { cfg.display.theme = e.target.value; changed(); } },
+      ...[['default', 'Padrão (Slate Escuro)'], ['hack', 'Hack (Cyberdeck / Matrix)'], ['anime', 'Anime (Neon Roxo)'], ['amoled', 'AMOLED (Preto Puro)'], ['midnight', 'Midnight (Azul Profundo)'], ['warm', 'Warm (Café Quente)'], ['graphite', 'Graphite (Grafite Neutro)']]
+        .map(([v, l]) => h('option', { value: v, selected: (cfg.display.theme || 'default') === v }, l)));
+    const accIn = h('input', { type: 'color', value: cfg.display.accent || '#2dd4bf', oninput: (e) => { cfg.display.accent = e.target.value; changed(); } });
+    const sw = h('div', { class: 'swatches' }, ...['#2dd4bf', '#38bdf8', '#22c55e', '#a78bfa', '#f59e0b', '#fb7185', '#f97316'].map((c) =>
+      h('button', { title: c, style: { background: c }, onclick: () => { cfg.display.accent = c; accIn.value = c; changed(); } })));
+    const right = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Tema & Barra do Tablet'),
+      h('div', { class: 'field', style: { marginBottom: '4px' } }, h('label', {}, 'Tema visual do HP 7.1'), themeSel),
+      h('div', { class: 'field', style: { marginBottom: '4px' } }, h('label', {}, 'Cor de destaque (Accent)'), h('div', { class: 'row', style: { gap: '8px' } }, accIn, sw)),
+      mkSwitch('Mover barra de abas para o topo da tela', !!cfg.display.controlsTop, (v) => { cfg.display.controlsTop = v; }));
+    grid.append(left, right);
+  } else if (kind === 'system') {
+    cfg.ping ??= { host: '1.1.1.1', adapters: [] };
+    const left = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Módulos ao vivo nesta aba'),
+      h('div', { class: 'tb-chip-list' },
+        h('span', { class: 'tb-chip' }, 'Gráfico CPU & RAM'),
+        h('span', { class: 'tb-chip' }, 'Gráfico GPU & Temperatura'),
+        h('span', { class: 'tb-chip' }, 'Armazenamento (Discos)'),
+        h('span', { class: 'tb-chip' }, 'Hardware, Rede & Uptime')),
+      h('div', { class: 'hint' }, 'Atualização em tempo real a cada 1,5s sem travar o navegador do HP 7.1.'));
+    const right = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Monitoramento de Rede & Ping'),
+      h('div', { class: 'field', style: { marginBottom: '4px' } },
+        h('label', {}, 'Host de Ping (ex.: 1.1.1.1 ou 8.8.8.8)'),
+        h('input', { type: 'text', value: cfg.ping.host || '', placeholder: '1.1.1.1', oninput: (e) => { cfg.ping.host = e.target.value; changed(); } })),
+      h('button', { class: 'btn sm', type: 'button', onclick: () => { location.hash = '#general'; } }, 'Escolher adaptadores de rede em Geral →'));
+    grid.append(left, right);
+  } else if (kind === 'deck') {
+    const scw = ensurePageWidget(p, 'shortcuts', { columns: 7 });
+    const hasMixer = (p.widgets || []).some((x) => x.type === 'audio-mixer');
+    const colSel = h('select', { onchange: (e) => { scw.options.columns = Number(e.target.value); changed(); renderDeck(); } },
+      ...[4, 5, 6, 7, 8].map((n) => h('option', { value: n, selected: (scw.options.columns || 7) === n }, `${n} colunas na horizontal`)));
+    const left = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Layout do Stream Deck (Somente Ícones)'),
+      h('div', { class: 'field', style: { marginBottom: '4px' } }, h('label', {}, 'Colunas de ícones (Horizontal 1024×600)'), colSel),
+      mkSwitch('Mostrar Mixer de Volume por Aplicativo', hasMixer, (v) => {
+        if (v && !p.widgets.some((x) => x.type === 'audio-mixer')) {
+          p.widgets.push({ id: 'audio-mixer', type: 'audio-mixer', x: 0, y: 4, w: 12, h: 2, options: { layout: 'horizontal' } });
+        } else if (!v) {
+          p.widgets = p.widgets.filter((x) => x.type !== 'audio-mixer');
+        }
+      }, 'Controla individualmente o volume e mudo de cada programa com som ativo no PC.'));
+    const right = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, `Atalhos ativos (${(cfg.shortcuts || []).length} ícones oficiais)`),
+      h('div', { class: 'tb-sc-strip' }, ...(cfg.shortcuts || []).map((s) => {
+        const box = h('span', { class: 'tb-sc-mini', title: s.label || s.id });
+        if (s.id) {
+          box.append(h('img', { src: `/api/shortcuts/icon?id=${encodeURIComponent(s.id)}&v=${Date.now()}`, alt: s.label || s.id, onerror: () => { box.textContent = s.icon || '•'; } }));
+        } else box.textContent = s.icon || '•';
+        return box;
+      })),
+      h('button', { class: 'btn sm primary', type: 'button', onclick: () => { location.hash = '#shortcuts'; } }, 'Editar Atalhos, Comandos e Ícones →'));
+    grid.append(left, right);
+  } else if (kind === 'procs') {
+    const pw = ensurePageWidget(p, 'processes', { allowKill: true });
+    const left = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Controle de Processos no Tablet'),
+      mkSwitch('Permitir encerrar processos pelo Tablet', pw.options.allowKill !== false, (v) => { pw.options.allowKill = v; },
+        'Quando ativado, exibe o botão × (com dupla confirmação) em cada linha da lista de processos.'));
+    const right = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Módulos visuais nesta aba'),
+      h('div', { class: 'tb-chip-list' },
+        h('span', { class: 'tb-chip' }, 'Maior uso de CPU'),
+        h('span', { class: 'tb-chip' }, 'Maior uso de RAM'),
+        h('span', { class: 'tb-chip' }, 'Carga do Sistema'),
+        h('span', { class: 'tb-chip' }, 'Top 15 / 30 com Ícones + Barras')),
+      h('div', { class: 'hint' }, 'Ordenação instantânea por RAM ou CPU direto no topo da aba.'));
+    grid.append(left, right);
+  } else if (kind === 'ai') {
+    cfg.codexBar ??= { providers: ['claude', 'codex', 'antigravity'], rotate: true, pageSize: 2, rotateInterval: 8 };
+    const qw = ensurePageWidget(p, 'quotas', { providers: cfg.codexBar.providers || ['claude', 'codex', 'antigravity'] });
+    const activeProvs = Array.isArray(cfg.codexBar.providers) ? cfg.codexBar.providers : ['claude', 'codex', 'antigravity'];
+    const toggleProv = (pid, on) => {
+      const next = ['claude', 'codex', 'antigravity'].filter((x) => x === pid ? on : (cfg.codexBar.providers || []).includes(x));
+      if (!next.length) return;
+      cfg.codexBar.providers = next;
+      qw.options.providers = [...next];
+    };
+    const left = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Provedores de Cota (Atualização a cada 5s na aba IA)'),
+      mkSwitch('Claude (Anthropic)', activeProvs.includes('claude'), (v) => toggleProv('claude', v)),
+      mkSwitch('Antigravity (Gemini / Claude / GPT)', activeProvs.includes('antigravity'), (v) => toggleProv('antigravity', v)),
+      mkSwitch('Codex (OpenAI)', activeProvs.includes('codex'), (v) => toggleProv('codex', v)),
+      h('div', { class: 'hint' }, 'O tablet atualiza cotas ao vivo a cada 5 segundos somente enquanto esta aba estiver aberta.'));
+    const right = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Sessões, Aprovações & Webhooks'),
+      mkSwitch('Aprovar permissões do Claude Code pelo Tablet', !!cfg.claude?.phoneApprovals, (v) => { cfg.claude ??= {}; cfg.claude.phoneApprovals = v; }),
+      mkSwitch('Mostrar títulos das conversas (Claude & Antigravity)', !!cfg.claude?.shareSessionTitles, (v) => {
+        cfg.claude ??= {}; cfg.antigravity ??= {};
+        cfg.claude.shareSessionTitles = v; cfg.antigravity.shareSessionTitles = v;
+      }),
+      h('button', { class: 'btn sm', type: 'button', onclick: () => { location.hash = '#webhooks'; } }, 'Testar Mensagens & Webhooks →'));
+    grid.append(left, right);
+  } else if (kind === 'discord') {
+    cfg.discord ??= { enabled: false, allowControl: true };
+    const dw = ensurePageWidget(p, 'discord', { channels: true, notifications: true, control: true });
+    const left = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Integração Discord Desktop'),
+      mkSwitch('Conectar ao Discord aberto neste PC', !!cfg.discord.enabled, (v) => { cfg.discord.enabled = v; }),
+      mkSwitch('Exibir botões de voz (Mutar, Surdo, Push-to-Talk, Sair)', dw.options.control !== false, (v) => {
+        dw.options.control = v; cfg.discord.allowControl = v;
+      }),
+      h('button', { class: 'btn sm', type: 'button', onclick: () => { location.hash = '#general'; } }, 'Configurar Client ID / Secret em Geral →'));
+    const right = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Seções exibidas na aba Discord'),
+      mkSwitch('Mostrar lista de Canais de Voz dos servidores', dw.options.channels !== false, (v) => { dw.options.channels = v; }),
+      mkSwitch('Mostrar Mensagens & Notificações recentes', dw.options.notifications !== false, (v) => { dw.options.notifications = v; }));
+    grid.append(left, right);
+  } else if (kind === 'world') {
+    const ww = ensurePageWidget(p, 'worldclock', { zones: ['Rio de Janeiro=America/Sao_Paulo', 'Lisboa=Europe/Lisbon', 'Londres=Europe/London', 'Nova York=America/New_York', 'Berlim=Europe/Berlin', 'Tóquio=Asia/Tokyo'] });
+    const left = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Localização & Clima'),
+      h('div', { class: 'field', style: { marginBottom: '4px' } },
+        h('label', {}, 'Local atual exibido no Tablet'),
+        h('input', { type: 'text', value: cfg.weather?.city || 'Rio de Janeiro, Brasil', oninput: (e) => { cfg.weather ??= {}; cfg.weather.city = e.target.value; changed(); } })),
+      h('div', { class: 'row', style: { gap: '8px' } },
+        h('div', { class: 'field', style: { flex: '1', marginBottom: 0 } }, h('label', {}, 'Unidade'),
+          h('select', { onchange: (e) => { cfg.weather ??= {}; cfg.weather.unit = e.target.value; changed(); } },
+            h('option', { value: 'celsius', selected: (cfg.weather?.unit || 'celsius') === 'celsius' }, 'Celsius (°C)'),
+            h('option', { value: 'fahrenheit', selected: cfg.weather?.unit === 'fahrenheit' }, 'Fahrenheit (°F)'))),
+        h('button', { class: 'btn sm', type: 'button', style: { alignSelf: 'flex-end' }, onclick: () => { location.hash = '#general'; } }, 'Buscar outra cidade →')),
+      h('div', { class: 'hint' }, `Coordenadas: Lat ${cfg.weather?.lat ?? -22.9068} · Lon ${cfg.weather?.lon ?? -43.1729}`));
+    const right = h('div', { class: 'tb-ctrl-box' },
+      h('h4', {}, 'Relógios Mundiais & Modo Noturno'),
+      h('div', { class: 'field', style: { marginBottom: '4px' } },
+        h('label', {}, 'Fusos exibidos em "Hora, Sol & Lua" (1 por linha: Nome=Fuso)'),
+        h('textarea', { rows: 4, spellcheck: 'false', oninput: (e) => {
+          ww.options.zones = e.target.value.split('\n').map((x) => x.trim()).filter(Boolean);
+          changed();
+        } }, (ww.options.zones || []).join('\n'))),
+      mkSwitch(`Modo noturno automático (${cfg.night?.start || '00:30'}–${cfg.night?.end || '07:30'})`, !!cfg.night?.enabled, (v) => { cfg.night ??= {}; cfg.night.enabled = v; }));
+    grid.append(left, right);
+  }
+
+  card.append(grid);
+  return card;
+}
+
 function renderPageEditor() {
   fillHomeSelect();
   const p = curPage();
   $('stage').hidden = !p;
   if (!p) { $('peHead').replaceChildren(h('p', { class: 'lead' }, t('s.js.noPages'))); $('peRest').replaceChildren(); return; }
   p.widgets ??= [];
+  const kind = tabletTabKind(p);
   const move = (d) => { const j = selPage + d; [cfg.pages[selPage], cfg.pages[j]] = [cfg.pages[j], cfg.pages[selPage]]; selPage = j; renderPages(); changed(); };
   $('peHead').replaceChildren(
     h('div', { class: 'card' },
       h('div', { class: 'row', style: { gap: '10px' } },
-        h('input', { type: 'text', class: 'icon-input', value: p.icon || '', maxlength: 8, title: 'Icon', 'aria-label': 'Icon', oninput: (e) => { p.icon = e.target.value; changed(); renderTabsOnly(); } }),
-        h('input', { type: 'text', value: p.title || '', placeholder: t('s.js.pageName'), 'aria-label': t('s.js.pageName'), style: { flex: '1', fontSize: '16px', fontWeight: '600' }, oninput: (e) => { p.title = e.target.value; changed(); renderTabsOnly(); } }),
-        h('label', { class: 'check', title: t('s.js.showOnPhone') }, h('label', { class: 'switch' },
+        h('input', { type: 'text', class: 'icon-input', value: p.icon || '', maxlength: 8, title: 'Ícone', 'aria-label': 'Ícone', oninput: (e) => { p.icon = e.target.value; changed(); renderTabsOnly(); } }),
+        h('input', { type: 'text', value: p.title || '', placeholder: 'Nome da aba no tablet', 'aria-label': 'Nome da aba', style: { flex: '1', fontSize: '16px', fontWeight: '600' }, oninput: (e) => { p.title = e.target.value; changed(); renderTabsOnly(); } }),
+        h('label', { class: 'check', title: 'Exibir esta aba na barra do tablet' }, h('label', { class: 'switch' },
           h('input', { type: 'checkbox', checked: p.enabled !== false, onchange: (e) => {
-            if (!e.target.checked && cfg.pages.filter((x) => x.enabled !== false).length === 1) { e.target.checked = true; toast(t('s.js.keepOnePage'), true); return; }
+            if (!e.target.checked && cfg.pages.filter((x) => x.enabled !== false).length === 1) { e.target.checked = true; toast('Mantenha pelo menos uma aba visível', true); return; }
             p.enabled = e.target.checked; changed(); renderTabsOnly();
-          } }), h('span')), t('s.js.shown')),
-        h('button', { class: 'icon-btn', title: t('s.js.moveEarlier'), disabled: selPage === 0, onclick: () => move(-1) }, icon('chevron-up')),
-        h('button', { class: 'icon-btn', title: t('s.js.moveLater'), disabled: selPage === cfg.pages.length - 1, onclick: () => move(1) }, icon('chevron-down'))),
+          } }), h('span')), 'Exibir no Tablet'),
+        h('button', { class: 'icon-btn', title: 'Mover antes', disabled: selPage === 0, onclick: () => move(-1) }, icon('chevron-up')),
+        h('button', { class: 'icon-btn', title: 'Mover depois', disabled: selPage === cfg.pages.length - 1, onclick: () => move(1) }, icon('chevron-down'))),
       h('div', { class: 'row', style: { gap: '6px', marginTop: '10px' } },
-        h('button', { class: 'btn sm', onclick: () => openTemplates(selPage) }, t('s.js.replaceTpl')),
-        h('button', { class: 'btn sm', onclick: () => { const c = JSON.parse(JSON.stringify(p)); c.id = ''; c.title += t('s.js.dupPageSuffix'); cfg.pages.splice(selPage + 1, 0, c); selPage++; renderPages(); changed(); } }, t('s.js.dupPage')),
-        h('button', { class: 'btn sm', title: t('s.js.exportPageHint'), onclick: () => exportPages([p], 'phonebox-page-' + (p.id || 'page')) }, t('s.js.exportPage')),
-        h('button', { class: 'btn sm', onclick: () => { p.widgets = []; selWidget = -1; renderPageEditor(); changed(); } }, t('s.js.clear')),
-        h('span', { class: 'spacer' }),
-        h('button', { class: 'btn sm' + (isHome(p) ? ' on' : ''), title: t('s.js.homePageHint'),
-          onclick: () => { if (!p.id) { toast(t('s.js.saveFirstForId'), true); return; } cfg.display.homePage = p.id; renderPageEditor(); changed(); } },
-          icon('home', 'm'), isHome(p) ? t('s.js.homePage') : t('s.js.makeHome')),
-        h('label', { class: 'hint', title: t('s.js.backHomeAfterHint') }, t('s.js.backHomeAfter'),
+        h('button', { class: 'btn sm primary', type: 'button', disabled: p.enabled === false || !p.id, title: 'Trocar o tablet para esta aba imediatamente',
+          onclick: async () => {
+            if (!p.id) { toast('Salve primeiro para enviar ao tablet', true); return; }
+            await fetch('/api/goto/' + encodeURIComponent(p.id) + '?countdown=0', { method: 'POST' });
+            toast(`Aba "${p.title}" enviada para o Tablet!`);
+          } }, 'Abrir esta aba no Tablet'),
+        h('button', { class: 'btn sm' + (isHome(p) ? ' on' : ''), title: 'Aba inicial ao abrir o tablet ou após inatividade',
+          onclick: () => { if (!p.id) { toast(t('s.js.saveFirstForId'), true); return; } cfg.display.homePage = p.id; renderPages(); changed(); } },
+          icon('home', 'm'), isHome(p) ? 'Aba Principal' : 'Definir como Principal'),
+        h('label', { class: 'hint' }, 'Voltar ao Início: ',
           h('select', { onchange: (e) => { p.idleSec = e.target.value === '' ? null : +e.target.value; changed(); } },
-            ...[['', `${tc('default')} (${fmtIdle(cfg.display.idleReturnSec ?? 90)})`], ['0', tc('never')], ['30', '30 s'], ['60', '1 min'], ['120', '2 min'], ['300', '5 min'], ['900', '15 min'], ['3600', '1 hour']]
+            ...[['', `Padrão (${fmtIdle(cfg.display.idleReturnSec ?? 90)})`], ['0', 'Nunca'], ['30', '30 s'], ['60', '1 min'], ['120', '2 min'], ['300', '5 min'], ['900', '15 min']]
               .map(([v, l]) => h('option', { value: v, selected: String(p.idleSec ?? '') === v }, l)))),
+        h('span', { class: 'spacer' }),
+        h('button', { class: 'btn sm', onclick: () => openTemplates(selPage) }, 'Modelo'),
+        h('button', { class: 'btn sm', onclick: () => { const c = JSON.parse(JSON.stringify(p)); c.id = ''; c.title += ' (cópia)'; cfg.pages.splice(selPage + 1, 0, c); selPage++; renderPages(); changed(); } }, 'Duplicar'),
+        h('button', { class: 'btn sm', onclick: () => exportPages([p], 'phonebox-page-' + (p.id || 'page')) }, 'Exportar'),
         h('button', { class: 'btn sm danger', disabled: cfg.pages.length === 1, onclick: () => {
-          if (!confirm(t('s.js.deletePageConfirm', { title: p.title }))) return;
+          if (!confirm(`Excluir a aba "${p.title}"?`)) return;
           cfg.pages.splice(selPage, 1); selWidget = -1; renderPages(); changed();
-        } }, t('s.js.deletePage')))));
-  $('peHead').append(appearanceEditor(p, () => [cfg.display?.appearance], t('s.js.pageAppearance')));
-  $('peRest').replaceChildren(
-    h('p', { class: 'hint layout-hint', style: { margin: '6px 0 14px' } }, t('s.js.layoutHint')),
-    h('div', { class: 'ed-cols' },
-      h('div', { class: 'card', id: 'inspector' }),
-      h('div', { class: 'card' }, h('div', { class: 'row', style: { justifyContent: 'space-between', marginBottom: '8px' } }, h('h3', { style: { margin: 0 } }, t('s.js.addWidget')),
-        h('input', { type: 'search', id: 'palSearch', placeholder: t('s.js.searchWidgets', { n: catalog.widgets.length }), value: palQuery, style: { width: '210px' },
-          oninput: (e) => { palQuery = e.target.value; renderPalette(); } })), h('div', { class: 'palette', id: 'palette' }))));
-  renderCanvas();
-  renderPalette();
-  renderInspector();
+        } }, 'Excluir'))));
+
+  if (stageMode === 'live' && kind !== 'custom') {
+    const adv = h('details', { class: 'card tb-adv-details' },
+      h('summary', {}, 'Opções avançadas de aparência e grade de widgets (12×6)'),
+      appearanceEditor(p, () => [cfg.display?.appearance], 'Aparência específica desta página'),
+      h('div', { class: 'row', style: { marginTop: '10px' } },
+        h('button', { class: 'btn sm', type: 'button', onclick: () => setStage('layout') }, 'Abrir editor de Grade 12×6 para esta aba')));
+    $('peRest').replaceChildren(renderTabletTabControls(p, kind), adv);
+  } else {
+    const customChips = kind === 'custom' && p.widgets.length
+      ? h('div', { class: 'card', style: { marginTop: '12px' } },
+        h('h3', { style: { marginBottom: '8px' } }, `Widgets desta página (${p.widgets.length}) — clique para editar`),
+        h('div', { class: 'tb-custom-wlist' }, ...p.widgets.map((w, wi) => {
+          const d = widgetDef(w.type);
+          return h('button', { type: 'button', class: 'tb-custom-wbtn' + (wi === selWidget ? ' sel' : ''),
+            onclick: () => { selWidget = wi; renderPageEditor(); } }, rich(d.icon), h('span', {}, d.name));
+        })))
+      : null;
+    $('peRest').replaceChildren(
+      ...(customChips ? [customChips] : []),
+      h('p', { class: 'hint layout-hint', style: { margin: '6px 0 14px' } }, 'Arraste e redimensione os widgets na grade 12×6 acima, ou clique em um widget à direita para adicionar à página.'),
+      h('div', { class: 'ed-cols', style: { marginTop: '12px' } },
+        h('div', { class: 'card', id: 'inspector' }),
+        h('div', { class: 'card' }, h('div', { class: 'row', style: { justifyContent: 'space-between', marginBottom: '8px' } }, h('h3', { style: { margin: 0 } }, 'Adicionar widget'),
+          h('input', { type: 'search', id: 'palSearch', placeholder: `Buscar entre ${catalog.widgets.length} widgets…`, value: palQuery, style: { width: '210px' },
+            oninput: (e) => { palQuery = e.target.value; renderPalette(); } })), h('div', { class: 'palette', id: 'palette' }))));
+    renderCanvas();
+    renderPalette();
+    renderInspector();
+  }
   queuePreview();
 }
 
-// ---------------------------------------------------------------- live preview
-// The real panel (served by the agent at /panel/) in an iframe, fed the unsaved settings, so you see live data in the
-// layout you are editing. The iframe is created once and only hidden, so it does not reload while you edit.
-let stageMode = 'layout', previewFrame = null, previewReady = false, previewTimer = 0;
-try { stageMode = localStorage.getItem('pb-stage') === 'live' ? 'live' : 'layout'; } catch (_) {}
+// ---------------------------------------------------------------- live preview (REAL HP 7.1 TABLET UI /legacy/?preview=1)
+let stageMode = 'live', previewOrient = 'landscape', previewFrame = null, previewReady = false, previewTimer = 0;
+try { stageMode = localStorage.getItem('pb-stage') === 'layout' ? 'layout' : 'live'; } catch (_) {}
+
+function fitPreviewFrame() {
+  if (!previewFrame || !$('previewBox')) return;
+  const box = $('previewBox');
+  const isPort = previewOrient === 'portrait';
+  box.classList.toggle('portrait', isPort);
+  const baseW = isPort ? 600 : 1024;
+  if (box.clientWidth > 0) previewFrame.style.transform = `scale(${box.clientWidth / baseW})`;
+}
 
 function setStage(mode) {
   stageMode = mode;
@@ -1416,34 +1736,40 @@ function setStage(mode) {
   const live = mode === 'live';
   $('canvas').hidden = live;
   $('previewBox').hidden = !live;
+  if ($('orientSeg')) $('orientSeg').hidden = !live;
   $('pageEditor').classList.toggle('live', live);
   updateStageText();
   if (live && !previewFrame) {
-    previewFrame = h('iframe', { src: '../panel/?preview=1' });
+    previewFrame = h('iframe', { src: '/legacy/?preview=1' });
     updateStageText();
     $('previewBox').appendChild(previewFrame);
-    const fit = () => { previewFrame.style.transform = `scale(${$('previewBox').clientWidth / 780})`; };
-    new ResizeObserver(fit).observe($('previewBox'));
-    fit();
+    new ResizeObserver(fitPreviewFrame).observe($('previewBox'));
+    fitPreviewFrame();
   }
-  if (live) queuePreview();
+  if (live) { fitPreviewFrame(); queuePreview(); }
+  if (cfg) renderPageEditor();
 }
 
 function updateStageText() {
   const translate = window.PhoneBoxI18n.tc;
+  const p = cfg ? curPage() : null;
   $('stageHint').textContent = stageMode === 'live'
-    ? translate('The real panel with your unsaved changes and live data: tap and swipe it like the phone. Switch back to Layout to move widgets.')
-    : '';
+    ? (p ? `Exibindo aba "${p.title || p.id}" em tempo real como no HP 7.1.` : 'Preview ao vivo 1:1 do Tablet HP 7.1.')
+    : 'Modo Grade 12×6: arraste ou redimensione widgets.';
   if (previewFrame) previewFrame.title = translate('Live preview of the panel');
 }
 
 function sendPreview() {
   if (!cfg) return;
   const config = JSON.parse(JSON.stringify(cfg));
+  const pgId = curPage()?.id || '';
   if (previewFrame && previewReady && stageMode === 'live')
-    previewFrame.contentWindow.postMessage({ type: 'phonebox-preview', config, page: selPage }, location.origin);
-  if (appearancePreviewFrame && appearancePreviewReady)
-    appearancePreviewFrame.contentWindow.postMessage({ type: 'phonebox-preview', config, page: Number($('appearancePreviewPage')?.value || 0) }, location.origin);
+    previewFrame.contentWindow.postMessage({ type: 'phonebox-preview', config, page: selPage, pageId: pgId, orient: previewOrient }, location.origin);
+  if (appearancePreviewFrame && appearancePreviewReady) {
+    const apIdx = Number($('appearancePreviewPage')?.value || 0);
+    const apId = cfg.pages?.[apIdx]?.id || '';
+    appearancePreviewFrame.contentWindow.postMessage({ type: 'phonebox-preview', config, page: apIdx, pageId: apId, orient: 'landscape' }, location.origin);
+  }
 }
 function queuePreview() { clearTimeout(previewTimer); previewTimer = setTimeout(sendPreview, 120); }
 
@@ -1454,6 +1780,16 @@ window.addEventListener('message', (e) => {
   sendPreview();
 });
 for (const b of $('stageSeg').children) b.onclick = () => setStage(b.dataset.v);
+if ($('orientSeg')) {
+  for (const b of $('orientSeg').children) {
+    b.onclick = () => {
+      previewOrient = b.dataset.o || 'landscape';
+      for (const x of $('orientSeg').children) x.classList.toggle('on', x.dataset.o === previewOrient);
+      fitPreviewFrame();
+      queuePreview();
+    };
+  }
+}
 setStage(stageMode);
 
 function renderTabsOnly() {
@@ -1462,9 +1798,19 @@ function renderTabsOnly() {
     const t = tabs[i];
     if (!t) return;
     t.querySelector('.pt-ico').replaceChildren(rich(p.icon || '◻'));
-    t.querySelector('.pt-name').textContent = p.title || '(untitled)';
+    t.querySelector('.pt-name').textContent = p.title || '(sem nome)';
     t.classList.toggle('off', p.enabled === false);
+    const kind = tabletTabKind(p);
+    const sub = t.querySelector('.pt-sub');
+    if (sub) {
+      const homeFlag = isHome(p);
+      sub.textContent = p.enabled === false ? 'Oculta no tablet' : (homeFlag ? 'Principal · ' + (TABLET_TAB_INFO[kind]?.badge || 'Personalizada') : (TABLET_TAB_INFO[kind]?.badge || 'Personalizada'));
+      sub.classList.toggle('pt-home', homeFlag && p.enabled !== false);
+    }
+    const cnt = t.querySelector('.pt-n');
+    if (cnt) cnt.textContent = String((p.widgets || []).length);
   });
+  updateStageText();
 }
 
 function renderCanvas() {
@@ -1566,8 +1912,7 @@ function addWidget(d) {
   if (!spot) { toast(t('s.js.noFreeSpace'), true); return; }
   p.widgets.push({ id: '', type: d.type, ...spot, options: defaultOptions(d.type) });
   selWidget = p.widgets.length - 1;
-  renderCanvas(); renderInspector(); renderTabsOnly(); changed();
-  $('pageTabs').querySelectorAll('.pt-n')[selPage].textContent = p.widgets.length;
+  renderPageEditor(); renderTabsOnly(); changed();
 }
 
 function renderInspector() {
@@ -2789,14 +3134,27 @@ function dragSort(el, arr, done) {
 }
 
 // ---------------------------------------------------------------- shortcuts
+function shortcutKeyIcon(s) {
+  if (!s.id) return rich(s.icon || '•');
+  const wrap = h('span', { class: 'ki' });
+  const img = h('img', {
+    class: 'ki-img',
+    alt: s.label || s.id,
+    src: `/api/shortcuts/icon?id=${encodeURIComponent(s.id)}&v=${Date.now()}`,
+    onerror: () => wrap.replaceChildren(rich(s.icon || '•'))
+  });
+  wrap.append(img);
+  return wrap;
+}
+
 function renderDeck() {
   const deck = $('deck');
   deck.style.setProperty('--cols', deckCols());
   deck.textContent = '';
   cfg.shortcuts.forEach((s, i) => {
-    const k = h('div', { class: 'key' + (i === selKey ? ' sel' : ''), draggable: 'true', 'data-i': i, style: { '--k': s.color || '#6b7280' },
+    const k = h('div', { class: 'key' + (i === selKey ? ' sel' : ''), draggable: 'true', 'data-i': i, title: s.label || s.id, style: { '--k': s.color || '#6b7280' },
       onclick: () => { selKey = i; renderDeck(); } },
-      h('span', { class: 'ki' }, rich(s.icon || '•')), h('span', { class: 'kl' }, s.label || '(untitled)'));
+      shortcutKeyIcon(s), h('span', { class: 'kl' }, s.label || '(untitled)'));
     k.style.setProperty('--k', s.color || '#6b7280');
     dragSort(k, cfg.shortcuts, (from, to) => { selKey = to; renderDeck(); changed(); });
     deck.append(k);
@@ -2893,6 +3251,8 @@ function customIconField(s) {
         if (!res.ok) throw new Error(j.error || t('s.k.uploadFailed'));
         if (j.version) cfgVersion = j.version;
         toast(t('s.k.iconUploaded'));
+        renderDeck();
+        queuePreview();
       } catch (err) { toast(err.message, true); }
       refresh();
     } });
@@ -2909,6 +3269,8 @@ function customIconField(s) {
           if (!res.ok) throw new Error(j.error || t('s.k.removeFailed'));
           if (j.version) cfgVersion = j.version;
           toast(t('s.k.iconRemoved'));
+          renderDeck();
+          queuePreview();
         } catch (err) { toast(err.message, true); }
         refresh();
       } }, t('s.k.remove'))),
@@ -2987,7 +3349,9 @@ function renderDeckKeysOnly() {
     const k = keys[i];
     if (!k) return;
     k.style.setProperty('--k', s.color || '#6b7280');
-    k.querySelector('.ki').replaceChildren(rich(s.icon || '•'));
+    k.title = s.label || s.id;
+    const ki = k.querySelector('.ki');
+    if (ki && !ki.querySelector('img')) ki.replaceChildren(rich(s.icon || '•'));
     k.querySelector('.kl').textContent = s.label || '(untitled)';
   });
 }
@@ -3346,11 +3710,20 @@ function renderAppearanceSettings() {
     preview.hidden = !preview.hidden;
     toggle.textContent = preview.hidden ? t('s.appearance.showPreview') : t('s.appearance.hidePreview');
     if (!appearancePreviewFrame && !preview.hidden) {
-      appearancePreviewFrame = h('iframe', { src: '../panel/?preview=1', title: 'Live appearance preview' });
+      appearancePreviewFrame = h('iframe', { src: '/legacy/?preview=1', title: 'Live appearance preview (Tablet HP 7.1)' });
       preview.append(appearancePreviewFrame);
       const frame = appearancePreviewFrame;
-      appearancePreviewObserver = new ResizeObserver(() => { frame.style.transform = 'scale(' + preview.clientWidth / 780 + ')'; });
+      appearancePreviewObserver = new ResizeObserver(() => {
+        if (preview.clientWidth > 0) frame.style.transform = 'scale(' + preview.clientWidth / 1024 + ')';
+      });
       appearancePreviewObserver.observe(preview);
+    }
+    if (!preview.hidden) {
+      setTimeout(() => {
+        if (appearancePreviewFrame && preview.clientWidth > 0)
+          appearancePreviewFrame.style.transform = 'scale(' + preview.clientWidth / 1024 + ')';
+        queuePreview();
+      }, 25);
     }
     queuePreview();
   } }, t('s.appearance.showPreview'));
@@ -3482,15 +3855,57 @@ async function searchCity() {
   box.hidden = false;
   box.replaceChildren(h('button', { disabled: true }, t('s.searching')));
   try {
-    const lang = window.PhoneBoxI18n ? window.PhoneBoxI18n.getLang() : 'en';
-    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=${encodeURIComponent(lang)}&format=json`);
-    const j = await r.json();
-    const res = j.results || [];
-    box.replaceChildren(...(res.length ? res.map((c) => h('button', { onclick: () => {
-      // a new place keeps the temperature unit
-      cfg.weather = { ...cfg.weather, city: c.name, lat: +c.latitude.toFixed(3), lon: +c.longitude.toFixed(3) };
-      bindForm(); changed(); box.hidden = true; toast(`Location: ${c.name}`);
-    } }, c.name, ' ', h('small', {}, [c.admin1, c.country].filter(Boolean).join(', ')))) : [h('button', { disabled: true }, t('s.noResults'))]));
+    const lang = window.PhoneBoxI18n ? window.PhoneBoxI18n.getLang() : 'pt';
+    const fetchOm = async (term) => {
+      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(term)}&count=10&language=${encodeURIComponent(lang)}&format=json`);
+      const j = await r.json();
+      return j.results || [];
+    };
+    let res = await fetchOm(q);
+    // Open-Meteo geocoding returns empty when neighborhood + city are combined (e.g. "Bairro, Rio de Janeiro")
+    if (!res.length) {
+      const parts = q.split(/[,;-]|\s+(?:rio|sao|belo|porto|curitiba|brasilia|salvador|fortaleza|recife|manaus)/i);
+      const firstWord = (parts[0] || q.split(/\s+/)[0] || '').trim();
+      if (firstWord && firstWord.toLowerCase() !== q.toLowerCase()) {
+        const sub = await fetchOm(firstWord);
+        const norm = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        const qWords = norm(q).split(/[\s,;-]+/).filter((w) => w.length > 2);
+        const filtered = sub.filter((c) => {
+          const hay = norm([c.name, c.admin1, c.admin2, c.country].filter(Boolean).join(' '));
+          return qWords.every((w) => hay.includes(w));
+        });
+        res = filtered.length ? filtered : sub;
+      }
+    }
+    if (!res.length) {
+      try {
+        const nr = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=6`);
+        const nj = await nr.json();
+        if (Array.isArray(nj) && nj.length) {
+          res = nj.map((item) => {
+            const addr = item.address || {};
+            const suburb = addr.suburb || addr.neighbourhood || addr.quarter || addr.city_district || item.name || q.split(',')[0].trim();
+            const city = addr.city || addr.town || addr.municipality || addr.state || '';
+            const country = addr.country || '';
+            return {
+              name: suburb,
+              admin1: city,
+              country,
+              latitude: parseFloat(item.lat),
+              longitude: parseFloat(item.lon)
+            };
+          });
+        }
+      } catch (_) {}
+    }
+    box.replaceChildren(...(res.length ? res.map((c) => {
+      const displayCity = c.admin1 && c.admin1.toLowerCase() !== c.name.toLowerCase() ? `${c.name}, ${c.admin1}` : c.name;
+      return h('button', { onclick: () => {
+        cfg.weather = { ...cfg.weather, city: displayCity, lat: +Number(c.latitude).toFixed(4), lon: +Number(c.longitude).toFixed(4) };
+        bindForm(); changed(); box.hidden = true; toast(`Location: ${displayCity}`);
+        save();
+      } }, displayCity, ' ', h('small', {}, [c.admin2 && c.admin2 !== c.admin1 ? c.admin2 : null, c.country].filter(Boolean).join(', ')));
+    }) : [h('button', { disabled: true }, t('s.noResults'))]));
   } catch (_) { box.replaceChildren(h('button', { disabled: true }, t('s.searchFailed'))); }
 }
 
@@ -3535,7 +3950,22 @@ async function loadInfo() {
       : 'No LAN or Tailscale address found';
     lanInfo = lan;
     renderLanStatus();
-    $('restartBtn').hidden = !lan.restartNeeded;
+    const legacy = await (await fetch('/api/legacy/info')).json();
+    $('legacyUrls').replaceChildren(...(legacy.urls.length
+      ? legacy.urls.flatMap((u, idx) => [...(idx ? [', '] : []), h('a', { href: u, target: '_blank', rel: 'noopener' }, h('code', {}, u))])
+      : ['Nenhum IP de rede local encontrado']));
+    if ($('tabletStripUrl')) {
+      const firstUrl = legacy.urls?.[0] || '/legacy/';
+      $('tabletStripUrl').href = firstUrl;
+      $('tabletStripUrl').textContent = firstUrl;
+    }
+    if ($('desktopWarn')) {
+      $('desktopWarn').hidden = i.interactiveDesktop !== false;
+    }
+    $('legacyStatus').textContent = legacy.active
+      ? `Ativo na porta ${legacy.port}` + (legacy.allowPrivateLanOnly ? ' (somente rede local)' : '')
+      : legacy.configured ? 'Salve e reinicie para ativar' : 'Desativado';
+    $('restartBtn').hidden = !(lan.restartNeeded || legacy.restartNeeded);
     renderUpdate(await (await fetch('/api/update')).json());
     renderWebhooks(lan);
     const [claudeHook, codexHook] = await Promise.all([
@@ -3562,7 +3992,7 @@ async function loadInfo() {
 // The form reads every section it binds and renders, so a config without one — an older export, or a
 // hand-trimmed paste in Apply JSON — gets the same defaults a fresh load does before anything renders.
 function fillDefaults() {
-  cfg.pages = fitPages(cfg.pages); cfg.shortcuts ??= []; cfg.rules ??= []; cfg.display ??= {}; cfg.night = { enabled: true, start: '00:30', end: '07:30', brightness: 0.02, ...cfg.night }; cfg.weather ??= {}; cfg.weather.unit ??= 'celsius'; cfg.weather.model ??= ''; cfg.photos ??= { source: 'folder', folder: '', subfolders: true, immichUrl: '', immichKey: '', immichAlbum: '', immichAlbumName: '' }; cfg.lan ??= { enabled: false, port: 8766 }; cfg.updates ??= { auto: true, repo: 'ersinkoc/phonebox' }; cfg.claude ??= { phoneApprovals: true, timeoutSec: 90, onlyWhenAway: false, shareSessionTitles: false, shareConversation: false }; cfg.opencode ??= { phoneApprovals: false, timeoutSec: 90, onlyWhenAway: false, alwaysCountdownSec: 10, watchWsl: false, shareSessionTitles: false, sessions: false };
+  cfg.pages = fitPages(cfg.pages); cfg.shortcuts ??= []; cfg.rules ??= []; cfg.display ??= {}; cfg.night = { enabled: true, start: '00:30', end: '07:30', brightness: 0.02, ...cfg.night }; cfg.weather ??= {}; cfg.weather.unit ??= 'celsius'; cfg.weather.model ??= ''; cfg.photos ??= { source: 'folder', folder: '', subfolders: true, immichUrl: '', immichKey: '', immichAlbum: '', immichAlbumName: '' }; cfg.lan ??= { enabled: false, port: 8766 }; cfg.legacyWeb ??= { enabled: true, port: 8788, allowPrivateLanOnly: true }; cfg.updates ??= { auto: false, repo: 'metrobeft/phonebox' }; cfg.claude ??= { phoneApprovals: true, timeoutSec: 90, onlyWhenAway: false, shareSessionTitles: false, shareConversation: false }; cfg.opencode ??= { phoneApprovals: false, timeoutSec: 90, onlyWhenAway: false, alwaysCountdownSec: 10, watchWsl: false, shareSessionTitles: false, sessions: false };
   cfg.codexBar ??= { providers: ['claude', 'codex', 'antigravity'], rotate: true, pageSize: 2, rotateInterval: 8 };
   for (const [k, v] of Object.entries({ language: 'auto', hour12: false, idleReturnSec: 90, switchCountdownSec: 3, touchGraceSec: 20, minDwellSec: 15, holdMaxMin: 30, keepAwake: true, openOnConnect: true,
     showSeconds: true, vibrate: true, finishToast: true, volumeKeys: true, artTint: true, nightWhenUnreachable: false, unreachableNightDelayMin: 5, proximityWake: true, orientation: 'landscape', theme: 'default', accent: '#2dd4bf' })) cfg.display[k] ??= v;
@@ -3607,6 +4037,10 @@ async function doSave() {
   let r;
   try {
     r = await fetch('/api/settings', { method: 'PUT', headers, body: JSON.stringify(cfg) });
+    if (r.status === 409) {
+      // If background config version bumped (e.g. icon seed or external update), save without version lock so user changes are never lost.
+      r = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cfg) });
+    }
   } catch (_) {
     toast(t('s.couldNotSave'), true);
     return false;
