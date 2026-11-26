@@ -9,7 +9,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 /**
- * Botão e pílula estilo Anime Cel-Shaded (arredondado macio, reflexo superior e brilho sakura ao toque).
+ * Botão e pílula estilo Living World Cel-Shaded parametrizado pela paleta do tema ativo.
  */
 public final class AnimeButtonDrawable extends Drawable {
 
@@ -21,20 +21,18 @@ public final class AnimeButtonDrawable extends Drawable {
     private final RectF glossRect = new RectF();
 
     private final float density;
-    private final boolean pressed;
     private final boolean pillStyle;
 
-    public AnimeButtonDrawable(int fillColor, int borderColor, int gemColor,
+    public AnimeButtonDrawable(int fillColor, int borderColor, int gemColor, int glossColor,
                                float density, boolean pressed, boolean pillStyle) {
         this.density = density;
-        this.pressed = pressed;
         this.pillStyle = pillStyle;
 
         fillPaint.setStyle(Paint.Style.FILL);
         fillPaint.setColor(fillColor);
 
         glossPaint.setStyle(Paint.Style.FILL);
-        glossPaint.setColor(pressed ? 0x40FFFFFF : 0x26FFE6F9);
+        glossPaint.setColor(pressed ? 0x40FFFFFF : glossColor);
 
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(Math.max(1.1f, (pressed ? 1.8f : 1.2f) * density));

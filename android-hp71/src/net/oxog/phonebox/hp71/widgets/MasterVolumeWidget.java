@@ -174,6 +174,8 @@ public final class MasterVolumeWidget implements DashboardWidget {
             ThemeColors c = AppTheme.get().colors();
             trackPaint.setColor(c.trackBg);
             fillPaint.setColor(muted ? c.red : c.accent);
+            animeRimPaint.setColor(ThemeColors.withAlpha(c.border, 0xAA));
+            animeTipPaint.setColor(ThemeColors.withAlpha(c.textPrimary, 0xF0));
             invalidate();
         }
 

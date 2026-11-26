@@ -600,18 +600,22 @@
 <div id="toast" class="toast hidden"></div>
 
 <div id="theme-settings" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="theme-title">
-  <div class="modal-card theme-settings-card">
-    <button type="button" id="close-settings" class="tb-btn right" aria-label="Fechar configurações">Fechar</button>
-    <h2 id="theme-title">Configurações</h2>
-    <fieldset class="theme-options">
-      <legend>Tema do painel</legend>
-      <label class="theme-option"><img src="/legacy/theme_anime.png" alt=""><input type="radio" name="panel-theme" value="anime"> Anime</label>
-      <label class="theme-option"><img src="/legacy/theme_hack.png" alt=""><input type="radio" name="panel-theme" value="hack"> Hack</label>
-      <label class="theme-option theme-option-default"><span aria-hidden="true"></span><input type="radio" name="panel-theme" value="default"> Default</label>
-    </fieldset>
-    <div class="theme-effects-bar clearfix">
-      <label class="theme-effects-option"><input id="theme-effects" type="checkbox"> Animar temas (Hack: Matrix/Glitch · Anime: Sakura/Estrelas)</label>
-      <button type="button" id="btn-hack-test" class="tb-btn right">Testar Animação</button>
+    <div class="modal-card theme-settings-card">
+      <button type="button" id="close-settings" class="tb-btn right" aria-label="Fechar configurações">Fechar</button>
+      <h2 id="theme-title">Theme Studio · Configurações</h2>
+      <fieldset class="theme-options">
+        <legend>Mundos animados do painel</legend>
+        <label class="theme-option"><img src="/legacy/theme_anime.png" alt=""><input type="radio" name="panel-theme" value="sakura"> Sakura Storm</label>
+        <label class="theme-option"><img src="/legacy/theme_lofi.png" alt=""><input type="radio" name="panel-theme" value="lofi"> Lofi Room</label>
+        <label class="theme-option"><img src="/legacy/theme_starfall.png" alt=""><input type="radio" name="panel-theme" value="starfall"> Starfall Aurora</label>
+        <label class="theme-option"><img src="/legacy/theme_miku.png" alt=""><input type="radio" name="panel-theme" value="miku"> Hatsune Miku 01</label>
+        <label class="theme-option"><img src="/legacy/theme_hack.png" alt=""><input type="radio" name="panel-theme" value="hack"> Hack Cyberdeck</label>
+        <label class="theme-option theme-option-default"><span aria-hidden="true"></span><input type="radio" name="panel-theme" value="default"> Default Navy</label>
+      </fieldset>
+      <div class="theme-effects-bar clearfix">
+        <label class="theme-effects-option"><input id="theme-effects" type="checkbox"> Animar mundos (Matrix/Glitch, Sakura, Lofi, Aurora, Miku)</label>
+        <button type="button" id="btn-hack-test" class="tb-btn right">Testar Animação</button>
+      </div>
     </div>
   </div>
 </div>

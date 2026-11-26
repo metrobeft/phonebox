@@ -2332,15 +2332,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #8bd0ff; outline-offs
 #anime-sky-bg, #anime-sparkle-fx, #anime-tb-art, #anime-tb-ribbon { display: none; }
 
 #theme-settings { z-index: 75; }
-.theme-settings-card { width: 94%; max-width: 540px; overflow: auto; max-height: 88%; }
-.theme-settings-card h2 { font-size: 20px; margin: 0 0 12px; }
+.theme-settings-card { width: 94%; max-width: 580px; overflow: auto; max-height: 90%; }
+.theme-settings-card h2 { font-size: 18px; margin: 0 0 10px; }
 .theme-options { border: 0; margin: 0; padding: 4px 0 0; text-align: left; }
-.theme-options legend { font-weight: bold; padding: 0; }
-.theme-option { display: inline-block; vertical-align: top; width: 31%; margin: 0 1% 8px 0; padding: 5px; background: #203859; border: 1px solid #405d85; -webkit-border-radius: 4px; border-radius: 4px; cursor: pointer; }
-.theme-option img, .theme-option-default span { display: block; width: 100%; height: 46px; margin: 0 0 6px; object-fit: cover; background-color: #000; }
+.theme-options legend { font-weight: bold; padding: 0 0 6px; font-size: 12px; }
+.theme-option { display: inline-block; vertical-align: top; width: 31.3%; margin: 0 1.4% 8px 0; padding: 5px; font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #203859; border: 1px solid #405d85; -webkit-border-radius: 6px; border-radius: 6px; cursor: pointer; }
+.orient-portrait .theme-option { width: 47.5%; margin: 0 1.8% 8px 0; }
+.theme-option img, .theme-option-default span { display: block; width: 100%; height: 48px; margin: 0 0 5px; object-fit: cover; background-color: #000; -webkit-border-radius: 4px; border-radius: 4px; }
 .theme-option-default span { background-color: #152641; border-bottom: 3px solid #8bd0ff; }
 .theme-effects-bar { padding-top: 6px; border-top: 1px solid #2b4267; margin-top: 4px; }
-.theme-effects-option { display: inline-block; padding: 6px 0; font-size: 12px; }
+.theme-effects-option { display: inline-block; padding: 6px 0; font-size: 11.5px; }
 
 /* ==================== HACK THEME 2.0 — ZERO-DAY CYBERDECK TERMINAL ==================== */
 /* Full-screen Canvas Layers */
@@ -3052,3 +3053,168 @@ button:focus-visible, a:focus-visible { outline: 2px solid #8bd0ff; outline-offs
   border-top-color: transparent !important;
   border-bottom-color: #ff7ed4 !important;
 }
+
+/* ==================== LIVING WORLD OVERRIDES: LOFI ROOM ==================== */
+#app.world-lofi, .world-lofi #anime-entrance { background-color: #130a1e !important; }
+.world-lofi #topbar {
+  background-color: rgba(29, 16, 44, 0.92) !important;
+  border-bottom-color: rgba(255, 179, 138, 0.65) !important;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(255, 224, 102, 0.38), 0 2px 14px rgba(255, 179, 138, 0.20);
+  box-shadow: inset 0 -1px 0 rgba(255, 224, 102, 0.38), 0 2px 14px rgba(255, 179, 138, 0.20);
+}
+.world-lofi .dot { border-color: #ffe066; }
+.world-lofi .dot-ok { background-color: #9fe3c9; -webkit-box-shadow: 0 0 7px #9fe3c9; box-shadow: 0 0 7px #9fe3c9; }
+.world-lofi .host-name { color: #fff4ec !important; text-shadow: 0 0 8px rgba(255, 179, 138, 0.68); }
+.world-lofi #anime-tb-art { border-color: rgba(255, 179, 138, 0.78); background-color: #1a0d29; -webkit-box-shadow: 0 0 8px rgba(255, 179, 138, 0.32); box-shadow: 0 0 8px rgba(255, 179, 138, 0.32); }
+.world-lofi .card, .world-lofi .pr-kpi-card, .world-lofi .wx-gauge-card, .world-lofi .wx-topbar, .world-lofi .dk-topbar, .world-lofi .cp-head {
+  background-color: rgba(33, 19, 48, 0.82) !important;
+  background-image: -webkit-linear-gradient(top, rgba(255, 240, 220, 0.11) 0%, rgba(255, 179, 138, 0.04) 28%, rgba(19, 10, 30, 0.0) 60%);
+  background-image: linear-gradient(180deg, rgba(255, 240, 220, 0.11) 0%, rgba(255, 179, 138, 0.04) 28%, rgba(19, 10, 30, 0.0) 60%);
+  border-color: #835584 !important;
+}
+.world-lofi .card.card-clock, .world-lofi .card.wx-hero-box, .world-lofi .card.pr-list-card, .world-lofi .card.dk-grid-card, .world-lofi .card.dc-top-card, .world-lofi .card.wx-desk-card {
+  background-color: rgba(53, 30, 74, 0.86) !important;
+  border-color: #ffb38a !important;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 244, 236, 0.28), 0 0 16px rgba(255, 179, 138, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 244, 236, 0.28), 0 0 16px rgba(255, 179, 138, 0.22);
+}
+.world-lofi .card-title, .world-lofi .m-label, .world-lofi .pr-kpi-head { color: #ffb38a !important; }
+.world-lofi .card-title { border-bottom-color: rgba(131, 85, 132, 0.72); }
+.world-lofi .card-title::before, .world-lofi .m-label::before, .world-lofi .pr-kpi-head::before { background-color: #ffe066; -webkit-box-shadow: 0 0 6px rgba(255, 224, 102, 0.85); box-shadow: 0 0 6px rgba(255, 224, 102, 0.85); }
+.world-lofi .clock-time, .world-lofi .night-clock, .world-lofi .wx-time-digits, .world-lofi .wx-hero-temp, .world-lofi .m-val { text-shadow: 0 0 12px rgba(255, 179, 138, 0.50); }
+.world-lofi .clock-sec, .world-lofi .night-sec, .world-lofi .wx-t-sec { color: #ffe066 !important; text-shadow: 0 0 8px rgba(255, 224, 102, 0.55); }
+.world-lofi .c-teal { color: #ffb38a !important; }
+.world-lofi .c-green { color: #9fe3c9 !important; }
+.world-lofi .c-sky, .world-lofi .w-temp, .world-lofi .wx-hero-temp { color: #8ce2ff !important; }
+.world-lofi .c-purple { color: #d4a5ff !important; }
+.world-lofi .c-amber { color: #ffe066 !important; }
+.world-lofi .c-red { color: #ff6e91 !important; }
+.world-lofi .bg-teal { background-color: #ffb38a !important; }
+.world-lofi .bg-green { background-color: #9fe3c9 !important; }
+.world-lofi .bg-sky { background-color: #8ce2ff !important; }
+.world-lofi .bg-purple { background-color: #d4a5ff !important; }
+.world-lofi .bg-amber { background-color: #ffe066 !important; }
+.world-lofi .bg-red { background-color: #ff6e91 !important; }
+.world-lofi .bar-bg, .world-lofi .vol-track, .world-lofi .wx-range-track { background-color: #1d102a !important; border-color: #835584 !important; }
+.world-lofi .bar-fill, .world-lofi .vol-fill { -webkit-box-shadow: 0 0 8px rgba(255, 179, 138, 0.50); box-shadow: 0 0 8px rgba(255, 179, 138, 0.50); }
+.world-lofi .tb-btn, .world-lofi .m-btn:not(.m-btn-play), .world-lofi .v-btn, .world-lofi .mini-btn:not(.active), .world-lofi .wx-subtab:not(.active), .world-lofi .dc-btn:not(.dc-btn-leave), .world-lofi .mix-ico-btn, .world-lofi .dim-opt:not(.active) { background-color: rgba(58, 34, 79, 0.90) !important; border-color: #835584 !important; color: #fff4ec !important; }
+.world-lofi .m-btn-play, .world-lofi .wx-subtab.active, .world-lofi .dc-subtab.active, .world-lofi .dc-chip.active, .world-lofi .mini-btn.active, .world-lofi .dim-opt.active { background-color: #ffb38a !important; border-color: #ffd0b3 !important; color: #1c0d26 !important; -webkit-box-shadow: 0 0 10px rgba(255, 179, 138, 0.48); box-shadow: 0 0 10px rgba(255, 179, 138, 0.48); }
+.world-lofi .sc-btn { background-color: rgba(45, 25, 65, 0.88) !important; border-color: #835584 !important; border-bottom-color: #ffb38a !important; }
+.world-lofi .chart-canvas, .world-lofi .wx-h-canvas { background-color: rgba(21, 11, 34, 0.84) !important; border-color: #835584 !important; }
+.world-lofi .loc-pill, .world-lofi .cw-loc-badge { background-color: rgba(74, 37, 58, 0.92) !important; border-color: #ffb38a !important; color: #fff4ec !important; }
+.world-lofi .modal-card, .world-lofi .theme-settings-card { background-color: rgba(33, 19, 48, 0.96) !important; border-color: #ffb38a !important; -webkit-box-shadow: 0 0 28px rgba(255, 179, 138, 0.30); box-shadow: 0 0 28px rgba(255, 179, 138, 0.30); }
+.world-lofi .theme-option { background-color: #2a183d; border-color: #835584; }
+.world-lofi #navbar { background-color: rgba(17, 8, 26, 0.96) !important; border-top-color: rgba(255, 179, 138, 0.65) !important; }
+.world-lofi .nav-btn { color: #c9a6c4 !important; border-right-color: rgba(131, 85, 132, 0.28); }
+.world-lofi .nav-btn.active { background-color: rgba(53, 30, 74, 0.94) !important; color: #ffb38a !important; border-top-color: #ffb38a !important; text-shadow: 0 0 8px rgba(255, 179, 138, 0.68); -webkit-box-shadow: inset 0 2px 10px rgba(255, 179, 138, 0.24); box-shadow: inset 0 2px 10px rgba(255, 179, 138, 0.24); }
+.world-lofi.nav-top .nav-btn.active, .nav-top .world-lofi .nav-btn.active { border-top-color: transparent !important; border-bottom-color: #ffb38a !important; }
+
+/* ==================== LIVING WORLD OVERRIDES: STARFALL AURORA ==================== */
+#app.world-starfall, .world-starfall #anime-entrance { background-color: #020512 !important; }
+.world-starfall #topbar {
+  background-color: rgba(7, 18, 43, 0.92) !important;
+  border-bottom-color: rgba(127, 231, 255, 0.62) !important;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(109, 255, 176, 0.40), 0 2px 14px rgba(127, 231, 255, 0.20);
+  box-shadow: inset 0 -1px 0 rgba(109, 255, 176, 0.40), 0 2px 14px rgba(127, 231, 255, 0.20);
+}
+.world-starfall .dot { border-color: #6dffb0; }
+.world-starfall .dot-ok { background-color: #6dffb0; -webkit-box-shadow: 0 0 7px #6dffb0; box-shadow: 0 0 7px #6dffb0; }
+.world-starfall .host-name { color: #f0fbff !important; text-shadow: 0 0 8px rgba(127, 231, 255, 0.72); }
+.world-starfall #anime-tb-art { border-color: rgba(127, 231, 255, 0.75); background-color: #061026; -webkit-box-shadow: 0 0 8px rgba(109, 255, 176, 0.30); box-shadow: 0 0 8px rgba(109, 255, 176, 0.30); }
+.world-starfall .card, .world-starfall .pr-kpi-card, .world-starfall .wx-gauge-card, .world-starfall .wx-topbar, .world-starfall .dk-topbar, .world-starfall .cp-head {
+  background-color: rgba(10, 24, 51, 0.80) !important;
+  background-image: -webkit-linear-gradient(top, rgba(196, 234, 255, 0.11) 0%, rgba(109, 255, 176, 0.04) 28%, rgba(2, 5, 18, 0.0) 60%);
+  background-image: linear-gradient(180deg, rgba(196, 234, 255, 0.11) 0%, rgba(109, 255, 176, 0.04) 28%, rgba(2, 5, 18, 0.0) 60%);
+  border-color: #2e6aa6 !important;
+}
+.world-starfall .card.card-clock, .world-starfall .card.wx-hero-box, .world-starfall .card.pr-list-card, .world-starfall .card.dk-grid-card, .world-starfall .card.dc-top-card, .world-starfall .card.wx-desk-card {
+  background-color: rgba(19, 43, 87, 0.86) !important;
+  border-color: #7fe7ff !important;
+  -webkit-box-shadow: inset 0 1px 0 rgba(217, 255, 240, 0.28), 0 0 16px rgba(127, 231, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(217, 255, 240, 0.28), 0 0 16px rgba(127, 231, 255, 0.22);
+}
+.world-starfall .card-title, .world-starfall .m-label, .world-starfall .pr-kpi-head { color: #7fe7ff !important; }
+.world-starfall .card-title { border-bottom-color: rgba(46, 106, 166, 0.72); }
+.world-starfall .card-title::before, .world-starfall .m-label::before, .world-starfall .pr-kpi-head::before { background-color: #6dffb0; -webkit-box-shadow: 0 0 6px rgba(109, 255, 176, 0.85); box-shadow: 0 0 6px rgba(109, 255, 176, 0.85); }
+.world-starfall .clock-time, .world-starfall .night-clock, .world-starfall .wx-time-digits, .world-starfall .wx-hero-temp, .world-starfall .m-val { text-shadow: 0 0 12px rgba(127, 231, 255, 0.55); }
+.world-starfall .clock-sec, .world-starfall .night-sec, .world-starfall .wx-t-sec { color: #6dffb0 !important; text-shadow: 0 0 8px rgba(109, 255, 176, 0.60); }
+.world-starfall .c-teal { color: #7fe7ff !important; }
+.world-starfall .c-green { color: #6dffb0 !important; }
+.world-starfall .c-sky, .world-starfall .w-temp, .world-starfall .wx-hero-temp { color: #7fe7ff !important; }
+.world-starfall .c-purple { color: #b57cff !important; }
+.world-starfall .c-amber { color: #ffe066 !important; }
+.world-starfall .c-red { color: #ff6b9d !important; }
+.world-starfall .bg-teal { background-color: #7fe7ff !important; }
+.world-starfall .bg-green { background-color: #6dffb0 !important; }
+.world-starfall .bg-sky { background-color: #7fe7ff !important; }
+.world-starfall .bg-purple { background-color: #b57cff !important; }
+.world-starfall .bg-amber { background-color: #ffe066 !important; }
+.world-starfall .bg-red { background-color: #ff6b9d !important; }
+.world-starfall .bar-bg, .world-starfall .vol-track, .world-starfall .wx-range-track { background-color: #0a1630 !important; border-color: #2e6aa6 !important; }
+.world-starfall .bar-fill, .world-starfall .vol-fill { -webkit-box-shadow: 0 0 8px rgba(109, 255, 176, 0.50); box-shadow: 0 0 8px rgba(109, 255, 176, 0.50); }
+.world-starfall .tb-btn, .world-starfall .m-btn:not(.m-btn-play), .world-starfall .v-btn, .world-starfall .mini-btn:not(.active), .world-starfall .wx-subtab:not(.active), .world-starfall .dc-btn:not(.dc-btn-leave), .world-starfall .mix-ico-btn, .world-starfall .dim-opt:not(.active) { background-color: rgba(22, 50, 97, 0.90) !important; border-color: #2e6aa6 !important; color: #f0fbff !important; }
+.world-starfall .m-btn-play, .world-starfall .wx-subtab.active, .world-starfall .dc-subtab.active, .world-starfall .dc-chip.active, .world-starfall .mini-btn.active, .world-starfall .dim-opt.active { background-color: #7fe7ff !important; border-color: #b5f3ff !important; color: #031024 !important; -webkit-box-shadow: 0 0 10px rgba(127, 231, 255, 0.50); box-shadow: 0 0 10px rgba(127, 231, 255, 0.50); }
+.world-starfall .sc-btn { background-color: rgba(16, 34, 71, 0.88) !important; border-color: #2e6aa6 !important; border-bottom-color: #6dffb0 !important; }
+.world-starfall .chart-canvas, .world-starfall .wx-h-canvas { background-color: rgba(6, 16, 36, 0.84) !important; border-color: #2e6aa6 !important; }
+.world-starfall .loc-pill, .world-starfall .cw-loc-badge { background-color: rgba(14, 49, 82, 0.92) !important; border-color: #7fe7ff !important; color: #f0fbff !important; }
+.world-starfall .modal-card, .world-starfall .theme-settings-card { background-color: rgba(10, 24, 51, 0.96) !important; border-color: #7fe7ff !important; -webkit-box-shadow: 0 0 28px rgba(109, 255, 176, 0.30); box-shadow: 0 0 28px rgba(109, 255, 176, 0.30); }
+.world-starfall .theme-option { background-color: #102247; border-color: #2e6aa6; }
+.world-starfall #navbar { background-color: rgba(4, 10, 26, 0.96) !important; border-top-color: rgba(127, 231, 255, 0.62) !important; }
+.world-starfall .nav-btn { color: #88b4dc !important; border-right-color: rgba(46, 106, 166, 0.28); }
+.world-starfall .nav-btn.active { background-color: rgba(19, 43, 87, 0.94) !important; color: #7fe7ff !important; border-top-color: #7fe7ff !important; text-shadow: 0 0 8px rgba(127, 231, 255, 0.72); -webkit-box-shadow: inset 0 2px 10px rgba(109, 255, 176, 0.24); box-shadow: inset 0 2px 10px rgba(109, 255, 176, 0.24); }
+.world-starfall.nav-top .nav-btn.active, .nav-top .world-starfall .nav-btn.active { border-top-color: transparent !important; border-bottom-color: #7fe7ff !important; }
+
+/* ==================== LIVING WORLD OVERRIDES: HATSUNE MIKU 01 STAGE ==================== */
+#app.world-miku, .world-miku #anime-entrance { background-color: #031015 !important; }
+.world-miku #topbar {
+  background-color: rgba(6, 28, 36, 0.92) !important;
+  border-bottom-color: rgba(57, 197, 187, 0.72) !important;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(255, 46, 136, 0.45), 0 2px 14px rgba(57, 197, 187, 0.24);
+  box-shadow: inset 0 -1px 0 rgba(255, 46, 136, 0.45), 0 2px 14px rgba(57, 197, 187, 0.24);
+}
+.world-miku .dot { border-color: #ff2e88; }
+.world-miku .dot-ok { background-color: #39c5bb; -webkit-box-shadow: 0 0 7px #39c5bb; box-shadow: 0 0 7px #39c5bb; }
+.world-miku .host-name { color: #eefffe !important; text-shadow: 0 0 8px rgba(57, 197, 187, 0.75); }
+.world-miku #anime-tb-art { border-color: rgba(57, 197, 187, 0.85); background-color: #04161c; -webkit-box-shadow: 0 0 8px rgba(57, 197, 187, 0.36); box-shadow: 0 0 8px rgba(57, 197, 187, 0.36); }
+.world-miku .card, .world-miku .pr-kpi-card, .world-miku .wx-gauge-card, .world-miku .wx-topbar, .world-miku .dk-topbar, .world-miku .cp-head {
+  background-color: rgba(7, 32, 41, 0.80) !important;
+  background-image: -webkit-linear-gradient(top, rgba(182, 255, 249, 0.12) 0%, rgba(57, 197, 187, 0.04) 28%, rgba(3, 16, 21, 0.0) 60%);
+  background-image: linear-gradient(180deg, rgba(182, 255, 249, 0.12) 0%, rgba(57, 197, 187, 0.04) 28%, rgba(3, 16, 21, 0.0) 60%);
+  border-color: #218688 !important;
+}
+.world-miku .card.card-clock, .world-miku .card.wx-hero-box, .world-miku .card.pr-list-card, .world-miku .card.dk-grid-card, .world-miku .card.dc-top-card, .world-miku .card.wx-desk-card {
+  background-color: rgba(13, 54, 68, 0.86) !important;
+  border-color: #39c5bb !important;
+  -webkit-box-shadow: inset 0 1px 0 rgba(182, 255, 249, 0.30), 0 0 16px rgba(57, 197, 187, 0.24);
+  box-shadow: inset 0 1px 0 rgba(182, 255, 249, 0.30), 0 0 16px rgba(57, 197, 187, 0.24);
+}
+.world-miku .card-title, .world-miku .m-label, .world-miku .pr-kpi-head { color: #39c5bb !important; }
+.world-miku .card-title { border-bottom-color: rgba(33, 134, 136, 0.72); }
+.world-miku .card-title::before, .world-miku .m-label::before, .world-miku .pr-kpi-head::before { background-color: #ff2e88; -webkit-box-shadow: 0 0 6px rgba(255, 46, 136, 0.85); box-shadow: 0 0 6px rgba(255, 46, 136, 0.85); }
+.world-miku .clock-time, .world-miku .night-clock, .world-miku .wx-time-digits, .world-miku .wx-hero-temp, .world-miku .m-val { text-shadow: 0 0 12px rgba(57, 197, 187, 0.62); }
+.world-miku .clock-sec, .world-miku .night-sec, .world-miku .wx-t-sec { color: #ff2e88 !important; text-shadow: 0 0 8px rgba(255, 46, 136, 0.62); }
+.world-miku .c-teal { color: #39c5bb !important; }
+.world-miku .c-green { color: #5bf5b8 !important; }
+.world-miku .c-sky, .world-miku .w-temp, .world-miku .wx-hero-temp { color: #7fe7ff !important; }
+.world-miku .c-purple { color: #ff5ca8 !important; }
+.world-miku .c-amber { color: #ffd866 !important; }
+.world-miku .c-red { color: #ff2e88 !important; }
+.world-miku .bg-teal { background-color: #39c5bb !important; }
+.world-miku .bg-green { background-color: #5bf5b8 !important; }
+.world-miku .bg-sky { background-color: #7fe7ff !important; }
+.world-miku .bg-purple { background-color: #ff5ca8 !important; }
+.world-miku .bg-amber { background-color: #ffd866 !important; }
+.world-miku .bg-red { background-color: #ff2e88 !important; }
+.world-miku .bar-bg, .world-miku .vol-track, .world-miku .wx-range-track { background-color: #061b22 !important; border-color: #218688 !important; }
+.world-miku .bar-fill, .world-miku .vol-fill { -webkit-box-shadow: 0 0 8px rgba(57, 197, 187, 0.55); box-shadow: 0 0 8px rgba(57, 197, 187, 0.55); }
+.world-miku .tb-btn, .world-miku .m-btn:not(.m-btn-play), .world-miku .v-btn, .world-miku .mini-btn:not(.active), .world-miku .wx-subtab:not(.active), .world-miku .dc-btn:not(.dc-btn-leave), .world-miku .mix-ico-btn, .world-miku .dim-opt:not(.active) { background-color: rgba(15, 61, 76, 0.90) !important; border-color: #218688 !important; color: #eefffe !important; }
+.world-miku .m-btn-play, .world-miku .wx-subtab.active, .world-miku .dc-subtab.active, .world-miku .dc-chip.active, .world-miku .mini-btn.active, .world-miku .dim-opt.active { background-color: #39c5bb !important; border-color: #7fe7ff !important; color: #021417 !important; -webkit-box-shadow: 0 0 10px rgba(57, 197, 187, 0.52); box-shadow: 0 0 10px rgba(57, 197, 187, 0.52); }
+.world-miku .sc-btn { background-color: rgba(10, 43, 54, 0.88) !important; border-color: #218688 !important; border-bottom-color: #ff2e88 !important; }
+.world-miku .chart-canvas, .world-miku .wx-h-canvas { background-color: rgba(4, 20, 26, 0.84) !important; border-color: #218688 !important; }
+.world-miku .loc-pill, .world-miku .cw-loc-badge { background-color: rgba(9, 59, 62, 0.92) !important; border-color: #39c5bb !important; color: #eefffe !important; }
+.world-miku .modal-card, .world-miku .theme-settings-card { background-color: rgba(7, 32, 41, 0.96) !important; border-color: #39c5bb !important; -webkit-box-shadow: 0 0 28px rgba(57, 197, 187, 0.34); box-shadow: 0 0 28px rgba(57, 197, 187, 0.34); }
+.world-miku .theme-option { background-color: #0a2b36; border-color: #218688; }
+.world-miku #navbar { background-color: rgba(3, 17, 23, 0.96) !important; border-top-color: rgba(57, 197, 187, 0.68) !important; }
+.world-miku .nav-btn { color: #79c4c7 !important; border-right-color: rgba(33, 134, 136, 0.28); }
+.world-miku .nav-btn.active { background-color: rgba(13, 54, 68, 0.94) !important; color: #39c5bb !important; border-top-color: #39c5bb !important; text-shadow: 0 0 8px rgba(57, 197, 187, 0.72); -webkit-box-shadow: inset 0 2px 10px rgba(255, 46, 136, 0.22); box-shadow: inset 0 2px 10px rgba(255, 46, 136, 0.22); }
+.world-miku.nav-top .nav-btn.active, .nav-top .world-miku .nav-btn.active { border-top-color: transparent !important; border-bottom-color: #39c5bb !important; }

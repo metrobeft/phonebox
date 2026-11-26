@@ -14,7 +14,8 @@ import net.oxog.phonebox.hp71.theme.hack.HackTileDrawable;
 
 /**
  * Fábrica central de drawables 100% compatível com Android 4.2.2 (API 17).
- * No tema Hack, substitui contêineres arredondados por geometria Cyberdeck chanfrada com colchetes HUD.
+ * No tema Hack usa geometria Cyberdeck chanfrada; nos mundos vivos (Sakura, Lofi, Starfall, Miku)
+ * aplica cards translúcidos cristalinos com brilho superior e detalhes no tom exato de cada mundo.
  */
 public final class DrawableFactory {
 
@@ -49,15 +50,19 @@ public final class DrawableFactory {
         if (theme.isAnime()) {
             float d = theme.dimens().density;
             if (variant == 1) {
-                return new AnimeCardDrawable(c.cardHighlightBg, c.accent, c.accent, c.starGold, d, true);
+                return new AnimeCardDrawable(c.cardHighlightBg, c.accent, c.accent, c.starGold,
+                        c.worldSheenHighlight, c.worldRimHighlight, d, true);
             }
             if (variant == 2) {
-                return new AnimeCardDrawable(c.cardAltBg, c.border, c.purple, c.starGold, d, false);
+                return new AnimeCardDrawable(c.cardAltBg, c.border, c.purple, c.starGold,
+                        c.worldSheen, c.worldRim, d, false);
             }
             if (variant == 3) {
-                return new AnimeCardDrawable(0xD8143B3A, c.green, c.green, c.starGold, d, true);
+                return new AnimeCardDrawable(c.greenDim, c.green, c.green, c.starGold,
+                        c.worldSheenHighlight, c.worldRimHighlight, d, true);
             }
-            return new AnimeCardDrawable(c.cardBg, c.border, c.accent, c.starGold, d, false);
+            return new AnimeCardDrawable(c.cardBg, c.border, c.accent, c.starGold,
+                    c.worldSheen, c.worldRim, d, false);
         }
         int stroke = theme.isBorderlessCards() ? 0 : theme.dimens().strokePx;
         float r = theme.effectiveCardRadiusPx();
@@ -79,7 +84,8 @@ public final class DrawableFactory {
             return new HackButtonDrawable(fillColor, strokeColor, strokeColor, d.density, false, true);
         }
         if (theme.isAnime()) {
-            return new AnimeButtonDrawable(fillColor, strokeColor, theme.colors().starGold, d.density, false, true);
+            ThemeColors c = theme.colors();
+            return new AnimeButtonDrawable(fillColor, strokeColor, c.starGold, c.worldRim, d.density, false, true);
         }
         return roundedRect(fillColor, strokeColor, d.strokePx, d.pillRadius);
     }
@@ -99,9 +105,10 @@ public final class DrawableFactory {
         }
         if (t != null && t.isAnime()) {
             float d = t.dimens().density;
+            ThemeColors c = t.colors();
             StateListDrawable sld = new StateListDrawable();
-            Drawable pressed = new AnimeButtonDrawable(pressedBg, pressedStroke, t.colors().starGold, d, true, false);
-            Drawable normal = new AnimeButtonDrawable(normalBg, strokeColor, t.colors().accent, d, false, false);
+            Drawable pressed = new AnimeButtonDrawable(pressedBg, pressedStroke, c.starGold, c.worldRimHighlight, d, true, false);
+            Drawable normal = new AnimeButtonDrawable(normalBg, strokeColor, c.accent, c.worldRim, d, false, false);
             sld.addState(new int[] { android.R.attr.state_pressed }, pressed);
             sld.addState(new int[] { android.R.attr.state_selected }, pressed);
             sld.addState(new int[] { }, normal);
@@ -116,9 +123,6 @@ public final class DrawableFactory {
         return sld;
     }
 
-    /**
-     * Tile estilo Stream Deck com faixa colorida inferior (compatível API 17 via LayerDrawable).
-     */
     public static StateListDrawable accentBottomTile(
             int normalBg, int pressedBg, int borderColor, int accentBarColor, int strokePx, int barHeightPx, float radiusPx) {
         AppTheme t = AppTheme.get();
@@ -133,9 +137,10 @@ public final class DrawableFactory {
         }
         if (t != null && t.isAnime()) {
             float d = t.dimens().density;
+            ThemeColors c = t.colors();
             StateListDrawable sld = new StateListDrawable();
-            Drawable pressed = new AnimeTileDrawable(pressedBg, t.colors().accent, accentBarColor, d, true);
-            Drawable normal = new AnimeTileDrawable(normalBg, borderColor, accentBarColor, d, false);
+            Drawable pressed = new AnimeTileDrawable(pressedBg, c.accent, accentBarColor, c.worldSheenHighlight, c.starGold, d, true);
+            Drawable normal = new AnimeTileDrawable(normalBg, borderColor, accentBarColor, c.worldRim, c.accent, d, false);
             sld.addState(new int[] { android.R.attr.state_pressed }, pressed);
             sld.addState(new int[] { }, normal);
             return sld;

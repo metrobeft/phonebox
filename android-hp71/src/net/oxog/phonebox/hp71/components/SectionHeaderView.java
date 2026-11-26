@@ -154,6 +154,10 @@ public class SectionHeaderView extends LinearLayout {
 
     public void applyTheme() {
         ThemeColors c = AppTheme.get().colors();
+        animeRulePaint.setColor(ThemeColors.withAlpha(c.border, 0x66));
+        animeAccentPaint.setColor(ThemeColors.withAlpha(c.accent, 0xCC));
+        animeGoldPaint.setColor(c.starGold);
+        starGemView.setColor(c.starGold);
         promptView.setTextColor(c.glitchCyan);
         promptView.setVisibility(c.isHack ? VISIBLE : GONE);
         starGemView.setVisibility(c.isAnime ? VISIBLE : GONE);
@@ -170,6 +174,11 @@ public class SectionHeaderView extends LinearLayout {
             super(context);
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(0xFFFFD56B);
+        }
+
+        void setColor(int color) {
+            paint.setColor(color);
+            invalidate();
         }
 
         @Override

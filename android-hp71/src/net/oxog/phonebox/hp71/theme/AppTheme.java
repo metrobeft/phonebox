@@ -56,6 +56,10 @@ public final class AppTheme {
         return colors != null && colors.isAnime;
     }
 
+    public String worldId() {
+        return colors != null ? colors.id : "default";
+    }
+
     public int effectiveCardRadiusPx() {
         if (isHack()) return 0;
         if (isAnime()) return dimens.dp(12);

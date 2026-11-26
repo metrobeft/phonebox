@@ -1,19 +1,24 @@
-# PhoneBox HP 7.1 — Aplicativo Android 100% Nativo (API 17 / v1.5.0)
+# PhoneBox HP 7.1 — Aplicativo Android 100% Nativo (API 17 / v2.0.0)
 
 Aplicativo Android **100% nativo em Java puro** (zero WebView, zero AndroidX/Jetpack, zero Kotlin stdlib, zero bibliotecas externas), projetado sob medida para o tablet **HP 7.1 1201** rodando **Android 4.2.2 Jelly Bean (API 17)** (`Quad-core Cortex-A7 1 GHz`, `1 GB RAM`, tela `7" 1024×600`, com a barra preta fixa de navegação do sistema em paisagem e retrato).
 
 Conecta-se diretamente ao `PhoneBoxAgent` pela rede local privada (`HTTP`, porta `8788`), utilizando o endpoint unificado `/api/legacy/sync`, verificação automática de atualizações via `/api/legacy/apk-info` e **polling dedicado de 5s para cotas de IA apenas enquanto a aba IA estiver visível**.
 
-> Baseado no projeto open-source [ersinkoc/phonebox](https://github.com/ersinkoc/phonebox) (Licença MIT). Este módulo nativo em Java foi desenvolvido especificamente neste fork para reviver tablets Android 4.2.2.
+> Baseado no projeto open-source [ersinkoc/phonebox](https://github.com/ersinkoc/phonebox) (Licença MIT). Este módulo nativo em Java foi desenvolvido especificamente neste fork para reviver tablets Android 4.2.2, com o **Theme Studio v2.0** inspirado em [metrobeft/designer-temas-animados](https://github.com/metrobeft/designer-temas-animados).
 
 ---
 
-## Destaques desta versão (`v1.5.0` / `versionCode=9`)
+## Destaques desta versão (`v2.0.0` / `versionCode=10`)
 
+- **Theme Studio v2.0 — 6 Mundos Animados com Galeria Visual (2×3) em Configurações:**
+  - **Sakura Storm (`sakura` / alias `anime`):** céu crepuscular, lua crescente, montanhas, galho de cerejeira com 2 lanternas japonesas (`chōchin`) balançando, pétalas 3D com rajadas de vento, estrelas cadentes e cards em cristal translúcido.
+  - **Lofi Room (`lofi`):** janela noturna chuvosa com skyline, fio de pisca-pisca quente, chuva inclinada + gotas lentas no vidro, abajur pêssego, vapor de chá, relâmpago distante suave, entrada com vinil girando e mini equalizador no topo.
+  - **Starfall Aurora (`starfall`):** cortinas ondulantes de Aurora Boreal (esmeralda/violeta), constelações em ciano autodesenhadas (Orion, Cassiopeia, Cygnus), portal Torii nas colinas, vaga-lumes dourados e meteoros.
+  - **Hatsune Miku 01 (`miku`):** palco vocaloid em ciano `#39C5BB` + magenta `#FF2E88`, ondas synth, equalizador de 22 bandas com picos, notas musicais desenhadas em Canvas, holograma translúcido da mascote (`miku_mascot.png`, ~58 KB seguro para 1 GB RAM) e entrada de palco dedicada. *(Artes `miku_mascot.png` / `theme_miku.png`: uso não-comercial de fã `© Crypton Future Media, INC. www.piapro.net`, excluídas da MIT.)*
+  - **Hack 2.0 (*Zero-Day Cyberdeck* — `theme/hack/`):** chuva Matrix em 3 camadas, scanlines CRT + cortes cromáticos RGB + jitter horizontal, boot interativo typewriter, terminal vivo na barra superior e engine global de glitch legível `h4ck3r`.
+  - **Default Navy (`default`):** tema base clássico limpo.
 - **Auto-Updater de APK integrado (`core/ApkUpdater.java`):** compara `versionCode` e `SHA-256` com o agente no PC, exibe banner/diálogo quando há atualização, baixa com barra de progresso, valida o `SHA-256` e aciona o instalador nativo do Android 4.2.2 (`ACTION_VIEW`).
-- **Tema Hack 2.0 (*Zero-Day Cyberdeck* — `theme/hack/`):** chuva Matrix em 3 camadas, scanlines CRT + cortes cromáticos RGB + jitter horizontal, boot interativo typewriter, terminal vivo na barra superior e engine global de glitch legível `h4ck3r`.
-- **Tema Anime 2.0 (*Sakura Midnight / Neon Tokyo HUD* — `theme/anime/`):** céu crepuscular animado com lua crescente, 42 estrelas cintilantes, 20 pétalas de cerejeira e estrelas cadentes, cards cristal translúcidos cel-shaded, overlay de brilhos + varredura na troca de aba, animação de entrada *Sakura Midnight Bloom* e faixa estelar na barra superior.
-- **Compatibilidade real com Android 4.2.2 (API 17):** zero chamadas API 18+, glifos desenhados nativamente com `Canvas Path` (sem quadrados `□` na fonte `DroidSans`), assinatura v1-only RSA 2048.
+- **Compatibilidade real com Android 4.2.2 (API 17):** zero chamadas API 18+, glifos/notas/estrelas/lanternas/Torii desenhados nativamente com `Canvas Path` (zero quadrados `□` na fonte `DroidSans`), zero alocações em `onDraw()`, assinatura v1-only RSA 2048.
 
 ---
 

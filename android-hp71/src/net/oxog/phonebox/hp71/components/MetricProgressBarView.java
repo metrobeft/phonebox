@@ -138,6 +138,7 @@ public class MetricProgressBarView extends LinearLayout {
         subLeftView.setTextColor(c.textMuted);
         subRightView.setTextColor(c.textMuted);
         barView.setTrackColor(c.trackBg);
+        barView.applyTheme(c);
         updateBarColors();
     }
 
@@ -192,6 +193,12 @@ public class MetricProgressBarView extends LinearLayout {
                 trackPaint.setColor(color);
                 invalidate();
             }
+        }
+
+        void applyTheme(ThemeColors c) {
+            animeRimPaint.setColor(ThemeColors.withAlpha(c.border, 0xAA));
+            animeTipPaint.setColor(ThemeColors.withAlpha(c.textPrimary, 0xF0));
+            invalidate();
         }
 
         void setFillColor(int color) {

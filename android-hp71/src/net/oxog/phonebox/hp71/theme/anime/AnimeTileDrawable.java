@@ -10,7 +10,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 /**
- * Tile cristalino estilo Anime para a grade de atalhos (Stream Deck) no tema Anime 2.0.
+ * Tile cristalino para a grade de atalhos (Stream Deck) nos mundos vivos (Sakura, Lofi, Starfall, Miku).
  */
 public final class AnimeTileDrawable extends Drawable {
 
@@ -27,7 +27,8 @@ public final class AnimeTileDrawable extends Drawable {
     private final float density;
     private final float radiusPx;
 
-    public AnimeTileDrawable(int fillColor, int borderColor, int barColor, float density, boolean pressed) {
+    public AnimeTileDrawable(int fillColor, int borderColor, int barColor,
+                             int glossColor, int starColor, float density, boolean pressed) {
         this.density = density;
         this.radiusPx = 12f * density;
 
@@ -35,7 +36,7 @@ public final class AnimeTileDrawable extends Drawable {
         fillPaint.setColor(fillColor);
 
         glossPaint.setStyle(Paint.Style.FILL);
-        glossPaint.setColor(pressed ? 0x35FF7ED4 : 0x1CFFE6F9);
+        glossPaint.setColor(glossColor);
 
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(Math.max(1.2f, (pressed ? 2.0f : 1.25f) * density));
@@ -45,7 +46,7 @@ public final class AnimeTileDrawable extends Drawable {
         barPaint.setColor(barColor);
 
         starPaint.setStyle(Paint.Style.FILL);
-        starPaint.setColor(pressed ? 0xFFFFD56B : 0xAAFF7ED4);
+        starPaint.setColor(starColor);
     }
 
     @Override
@@ -70,7 +71,6 @@ public final class AnimeTileDrawable extends Drawable {
         canvas.drawRoundRect(barRect, 2f * density, 2f * density, barPaint);
         canvas.drawRoundRect(rect, radiusPx, radiusPx, borderPaint);
 
-        // Tiny anime starlight sparkle in top-right
         float cx = b.right - 9f * density;
         float cy = b.top + 9f * density;
         float r = 3.6f * density;

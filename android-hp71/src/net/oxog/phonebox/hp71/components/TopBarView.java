@@ -280,14 +280,22 @@ public class TopBarView extends LinearLayout {
     public void applyTheme() {
         ThemeColors c = AppTheme.get().colors();
         setBackgroundColor(c.topBar);
-        hostView.setTextColor(c.isHack ? c.accent : (c.isAnime ? 0xFFFFF5FD : c.textPrimary));
+        animeBottomRule.setColor(ThemeColors.withAlpha(c.accent, 0x88));
+        animeGoldTick.setColor(ThemeColors.withAlpha(c.starGold, 0xCC));
+        hostView.setTextColor(c.isHack ? c.accent : c.textPrimary);
         miniStatsView.setTextColor(c.textMuted);
         deviceStatus.setTextColor((c.isHack || c.isAnime) ? c.textSecondary : c.textPrimary);
-        int art = c.isAnime ? R.drawable.theme_anime : c.isHack ? R.drawable.theme_hack : 0;
+        int art = 0;
+        if (c.isSakura) art = R.drawable.theme_anime;
+        else if (c.isLofi) art = R.drawable.theme_lofi;
+        else if (c.isStarfall) art = R.drawable.theme_starfall;
+        else if (c.isMiku) art = R.drawable.theme_miku;
+        else if (c.isHack) art = R.drawable.theme_hack;
         themeArt.setImageResource(art);
         boolean hideArtPort = lastPortrait && (c.isHack || c.isAnime);
         themeArt.setVisibility((art == 0 || hideArtPort) ? GONE : VISIBLE);
         hackTerminal.setVisibility(c.isHack ? VISIBLE : GONE);
+        animeRibbon.setWorld(c.id);
         animeRibbon.setVisibility(c.isAnime ? VISIBLE : GONE);
         privacyPill.applyTheme();
         orientBtn.applyTheme();

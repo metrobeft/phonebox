@@ -70,22 +70,22 @@ public class StatusPillView extends TextView {
             case STYLE_SUCCESS:
                 bg = c.greenDim;
                 stroke = c.green;
-                fg = c.isHack ? 0xFF00FF66 : (c.isAnime ? 0xFF5BF5B8 : 0xFF86EFAC);
+                fg = c.isHack ? 0xFF00FF66 : (c.isAnime ? c.green : 0xFF86EFAC);
                 break;
             case STYLE_INFO:
                 bg = c.skyDim;
                 stroke = c.sky;
-                fg = c.isHack ? 0xFF00F0FF : (c.isAnime ? 0xFF7CE8FF : 0xFF7DD3FC);
+                fg = c.isHack ? 0xFF00F0FF : (c.isAnime ? c.sky : 0xFF7DD3FC);
                 break;
             case STYLE_WARN:
                 bg = c.amberDim;
                 stroke = c.amber;
-                fg = c.isHack ? 0xFFFFD166 : (c.isAnime ? 0xFFFFD56B : 0xFFFDE68A);
+                fg = c.isHack ? 0xFFFFD166 : (c.isAnime ? c.amber : 0xFFFDE68A);
                 break;
             case STYLE_DANGER:
                 bg = c.redDim;
                 stroke = c.red;
-                fg = c.isHack ? 0xFFFF6B8A : (c.isAnime ? 0xFFFF85AA : 0xFFFEE2E2);
+                fg = c.isHack ? 0xFFFF6B8A : (c.isAnime ? c.red : 0xFFFEE2E2);
                 break;
             default:
                 bg = c.surfaceControl;

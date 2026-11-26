@@ -28,9 +28,14 @@
     { id: 'world', title: 'Clima/Hora', icon: 'world', viewIdx: 6, domId: 'page-night', idleSec: null, pageCfg: null }
   ];
 
+  var SAKURA_THEME = { bg: '#090516', bar: 'rgba(20, 12, 43, 0.94)', card: 'rgba(24, 16, 52, 0.80)', cardAlt: 'rgba(33, 22, 69, 0.84)', focal: 'rgba(40, 25, 84, 0.86)', inset: 'rgba(17, 10, 38, 0.86)', stripe: 'rgba(46, 29, 92, 0.70)', border: '#6b4c9a', line: '#442f6e', text: '#fff5fd', muted: '#c0a2e8', accent: '#ff7ed4', isAnime: true, world: 'sakura', art: '/legacy/theme_anime.png', starGold: '#ffd56b', gridCol: 'rgba(199, 146, 255, 0.25)', ramCol: '#c792ff', gpuCol: '#5bf5b8', tempCol: '#ffd56b' };
   var THEMES = {
     'default': { bg: '#0b1427', bar: '#101e36', card: '#152641', cardAlt: '#12223d', focal: '#203c63', inset: '#1d3455', stripe: '#29476f', border: '#354f76', line: '#2b4267', text: '#f2f7ff', muted: '#b2c5e1' },
-    'anime': { bg: '#090516', bar: 'rgba(20, 12, 43, 0.94)', card: 'rgba(24, 16, 52, 0.80)', cardAlt: 'rgba(33, 22, 69, 0.84)', focal: 'rgba(40, 25, 84, 0.86)', inset: 'rgba(17, 10, 38, 0.86)', stripe: 'rgba(46, 29, 92, 0.70)', border: '#6b4c9a', line: '#442f6e', text: '#fff5fd', muted: '#c0a2e8', accent: '#ff7ed4', isAnime: true },
+    'sakura': SAKURA_THEME,
+    'anime': SAKURA_THEME,
+    'lofi': { bg: '#130a1e', bar: 'rgba(29, 16, 44, 0.94)', card: 'rgba(33, 19, 48, 0.82)', cardAlt: 'rgba(42, 24, 61, 0.84)', focal: 'rgba(53, 30, 74, 0.86)', inset: 'rgba(21, 11, 34, 0.86)', stripe: 'rgba(58, 34, 79, 0.70)', border: '#835584', line: '#4f3058', text: '#fff4ec', muted: '#c9a6c4', accent: '#ffb38a', isAnime: true, world: 'lofi', art: '/legacy/theme_lofi.png', starGold: '#ffe066', gridCol: 'rgba(255, 179, 138, 0.24)', ramCol: '#d4a5ff', gpuCol: '#9fe3c9', tempCol: '#ffe066' },
+    'starfall': { bg: '#020512', bar: 'rgba(7, 18, 43, 0.94)', card: 'rgba(10, 24, 51, 0.80)', cardAlt: 'rgba(16, 34, 71, 0.84)', focal: 'rgba(19, 43, 87, 0.86)', inset: 'rgba(6, 16, 36, 0.86)', stripe: 'rgba(22, 50, 97, 0.70)', border: '#2e6aa6', line: '#1d436e', text: '#f0fbff', muted: '#88b4dc', accent: '#7fe7ff', isAnime: true, world: 'starfall', art: '/legacy/theme_starfall.png', starGold: '#6dffb0', gridCol: 'rgba(127, 231, 255, 0.24)', ramCol: '#b57cff', gpuCol: '#6dffb0', tempCol: '#ffe066' },
+    'miku': { bg: '#031015', bar: 'rgba(6, 28, 36, 0.94)', card: 'rgba(7, 32, 41, 0.80)', cardAlt: 'rgba(10, 43, 54, 0.84)', focal: 'rgba(13, 54, 68, 0.86)', inset: 'rgba(4, 20, 26, 0.86)', stripe: 'rgba(15, 61, 76, 0.70)', border: '#218688', line: '#134f57', text: '#eefffe', muted: '#79c4c7', accent: '#39c5bb', isAnime: true, world: 'miku', art: '/legacy/theme_miku.png', starGold: '#ff2e88', gridCol: 'rgba(57, 197, 187, 0.25)', ramCol: '#ff5ca8', gpuCol: '#5bf5b8', tempCol: '#ffd866' },
     'hack': { bg: '#000000', bar: 'rgba(2, 10, 5, 0.94)', card: 'rgba(3, 16, 8, 0.80)', cardAlt: 'rgba(5, 22, 12, 0.84)', focal: 'rgba(6, 31, 17, 0.86)', inset: 'rgba(1, 10, 5, 0.88)', stripe: 'rgba(9, 36, 20, 0.72)', border: '#15693b', line: '#0e3e22', text: '#e8fff0', muted: '#3fb874', accent: '#00ff66', isHack: true },
     'amoled': { bg: '#000000', bar: '#050608', card: '#0a0c10', cardAlt: '#07090d', border: '#1a202c', line: '#141923', text: '#f1f5f9', muted: '#8592a6' },
     'midnight': { bg: '#060d1f', bar: '#0a1530', card: '#0f1d3d', cardAlt: '#0c1733', border: '#1e3361', line: '#192b52', text: '#eaf2ff', muted: '#8da7cc' },
@@ -993,11 +998,11 @@
     var th = state.themeColors || THEMES['default'];
     var hack = !!(th && th.isHack);
     var anime = !!(th && th.isAnime);
-    ctx.fillStyle = hack ? 'rgba(1, 10, 5, 0.90)' : (anime ? 'rgba(17, 10, 38, 0.86)' : (th.inset || th.cardAlt));
+    ctx.fillStyle = hack ? 'rgba(1, 10, 5, 0.90)' : (anime ? (th.inset || 'rgba(17, 10, 38, 0.86)') : (th.inset || th.cardAlt));
     ctx.fillRect(0, 0, w, h);
 
     // Horizontal grid lines (75%, 50%, 25%) + vertical radar grid in Hack mode
-    ctx.strokeStyle = hack ? 'rgba(21, 105, 59, 0.45)' : (anime ? 'rgba(199, 146, 255, 0.25)' : (th.line || '#182233'));
+    ctx.strokeStyle = hack ? 'rgba(21, 105, 59, 0.45)' : (anime ? (th.gridCol || 'rgba(199, 146, 255, 0.25)') : (th.line || '#182233'));
     ctx.lineWidth = 1;
     ctx.font = hack ? '10px Consolas, monospace' : '10px Roboto, Arial, sans-serif';
     ctx.fillStyle = th.muted || '#b2c5e1';
@@ -1084,7 +1089,7 @@
       if ((hack || anime) && isPrimary) drawTrace(hexToRgba(strokeColor, anime ? 0.30 : 0.24), 5);
       drawTrace(strokeColor, 2);
       if ((hack || anime) && isPrimary && hasPt) {
-        ctx.fillStyle = anime ? '#ffd56b' : '#00f0ff';
+        ctx.fillStyle = anime ? (th.starGold || '#ffd56b') : '#00f0ff';
         ctx.beginPath();
         ctx.arc(lastX, lastY, 3, 0, Math.PI * 2, false);
         ctx.fill();
@@ -1097,13 +1102,14 @@
 
   function redrawCharts() {
     var acc = state.accentColor || '#8bd0ff';
-    var hack = !!(state.themeColors && state.themeColors.isHack);
-    var anime = !!(state.themeColors && state.themeColors.isAnime);
+    var th = state.themeColors || THEMES['default'];
+    var hack = !!(th && th.isHack);
+    var anime = !!(th && th.isAnime);
     drawSparkline($('spark-cpu'), state.histCpu, acc);
     var vIdx = activeViewIdx();
     if (vIdx === 1) {
-      drawDualChart($('chart-cpu'), state.histCpu, acc, state.histRam, hack ? '#e879f9' : (anime ? '#c792ff' : '#a78bfa'));
-      drawDualChart($('chart-gpu'), state.histGpu, hack ? '#00ff66' : (anime ? '#5bf5b8' : '#22c55e'), state.histTemp, hack ? '#ffb800' : (anime ? '#ffd56b' : '#f59e0b'));
+      drawDualChart($('chart-cpu'), state.histCpu, acc, state.histRam, hack ? '#e879f9' : (anime ? (th.ramCol || '#c792ff') : '#a78bfa'));
+      drawDualChart($('chart-gpu'), state.histGpu, hack ? '#00ff66' : (anime ? (th.gpuCol || '#5bf5b8') : '#22c55e'), state.histTemp, hack ? '#ffb800' : (anime ? (th.tempCol || '#ffd56b') : '#f59e0b'));
     }
     if (vIdx === 6 && state.weather && state.weather.hourly) {
       drawHourlyWeatherCanvas(state.weather.hourly, '°' + (state.weather.unit || 'C'));
@@ -2974,12 +2980,33 @@
         return x < 0 ? -x : x;
       }
 
+      function normalizeThemeId(id) {
+        var k = String(id || 'default').toLowerCase();
+        if (k === 'anime') return 'sakura';
+        return k;
+      }
+
+      function isLivingWorldId(id) {
+        var k = normalizeThemeId(id);
+        return k === 'sakura' || k === 'lofi' || k === 'starfall' || k === 'miku';
+      }
+
+      function isCustomLocalThemeId(id) {
+        var k = normalizeThemeId(id);
+        return k === 'hack' || isLivingWorldId(k);
+      }
+
       function isHackThemeActive() {
         return activeEffectiveTheme === 'hack';
       }
 
       function isAnimeThemeActive() {
-        return activeEffectiveTheme === 'anime';
+        return isLivingWorldId(activeEffectiveTheme);
+      }
+
+      function activeLivingWorld() {
+        var k = normalizeThemeId(activeEffectiveTheme);
+        return isLivingWorldId(k) ? k : 'sakura';
       }
 
       // ---- 1. FULL-SCREEN MATRIX DIGITAL RAIN (3 depth tiers + radar pulse + glitch surge) ----
@@ -3748,33 +3775,55 @@
         }
       }
 
-      // ==================== ANIME 2.0 SAKURA MIDNIGHT ENGINE (PURE ES5) ====================
+      // ==================== LIVING WORLDS ENGINE (SAKURA / LOFI / STARFALL / MIKU — PURE ES5) ====================
+      var CONST_PTS = [
+        [0.14, 0.20, 0.24, 0.17, 0.21, 0.30, 0.18, 0.31, 0.15, 0.32, 0.26, 0.43, 0.12, 0.44],
+        [0.56, 0.15, 0.63, 0.24, 0.70, 0.17, 0.77, 0.26, 0.85, 0.16],
+        [0.36, 0.14, 0.42, 0.24, 0.48, 0.35, 0.31, 0.28, 0.53, 0.20]
+      ];
+      var CONST_EDGES = [
+        [0, 1, 1, 2, 2, 3, 3, 4, 4, 0, 2, 5, 4, 6],
+        [0, 1, 1, 2, 2, 3, 3, 4],
+        [0, 1, 1, 2, 3, 1, 1, 4]
+      ];
+
       var animeSkyTimer = null;
       var animeSparkleTimer = null;
       var animeRibbonTimer = null;
       var animeEntranceTimer = null;
       var animeSkyW = 0, animeSkyH = 0;
+      var animeSceneWorld = '';
       var animeTime = 0;
       var animeStars = [];
       var animePetals = [];
+      var animeRain = [];
+      var animeEq = [];
+      var animeEqPeak = [];
       var animeEdgePetals = [];
       var animeMeteor = { active: false, x: 0, y: 0, vx: 0, vy: 0, life: 0, nextAt: 0 };
+      var lofiFlash = 0;
+      var lofiNextFlash = 0;
       var animeBurstUntil = 0;
       var animeSweepActive = false;
       var animeSweepProg = 0;
       var animeSparkleTime = 0;
-      var animeRibbonMsgs = [
-        'SAKURA MIDNIGHT',
-        'LINK TOKYO OK',
-        'CPU --%',
-        'PING --ms',
-        'STARLIGHT HUD'
-      ];
+      var animeRibbonMsgs = ['SAKURA STORM', 'LINK TOKYO OK', 'CPU --%', 'PING --ms', 'HANAMI HUD'];
+      var animeRibbonCpu = 0;
+      var animeRibbonPing = -1;
       var animeRibbonTick = 0;
       var animeRibbonIdx = 0;
       var animeRibbonHold = 0;
       var animeEntranceStart = 0;
-      var ANIME_ENTRANCE_MS = 2150;
+      var ANIME_ENTRANCE_MS = 2200;
+      var mikuSpriteImg = null;
+      var mikuSpriteReady = false;
+
+      function ensureMikuSprite() {
+        if (mikuSpriteImg) return;
+        mikuSpriteImg = new Image();
+        mikuSpriteImg.onload = function () { mikuSpriteReady = true; };
+        mikuSpriteImg.src = '/legacy/miku_mascot.png';
+      }
 
       function drawCanvasDiamondStar(ctx, cx, cy, r, fillStyle) {
         if (r <= 0.5) return;
@@ -3793,10 +3842,11 @@
         ctx.fill();
       }
 
-      function drawCanvasSakuraPetal(ctx, cx, cy, s, deg, fillStyle) {
+      function drawCanvasSakuraPetal(ctx, cx, cy, s, deg, fillStyle, scaleX) {
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(deg * Math.PI / 180);
+        if (scaleX) ctx.scale(scaleX, 1);
         ctx.fillStyle = fillStyle;
         ctx.beginPath();
         ctx.moveTo(0, -s);
@@ -3804,6 +3854,25 @@
         ctx.quadraticCurveTo(-s * 0.85, -s * 0.25, 0, -s);
         ctx.closePath();
         ctx.fill();
+        ctx.restore();
+      }
+
+      function drawCanvasMusicNote(ctx, cx, cy, s, deg, col) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(deg * Math.PI / 180);
+        ctx.fillStyle = col;
+        ctx.strokeStyle = col;
+        ctx.lineWidth = Math.max(1.2, s * 0.24);
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(-s * 0.15, s * 0.45, s * 0.42, 0, Math.PI * 2, false);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(s * 0.22, s * 0.45);
+        ctx.lineTo(s * 0.22, -s * 1.15);
+        ctx.quadraticCurveTo(s * 1.12, -s * 0.82, s * 0.82, -s * 0.22);
+        ctx.stroke();
         ctx.restore();
       }
 
@@ -3822,81 +3891,155 @@
         ctx.closePath();
       }
 
-      function initAnimeSky(w, h) {
+      function initAnimeSky(w, h, world) {
         animeSkyW = w;
         animeSkyH = h;
+        animeSceneWorld = world;
+        if (world === 'miku') ensureMikuSprite();
+
+        var starRgb = world === 'lofi'
+          ? ['255,241,208', '255,179,138', '159,227,201', '255,136,188']
+          : (world === 'starfall'
+            ? ['255,255,255', '127,231,255', '109,255,176', '255,224,102', '181,124,255']
+            : (world === 'miku'
+              ? ['57,197,187', '127,231,255', '255,46,136', '238,255,254']
+              : ['255,246,253', '255,213,107', '124,232,255', '255,184,232']));
+
         animeStars = [];
-        var starRgb = ['255,246,253', '255,213,107', '124,232,255', '255,184,232'];
         var i;
         for (i = 0; i < 42; i++) {
           animeStars.push({
             x: hackRand() % Math.max(1, w),
-            y: hackRand() % Math.max(1, Math.floor(h * 0.88)),
-            size: 1.1 + (hackRand() % 18) * 0.12,
+            y: hackRand() % Math.max(1, Math.floor(h * 0.85)),
+            size: 1.0 + (hackRand() % 18) * 0.12,
             phase: (hackRand() % 628) * 0.01,
             rgb: starRgb[i % starRgb.length],
             diamond: (i % 5 === 0)
           });
         }
+
+        var partRgb = world === 'lofi'
+          ? ['255,224,102', '255,179,138', '159,227,201', '184,236,255']
+          : (world === 'starfall'
+            ? ['220,255,120', '109,255,176', '127,231,255', '255,224,102']
+            : (world === 'miku'
+              ? ['57,197,187', '127,231,255', '255,46,136', '91,245,184']
+              : ['255,126,212', '255,168,226', '255,209,240', '228,155,255']));
+
         animePetals = [];
-        var petRgb = ['255,126,212', '255,168,226', '255,209,240', '228,155,255'];
-        for (i = 0; i < 20; i++) {
-          var p = { x: hackRand() % Math.max(1, w), y: hackRand() % Math.max(1, h), rgb: petRgb[i % petRgb.length] };
-          resetAnimePetal(p, false, w, h);
+        for (i = 0; i < 24; i++) {
+          var p = { x: hackRand() % Math.max(1, w), y: hackRand() % Math.max(1, h), rgb: partRgb[i % partRgb.length], idx: i };
+          resetAnimePetal(p, false, w, h, world);
           animePetals.push(p);
         }
+
+        animeRain = [];
+        for (i = 0; i < 34; i++) {
+          animeRain.push({
+            x: hackRand() % Math.max(1, w),
+            y: hackRand() % Math.max(1, h),
+            len: 10 + (hackRand() % 14),
+            spd: 6.5 + (hackRand() % 7)
+          });
+        }
+
+        animeEq = [];
+        animeEqPeak = [];
+        for (i = 0; i < 22; i++) {
+          var lv = 0.25 + (i % 5) * 0.12;
+          animeEq.push(lv);
+          animeEqPeak.push(lv);
+        }
+
         animeEdgePetals = [];
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 6; i++) {
           var ep = {};
-          resetAnimeEdgePetal(ep, i, w, h, false);
+          resetAnimeEdgePetal(ep, i, w, h, false, world);
           animeEdgePetals.push(ep);
         }
       }
 
-      function resetAnimePetal(p, respawnEdge, w, h) {
+      function resetAnimePetal(p, respawnEdge, w, h, world) {
         var r = hackRand();
         var depth = 0.65 + (r % 10) * 0.08;
-        p.size = (4.8 + (r % 5) * 1.15) * depth;
-        p.vx = (0.75 + (r % 7) * 0.18) * depth;
-        p.vy = (0.95 + (r % 6) * 0.22) * depth;
-        p.angle = r % 360;
-        p.spin = ((r & 1) === 0 ? 1 : -1) * (1.2 + (r % 5) * 0.45);
         p.phase = (r % 628) * 0.01;
-        if (respawnEdge) {
-          if ((r & 3) === 0) {
-            p.x = -14;
-            p.y = (r % Math.max(1, h)) * 0.7;
+        if (world === 'lofi') {
+          p.size = 2.2 + (r % 4) * 0.7;
+          p.vx = ((r & 1) === 0 ? 0.15 : -0.15);
+          p.vy = p.idx < 14 ? (0.85 + (r % 6) * 0.25) : -(0.35 + (r % 4) * 0.12);
+          p.angle = 0;
+          p.spin = 0;
+          if (respawnEdge) {
+            p.x = r % Math.max(1, w);
+            p.y = p.idx < 14 ? -8 : (h + 8);
+          }
+        } else if (world === 'starfall') {
+          p.size = 2.0 + (r % 4) * 0.65;
+          p.vx = ((r % 11) - 5) * 0.14;
+          p.vy = -(0.22 + (r % 5) * 0.10);
+          p.angle = 0;
+          p.spin = 0;
+          if (respawnEdge) {
+            p.x = r % Math.max(1, w);
+            p.y = h * (0.58 + (r % 38) * 0.01);
           } else {
-            p.x = (r % Math.max(1, w)) - w * 0.15;
-            p.y = -12;
+            p.y = h * (0.48 + (r % 48) * 0.01);
+          }
+        } else if (world === 'miku') {
+          p.size = (4.5 + (r % 4) * 1.1) * depth;
+          p.vx = ((r % 7) - 3) * 0.18;
+          p.vy = -(0.65 + (r % 6) * 0.20);
+          p.angle = (r % 24) - 12;
+          p.spin = 0;
+          if (respawnEdge) {
+            p.x = r % Math.max(1, w);
+            p.y = h + 14;
+          }
+        } else {
+          p.size = (4.8 + (r % 5) * 1.15) * depth;
+          p.vx = (0.75 + (r % 7) * 0.18) * depth;
+          p.vy = (0.95 + (r % 6) * 0.22) * depth;
+          p.angle = r % 360;
+          p.spin = ((r & 1) === 0 ? 1 : -1) * (1.3 + (r % 5) * 0.45);
+          if (respawnEdge) {
+            if ((r & 3) === 0) {
+              p.x = -14;
+              p.y = (r % Math.max(1, h)) * 0.7;
+            } else {
+              p.x = (r % Math.max(1, w)) - w * 0.15;
+              p.y = -12;
+            }
           }
         }
       }
 
-      function resetAnimeEdgePetal(ep, idx, w, h, top) {
+      function resetAnimeEdgePetal(ep, idx, w, h, edgeSpawn, world) {
         var rightSide = (idx % 2 === 1);
-        var marginW = Math.max(48, w * 0.18);
+        var marginW = Math.max(44, w * 0.16);
+        var upward = world === 'miku' || world === 'starfall' || world === 'lofi';
         ep.x = rightSide ? (w - marginW + ((idx * 19) % marginW)) : ((idx * 23) % marginW);
-        ep.y = top ? (-10 - idx * 14) : ((idx * 97) % Math.max(1, h));
-        ep.vx = 0.45 + (idx % 3) * 0.25;
-        ep.vy = 0.85 + (idx % 4) * 0.22;
+        ep.y = edgeSpawn ? (upward ? (h + 10 + idx * 12) : (-10 - idx * 14)) : ((idx * 97) % Math.max(1, h));
+        ep.vx = upward ? (rightSide ? -0.18 : 0.18) : (0.45 + (idx % 3) * 0.25);
+        ep.vy = 0.72 + (idx % 4) * 0.20;
         ep.ang = (idx * 63) % 360;
-        ep.size = 4.5 + (idx % 3) * 1.4;
+        ep.size = 4.2 + (idx % 3) * 1.3;
       }
 
       function spawnAnimeMeteor(w, h) {
         animeMeteor.active = true;
         animeMeteor.life = 1.0;
         animeMeteor.x = w * (0.28 + (hackRand() % 55) * 0.01);
-        animeMeteor.y = h * (0.04 + (hackRand() % 22) * 0.01);
-        animeMeteor.vx = -(11 + (hackRand() % 6));
-        animeMeteor.vy = 5.2 + (hackRand() % 4);
+        animeMeteor.y = h * (0.04 + (hackRand() % 24) * 0.01);
+        animeMeteor.vx = -(11.5 + (hackRand() % 6));
+        animeMeteor.vy = 5.0 + (hackRand() % 4);
       }
 
       function triggerAnimeSakuraBurst() {
         var now = new Date().getTime();
-        animeBurstUntil = now + 900;
-        if (!animeMeteor.active && animeSkyW > 0 && animeSkyH > 0) {
+        animeBurstUntil = now + 950;
+        if (activeLivingWorld() === 'lofi') {
+          lofiFlash = 0.55;
+        } else if (!animeMeteor.active && animeSkyW > 0 && animeSkyH > 0) {
           spawnAnimeMeteor(animeSkyW, animeSkyH);
         }
       }
@@ -3908,87 +4051,11 @@
         triggerAnimeSakuraBurst();
       }
 
-      function drawAnimeSkyFrame(animateStep) {
-        var canvas = $('anime-sky-bg');
-        if (!canvas || !canvas.getContext) return;
-        var appEl = $('app');
-        var w = (appEl && appEl.clientWidth) || window.innerWidth || 1024;
-        var h = (appEl && appEl.clientHeight) || window.innerHeight || 552;
-        if (w < 40 || h < 40) return;
-        if (canvas.width !== w || canvas.height !== h || !animeStars.length) {
-          canvas.width = w;
-          canvas.height = h;
-          initAnimeSky(w, h);
-        }
-        var ctx = canvas.getContext('2d');
-        var now = new Date().getTime();
-        var i;
-
-        if (animateStep) {
-          animeTime += 0.05;
-          var bursting = now < animeBurstUntil;
-          var windMul = bursting ? 2.15 : 1.0;
-          for (i = 0; i < animePetals.length; i++) {
-            var p = animePetals[i];
-            p.x += p.vx * windMul + Math.sin(animeTime * 1.9 + p.phase) * 0.65;
-            p.y += p.vy * (bursting ? 1.45 : 1.0);
-            p.angle = (p.angle + p.spin * windMul) % 360;
-            if (p.y > h + 16 || p.x > w + 20) {
-              resetAnimePetal(p, true, w, h);
-            }
-          }
-          if (animeMeteor.active) {
-            animeMeteor.x += animeMeteor.vx;
-            animeMeteor.y += animeMeteor.vy;
-            animeMeteor.life -= 0.065;
-            if (animeMeteor.life <= 0 || animeMeteor.x < -60 || animeMeteor.y > h + 40) {
-              animeMeteor.active = false;
-              animeMeteor.nextAt = now + 3800 + (hackRand() % 3600);
-            }
-          } else if (now >= animeMeteor.nextAt) {
-            spawnAnimeMeteor(w, h);
-          }
-        }
-
-        // 1. Deep twilight gradient sky melting into near-black at bottom
-        var grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#180c38');
-        grad.addColorStop(0.42, '#0e0824');
-        grad.addColorStop(0.80, '#070414');
-        grad.addColorStop(1, '#020108');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-
-        // Soft sakura nebula glow
-        var neb = ctx.createRadialGradient(w * 0.82, h * 0.18, 8, w * 0.82, h * 0.18, Math.max(w, h) * 0.42);
-        neb.addColorStop(0, 'rgba(255, 126, 212, 0.22)');
-        neb.addColorStop(0.48, 'rgba(199, 146, 255, 0.11)');
-        neb.addColorStop(1, 'rgba(9, 5, 22, 0)');
-        ctx.fillStyle = neb;
-        ctx.fillRect(0, 0, w, h);
-
-        // 2. Radiant crescent moon
-        var moonR = Math.min(w, h) * 0.075;
-        var mx = w * 0.87;
-        var my = h * 0.16;
-        ctx.fillStyle = 'rgba(255, 213, 107, 0.13)';
-        ctx.beginPath();
-        ctx.arc(mx, my, moonR * 1.65, 0, Math.PI * 2, false);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(255, 242, 204, 0.85)';
-        ctx.beginPath();
-        ctx.arc(mx, my, moonR, 0, Math.PI * 2, false);
-        ctx.fill();
-        ctx.fillStyle = '#150b30';
-        ctx.beginPath();
-        ctx.arc(mx - moonR * 0.36, my - moonR * 0.18, moonR * 0.88, 0, Math.PI * 2, false);
-        ctx.fill();
-
-        // 3. Twinkling stars + 4-point diamonds
-        for (i = 0; i < animeStars.length; i++) {
+      function drawStarsSet(ctx, animateStep, maxAlpha) {
+        for (var i = 0; i < animeStars.length; i++) {
           var st = animeStars[i];
           var pulse = animateStep ? (0.45 + 0.55 * Math.sin(animeTime * 2.2 + st.phase)) : 0.65;
-          var a = Math.max(0.16, Math.min(0.95, pulse * 0.88)).toFixed(2);
+          var a = Math.max(0.14, Math.min(0.95, pulse * maxAlpha)).toFixed(2);
           var col = 'rgba(' + st.rgb + ',' + a + ')';
           if (st.diamond) {
             drawCanvasDiamondStar(ctx, st.x, st.y, st.size * (1.8 + pulse * 0.9), col);
@@ -3999,32 +4066,414 @@
             ctx.fill();
           }
         }
+      }
 
-        // 4. Shooting star comet streak
-        if (animeMeteor.active && animeMeteor.life > 0) {
-          var tx = animeMeteor.x - animeMeteor.vx * 6.5;
-          var ty = animeMeteor.y - animeMeteor.vy * 6.5;
-          ctx.lineCap = 'round';
-          ctx.strokeStyle = 'rgba(255, 126, 212, ' + (animeMeteor.life * 0.44).toFixed(2) + ')';
-          ctx.lineWidth = 4;
-          ctx.beginPath();
-          ctx.moveTo(animeMeteor.x, animeMeteor.y);
-          ctx.lineTo(tx, ty);
-          ctx.stroke();
-          ctx.strokeStyle = 'rgba(124, 232, 255, ' + (animeMeteor.life * 0.94).toFixed(2) + ')';
-          ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.moveTo(animeMeteor.x, animeMeteor.y);
-          ctx.lineTo((animeMeteor.x + tx) * 0.5, (animeMeteor.y + ty) * 0.5);
-          ctx.stroke();
-          drawCanvasDiamondStar(ctx, animeMeteor.x, animeMeteor.y, 5.2 * animeMeteor.life, 'rgba(255,248,231,' + (animeMeteor.life * 0.95).toFixed(2) + ')');
+      function drawMeteorSet(ctx, outerRgb, innerRgb, headRgb) {
+        if (!animeMeteor.active || animeMeteor.life <= 0) return;
+        var tx = animeMeteor.x - animeMeteor.vx * 6.8;
+        var ty = animeMeteor.y - animeMeteor.vy * 6.8;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgba(' + outerRgb + ',' + (animeMeteor.life * 0.45).toFixed(2) + ')';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(animeMeteor.x, animeMeteor.y);
+        ctx.lineTo(tx, ty);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(' + innerRgb + ',' + (animeMeteor.life * 0.94).toFixed(2) + ')';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(animeMeteor.x, animeMeteor.y);
+        ctx.lineTo((animeMeteor.x + tx) * 0.5, (animeMeteor.y + ty) * 0.5);
+        ctx.stroke();
+        drawCanvasDiamondStar(ctx, animeMeteor.x, animeMeteor.y, 5.2 * animeMeteor.life, 'rgba(' + headRgb + ',' + (animeMeteor.life * 0.95).toFixed(2) + ')');
+      }
+
+      function drawLanternCanvas(ctx, ax, ay, cordLen, phase, animateStep) {
+        var sway = animateStep ? Math.sin(animeTime * 1.4 + phase) * 5 : 0;
+        var lx = ax + sway;
+        var ly = ay + cordLen;
+        ctx.strokeStyle = 'rgba(140, 98, 156, 0.6)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(lx, ly);
+        ctx.stroke();
+        var r = 7.5;
+        ctx.fillStyle = 'rgba(255, 213, 107, 0.16)';
+        ctx.beginPath();
+        ctx.arc(lx, ly + r, r * 2.2, 0, Math.PI * 2, false);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255, 158, 104, 0.82)';
+        ctx.beginPath();
+        ctx.arc(lx, ly + r, r * 0.92, 0, Math.PI * 2, false);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255, 240, 184, 0.92)';
+        ctx.beginPath();
+        ctx.arc(lx, ly + r, r * 0.50, 0, Math.PI * 2, false);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(46, 19, 58, 0.88)';
+        ctx.fillRect(lx - r * 0.55, ly - 1.5, r * 1.1, 3);
+        ctx.fillRect(lx - r * 0.55, ly + r * 1.85, r * 1.1, 3);
+      }
+
+      function drawAnimeSkyFrame(animateStep) {
+        var canvas = $('anime-sky-bg');
+        if (!canvas || !canvas.getContext) return;
+        var appEl = $('app');
+        var w = (appEl && appEl.clientWidth) || window.innerWidth || 1024;
+        var h = (appEl && appEl.clientHeight) || window.innerHeight || 552;
+        if (w < 40 || h < 40) return;
+        var world = activeLivingWorld();
+        if (canvas.width !== w || canvas.height !== h || !animeStars.length || animeSceneWorld !== world) {
+          canvas.width = w;
+          canvas.height = h;
+          initAnimeSky(w, h, world);
+        }
+        var ctx = canvas.getContext('2d');
+        var now = new Date().getTime();
+        var i;
+
+        if (animateStep) {
+          animeTime += 0.05;
+          var bursting = now < animeBurstUntil;
+          var boost = bursting ? 2.1 : 1.0;
+
+          if (world === 'lofi') {
+            for (i = 0; i < animeRain.length; i++) {
+              var rn = animeRain[i];
+              rn.x -= rn.spd * 0.26;
+              rn.y += rn.spd * (bursting ? 1.45 : 1.0);
+              if (rn.y > h + 20 || rn.x < -20) {
+                rn.x = hackRand() % Math.max(1, Math.floor(w * 1.15));
+                rn.y = -(hackRand() % 60);
+              }
+            }
+            for (i = 0; i < animePetals.length; i++) {
+              var lp = animePetals[i];
+              if (lp.idx < 14) {
+                lp.y += lp.vy * (0.5 + 0.5 * Math.abs(Math.sin(animeTime * 1.4 + lp.phase)));
+                lp.x += Math.sin(animeTime * 2.2 + lp.phase) * 0.22;
+                if (lp.y > h + 14) resetAnimePetal(lp, true, w, h, world);
+              } else {
+                lp.x += Math.sin(animeTime * 1.3 + lp.phase) * 0.45;
+                lp.y += lp.vy;
+                if (lp.y < -14) resetAnimePetal(lp, true, w, h, world);
+              }
+            }
+            if (lofiFlash > 0) lofiFlash = Math.max(0, lofiFlash - 0.07);
+            else if (now >= lofiNextFlash) { lofiFlash = 0.45; lofiNextFlash = now + 9000 + (hackRand() % 9000); }
+          } else if (world === 'starfall') {
+            for (i = 0; i < animePetals.length; i++) {
+              var ff = animePetals[i];
+              ff.x += ff.vx + Math.sin(animeTime * 1.5 + ff.phase) * 0.45;
+              ff.y += ff.vy + Math.cos(animeTime * 1.2 + ff.phase) * 0.25;
+              if (ff.y < h * 0.35 || ff.x < -16 || ff.x > w + 16) resetAnimePetal(ff, true, w, h, world);
+            }
+            if (animeMeteor.active) {
+              animeMeteor.x += animeMeteor.vx;
+              animeMeteor.y += animeMeteor.vy;
+              animeMeteor.life -= 0.06;
+              if (animeMeteor.life <= 0 || animeMeteor.x < -70 || animeMeteor.y > h + 40) {
+                animeMeteor.active = false;
+                animeMeteor.nextAt = now + 2800 + (hackRand() % 3200);
+              }
+            } else if (now >= animeMeteor.nextAt) spawnAnimeMeteor(w, h);
+          } else if (world === 'miku') {
+            for (i = 0; i < animePetals.length; i++) {
+              var mn = animePetals[i];
+              mn.x += mn.vx + Math.sin(animeTime * 2.1 + mn.phase) * 0.5;
+              mn.y += mn.vy * boost;
+              mn.angle = Math.sin(animeTime * 2.0 + mn.phase) * 14;
+              if (mn.y < -20) resetAnimePetal(mn, true, w, h, world);
+            }
+            for (i = 0; i < animeEq.length; i++) {
+              var w1 = 0.48 + 0.42 * Math.sin(animeTime * 4.2 + i * 0.55);
+              var w2 = 0.35 + 0.35 * Math.cos(animeTime * 2.7 - i * 0.38);
+              var tgt = Math.min(1, (w1 * 0.65 + w2 * 0.35) * (bursting ? 1.25 : 1.0));
+              animeEq[i] = animeEq[i] * 0.62 + tgt * 0.38;
+              if (animeEq[i] > animeEqPeak[i]) animeEqPeak[i] = animeEq[i];
+              else animeEqPeak[i] = Math.max(animeEq[i], animeEqPeak[i] - 0.025);
+            }
+          } else {
+            var gust = Math.sin(animeTime * 0.7) * 0.55;
+            for (i = 0; i < animePetals.length; i++) {
+              var p = animePetals[i];
+              p.x += (p.vx + gust) * boost + Math.sin(animeTime * 1.9 + p.phase) * 0.75;
+              p.y += p.vy * (bursting ? 1.45 : 1.0);
+              p.angle = (p.angle + p.spin * boost) % 360;
+              if (p.y > h + 16 || p.x > w + 22) resetAnimePetal(p, true, w, h, world);
+            }
+            if (animeMeteor.active) {
+              animeMeteor.x += animeMeteor.vx;
+              animeMeteor.y += animeMeteor.vy;
+              animeMeteor.life -= 0.06;
+              if (animeMeteor.life <= 0 || animeMeteor.x < -70 || animeMeteor.y > h + 40) {
+                animeMeteor.active = false;
+                animeMeteor.nextAt = now + 3800 + (hackRand() % 3400);
+              }
+            } else if (now >= animeMeteor.nextAt) spawnAnimeMeteor(w, h);
+          }
         }
 
-        // 5. Drifting cherry blossom petals
+        // ---- RENDER PER WORLD ----
+        var grad = ctx.createLinearGradient(0, 0, 0, h);
+        if (world === 'lofi') {
+          grad.addColorStop(0, '#231134'); grad.addColorStop(0.42, '#180c26'); grad.addColorStop(0.80, '#0e0718'); grad.addColorStop(1, '#050209');
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+          var lg = ctx.createRadialGradient(w * 0.86, h * 0.78, 8, w * 0.86, h * 0.78, Math.max(w, h) * 0.45);
+          lg.addColorStop(0, 'rgba(255, 179, 138, 0.28)'); lg.addColorStop(0.45, 'rgba(255, 224, 102, 0.12)'); lg.addColorStop(1, 'rgba(19, 10, 30, 0)');
+          ctx.fillStyle = lg; ctx.fillRect(0, 0, w, h);
+          if (lofiFlash > 0.01) {
+            ctx.fillStyle = 'rgba(216, 232, 255, ' + (lofiFlash * 0.28).toFixed(2) + ')';
+            ctx.fillRect(0, 0, w, h);
+          }
+          drawStarsSet(ctx, animateStep, 0.55);
+          var lmr = Math.min(w, h) * 0.062;
+          ctx.fillStyle = 'rgba(255, 224, 102, 0.13)'; ctx.beginPath(); ctx.arc(w * 0.78, h * 0.22, lmr * 1.7, 0, Math.PI * 2, false); ctx.fill();
+          ctx.fillStyle = 'rgba(255, 241, 208, 0.88)'; ctx.beginPath(); ctx.arc(w * 0.78, h * 0.22, lmr, 0, Math.PI * 2, false); ctx.fill();
+          ctx.fillStyle = '#1d0e2d'; ctx.beginPath(); ctx.arc(w * 0.78 - lmr * 0.35, h * 0.22 - lmr * 0.16, lmr * 0.88, 0, Math.PI * 2, false); ctx.fill();
+          // Skyline
+          var bw = w / 12;
+          for (i = 0; i < 12; i++) {
+            var bh = h * (0.14 + ((i * 37) % 15) * 0.011);
+            var bx = i * bw, by = h - bh;
+            ctx.fillStyle = 'rgba(10, 5, 19, 0.62)'; ctx.fillRect(bx, by, bw + 1, bh);
+            ctx.fillStyle = (i % 3 === 0) ? 'rgba(255, 179, 138, 0.34)' : 'rgba(255, 224, 102, 0.28)';
+            ctx.fillRect(bx + bw * 0.24, by + 10, Math.max(2, bw * 0.14), 4);
+            ctx.fillRect(bx + bw * 0.56, by + 22, Math.max(2, bw * 0.14), 4);
+          }
+          // Window mullions
+          ctx.strokeStyle = 'rgba(77, 45, 90, 0.24)'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(w * 0.64, 0); ctx.lineTo(w * 0.64, h * 0.86); ctx.moveTo(0, h * 0.86); ctx.lineTo(w, h * 0.86); ctx.stroke();
+          // Fairy lights string
+          ctx.strokeStyle = 'rgba(95, 61, 107, 0.35)'; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.moveTo(0, h * 0.08); ctx.quadraticCurveTo(w * 0.25, h * 0.18, w * 0.50, h * 0.10); ctx.quadraticCurveTo(w * 0.75, h * 0.18, w, h * 0.08); ctx.stroke();
+          var bCols = ['255,224,102', '255,179,138', '255,136,188', '159,227,201'];
+          for (i = 0; i < 11; i++) {
+            var ft = (i + 0.5) / 11;
+            var fbx = w * ft;
+            var fby = h * 0.115 + Math.abs(Math.sin(ft * Math.PI * 2)) * (h * 0.032);
+            var fg = animateStep ? (0.65 + 0.35 * Math.sin(animeTime * 2.4 + i * 0.9)) : 0.85;
+            ctx.fillStyle = 'rgba(' + bCols[i % 4] + ',' + (fg * 0.22).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(fbx, fby, 10, 0, Math.PI * 2, false); ctx.fill();
+            ctx.fillStyle = 'rgba(' + bCols[i % 4] + ',' + (fg * 0.90).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(fbx, fby, 3, 0, Math.PI * 2, false); ctx.fill();
+          }
+          // Falling rain streaks
+          ctx.strokeStyle = 'rgba(159, 227, 201, 0.28)'; ctx.lineWidth = 1.1;
+          ctx.beginPath();
+          for (i = 0; i < animeRain.length; i++) {
+            var r2 = animeRain[i];
+            ctx.moveTo(r2.x, r2.y); ctx.lineTo(r2.x - r2.len * 0.26, r2.y + r2.len);
+          }
+          ctx.stroke();
+          // Glass droplets + warm floating motes
+          for (i = 0; i < animePetals.length; i++) {
+            var dp = animePetals[i];
+            if (dp.idx < 14) {
+              ctx.strokeStyle = 'rgba(196, 232, 255, 0.20)'; ctx.lineWidth = 1.4;
+              ctx.beginPath(); ctx.moveTo(dp.x, dp.y - 10); ctx.lineTo(dp.x, dp.y); ctx.stroke();
+              ctx.fillStyle = 'rgba(226, 244, 255, 0.54)'; ctx.beginPath(); ctx.arc(dp.x, dp.y, dp.size, 0, Math.PI * 2, false); ctx.fill();
+            } else {
+              var ma = animateStep ? (0.35 + 0.35 * Math.sin(animeTime * 1.8 + dp.phase)) : 0.45;
+              ctx.fillStyle = 'rgba(' + dp.rgb + ',' + (ma * 0.65).toFixed(2) + ')';
+              ctx.beginPath(); ctx.arc(dp.x, dp.y, dp.size * 1.25, 0, Math.PI * 2, false); ctx.fill();
+            }
+          }
+          // Tea steam wisps
+          ctx.strokeStyle = 'rgba(255, 235, 216, 0.20)'; ctx.lineWidth = 2;
+          for (var st = 0; st < 3; st++) {
+            var stx = w * 0.77 + (st - 1) * 10, sby = h * 0.88;
+            var sw1 = Math.sin(animeTime * 1.8 + st * 1.4) * 9, sw2 = Math.cos(animeTime * 1.5 + st * 1.1) * 11;
+            ctx.beginPath(); ctx.moveTo(stx, sby); ctx.bezierCurveTo(stx + sw1, sby - 26, stx - sw2, sby - 52, stx + sw1 * 0.6, sby - 78); ctx.stroke();
+          }
+          return;
+        }
+
+        if (world === 'starfall') {
+          grad.addColorStop(0, '#020514'); grad.addColorStop(0.44, '#091432'); grad.addColorStop(0.82, '#070f26'); grad.addColorStop(1, '#010208');
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+          // 2 Waving Aurora Borealis curtains
+          var drawAurora = function (baseY, thick, col, ph) {
+            ctx.fillStyle = col; ctx.beginPath();
+            var k;
+            for (k = 0; k <= 12; k++) {
+              var ax = (w * k) / 12;
+              var ay = baseY + Math.sin(animeTime * 0.85 + k * 0.55 + ph) * 20;
+              if (k === 0) ctx.moveTo(ax, ay); else ctx.lineTo(ax, ay);
+            }
+            for (k = 12; k >= 0; k--) {
+              var ax2 = (w * k) / 12;
+              var ay2 = baseY + thick + Math.cos(animeTime * 0.70 + k * 0.48 + ph) * 16;
+              ctx.lineTo(ax2, ay2);
+            }
+            ctx.closePath(); ctx.fill();
+          };
+          drawAurora(h * 0.24, h * 0.14, 'rgba(109, 255, 176, 0.20)', 0);
+          drawAurora(h * 0.33, h * 0.12, 'rgba(181, 124, 255, 0.16)', 2.1);
+
+          drawStarsSet(ctx, animateStep, 0.94);
+
+          // Self-drawing cycling cyan constellations
+          var cyc = (animeTime * 0.18) % CONST_PTS.length;
+          var cIdx = Math.floor(cyc) % CONST_PTS.length;
+          var cFrac = cyc - Math.floor(cyc);
+          var cRev = cFrac < 0.75 ? Math.min(1, cFrac / 0.45) : Math.max(0, (1 - cFrac) / 0.25);
+          if (cRev > 0.02) {
+            var cPts = CONST_PTS[cIdx], cEd = CONST_EDGES[cIdx];
+            var eCnt = cEd.length / 2, dEd = eCnt * cRev;
+            ctx.strokeStyle = 'rgba(127, 231, 255, ' + (cRev * 0.54).toFixed(2) + ')';
+            ctx.lineWidth = 1.3;
+            for (var ce = 0; ce < eCnt; ce++) {
+              if (ce > dEd) break;
+              var sf = Math.min(1, dEd - ce);
+              var a0 = cEd[ce * 2], b0 = cEd[ce * 2 + 1];
+              var x1 = cPts[a0 * 2] * w, y1 = cPts[a0 * 2 + 1] * h;
+              var x2 = cPts[b0 * 2] * w, y2 = cPts[b0 * 2 + 1] * h;
+              ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x1 + (x2 - x1) * sf, y1 + (y2 - y1) * sf); ctx.stroke();
+            }
+            for (var cn = 0; cn < cPts.length / 2; cn++) {
+              drawCanvasDiamondStar(ctx, cPts[cn * 2] * w, cPts[cn * 2 + 1] * h, 3.6, 'rgba(232,251,255,' + (cRev * 0.86).toFixed(2) + ')');
+            }
+          }
+
+          drawMeteorSet(ctx, '255,224,102', '127,231,255', '255,255,255');
+
+          // Horizon hills + Torii gate silhouette
+          ctx.fillStyle = 'rgba(3, 7, 20, 0.84)';
+          ctx.beginPath();
+          ctx.moveTo(0, h); ctx.lineTo(0, h * 0.86);
+          ctx.quadraticCurveTo(w * 0.24, h * 0.80, w * 0.50, h * 0.84);
+          ctx.quadraticCurveTo(w * 0.76, h * 0.88, w, h * 0.81);
+          ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
+
+          var tcx = w * 0.50, tby = h * 0.855, ts = Math.min(w, h) * 0.14;
+          var tph = ts * 0.85, ths = ts * 0.42, tpw = Math.max(3, ts * 0.08);
+          ctx.fillStyle = 'rgba(4, 8, 20, 0.92)';
+          ctx.fillRect(tcx - ths - tpw * 0.5, tby - tph, tpw, tph + 6);
+          ctx.fillRect(tcx + ths - tpw * 0.5, tby - tph, tpw, tph + 6);
+          ctx.beginPath();
+          ctx.moveTo(tcx - ths * 1.55, tby - tph - ts * 0.08);
+          ctx.quadraticCurveTo(tcx, tby - tph + ts * 0.03, tcx + ths * 1.55, tby - tph - ts * 0.08);
+          ctx.lineTo(tcx + ths * 1.42, tby - tph + ts * 0.06);
+          ctx.quadraticCurveTo(tcx, tby - tph + ts * 0.14, tcx - ths * 1.42, tby - tph + ts * 0.06);
+          ctx.closePath(); ctx.fill();
+          ctx.fillRect(tcx - ths * 1.25, tby - tph * 0.72, ths * 2.5, tpw * 0.85);
+          ctx.fillRect(tcx - tpw * 0.55, tby - tph * 0.92, tpw * 1.1, tph * 0.20);
+
+          // Glowing fireflies
+          for (i = 0; i < animePetals.length; i++) {
+            var fp = animePetals[i];
+            var fg2 = animateStep ? (0.35 + 0.65 * Math.abs(Math.sin(animeTime * 2.6 + fp.phase))) : 0.7;
+            ctx.fillStyle = 'rgba(' + fp.rgb + ',' + (fg2 * 0.22).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(fp.x, fp.y, fp.size * 2.8, 0, Math.PI * 2, false); ctx.fill();
+            ctx.fillStyle = 'rgba(' + fp.rgb + ',' + (fg2 * 0.92).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(fp.x, fp.y, fp.size, 0, Math.PI * 2, false); ctx.fill();
+          }
+          return;
+        }
+
+        if (world === 'miku') {
+          grad.addColorStop(0, '#04171f'); grad.addColorStop(0.45, '#051c24'); grad.addColorStop(0.82, '#031015'); grad.addColorStop(1, '#010608');
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+          var mg1 = ctx.createRadialGradient(w * 0.80, h * 0.55, 8, w * 0.80, h * 0.55, Math.max(w, h) * 0.48);
+          mg1.addColorStop(0, 'rgba(57, 197, 187, 0.24)'); mg1.addColorStop(0.50, 'rgba(127, 231, 255, 0.11)'); mg1.addColorStop(1, 'rgba(3, 16, 21, 0)');
+          ctx.fillStyle = mg1; ctx.fillRect(0, 0, w, h);
+          var mg2 = ctx.createRadialGradient(w * 0.18, h * 0.28, 8, w * 0.18, h * 0.28, Math.max(w, h) * 0.40);
+          mg2.addColorStop(0, 'rgba(255, 46, 136, 0.16)'); mg2.addColorStop(1, 'rgba(3, 16, 21, 0)');
+          ctx.fillStyle = mg2; ctx.fillRect(0, 0, w, h);
+
+          drawStarsSet(ctx, animateStep, 0.72);
+
+          // Stage rings
+          var mPulse = animateStep ? (1.0 + 0.06 * Math.sin(animeTime * 3.0)) : 1.0;
+          var mR = Math.min(w, h) * 0.22;
+          ctx.strokeStyle = 'rgba(57, 197, 187, 0.32)'; ctx.lineWidth = 1.6;
+          ctx.beginPath(); ctx.arc(w * 0.80, h * 0.58, mR * mPulse, 0, Math.PI * 2, false); ctx.stroke();
+          ctx.strokeStyle = 'rgba(255, 46, 136, 0.26)';
+          ctx.beginPath(); ctx.arc(w * 0.80, h * 0.58, mR * 1.22 / mPulse, 0, Math.PI * 2, false); ctx.stroke();
+
+          // Flowing dual synth waves
+          var drawWave = function (cy, amp, freq, spd, col, lw) {
+            ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath();
+            for (var s = 0; s <= 24; s++) {
+              var wx = (w * s) / 24;
+              var wy = cy + Math.sin(wx * freq + animeTime * spd) * amp;
+              if (s === 0) ctx.moveTo(wx, wy); else ctx.lineTo(wx, wy);
+            }
+            ctx.stroke();
+          };
+          drawWave(h * 0.52, 20, 0.012, 2.2, 'rgba(57, 197, 187, 0.30)', 2.0);
+          drawWave(h * 0.57, 15, 0.015, -1.7, 'rgba(255, 46, 136, 0.24)', 1.5);
+
+          // 22-band bottom spectrum equalizer
+          var eqSlot = w / animeEq.length;
+          var eqGap = Math.max(2, eqSlot * 0.24);
+          var maxEqH = h * 0.24;
+          for (i = 0; i < animeEq.length; i++) {
+            var ebh = Math.max(4, animeEq[i] * maxEqH);
+            var ex = i * eqSlot + eqGap * 0.5;
+            var ew = eqSlot - eqGap;
+            ctx.fillStyle = (i % 5 === 2) ? 'rgba(255, 46, 136, 0.38)' : ((i % 3 === 0) ? 'rgba(127, 231, 255, 0.40)' : 'rgba(57, 197, 187, 0.42)');
+            ctx.fillRect(ex, h - ebh, ew, ebh);
+            var pkY = h - Math.max(6, animeEqPeak[i] * maxEqH);
+            ctx.fillStyle = (i % 5 === 2) ? 'rgba(255, 102, 178, 0.80)' : 'rgba(154, 248, 255, 0.80)';
+            ctx.fillRect(ex, pkY - 2.2, ew, 2.2);
+          }
+
+          // Floating musical eighth-notes
+          var mna = animateStep ? '0.68' : '0.42';
+          for (i = 0; i < animePetals.length; i++) {
+            var np = animePetals[i];
+            drawCanvasMusicNote(ctx, np.x, np.y, np.size, np.angle, 'rgba(' + np.rgb + ',' + mna + ')');
+          }
+
+          // Graceful translucent Hatsune Miku hologram cameo in bottom-right
+          if (mikuSpriteReady && mikuSpriteImg) {
+            var mh = Math.min(h * 0.48, 210);
+            var mw = mh * (mikuSpriteImg.width / Math.max(1, mikuSpriteImg.height));
+            var mbob = animateStep ? Math.sin(animeTime * 2.1) * 5.5 : 0;
+            ctx.save();
+            ctx.globalAlpha = 0.40;
+            ctx.drawImage(mikuSpriteImg, w - mw - 14, h - mh - 6 + mbob, mw, mh);
+            ctx.restore();
+          }
+          return;
+        }
+
+        // ---- SAKURA STORM (DEFAULT LIVING WORLD) ----
+        grad.addColorStop(0, '#180c38'); grad.addColorStop(0.42, '#0e0824'); grad.addColorStop(0.80, '#070414'); grad.addColorStop(1, '#020108');
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+        var neb = ctx.createRadialGradient(w * 0.82, h * 0.18, 8, w * 0.82, h * 0.18, Math.max(w, h) * 0.42);
+        neb.addColorStop(0, 'rgba(255, 126, 212, 0.22)'); neb.addColorStop(0.48, 'rgba(199, 146, 255, 0.11)'); neb.addColorStop(1, 'rgba(9, 5, 22, 0)');
+        ctx.fillStyle = neb; ctx.fillRect(0, 0, w, h);
+
+        var moonR = Math.min(w, h) * 0.072;
+        var mx = w * 0.87, my = h * 0.16;
+        ctx.fillStyle = 'rgba(255, 213, 107, 0.13)'; ctx.beginPath(); ctx.arc(mx, my, moonR * 1.65, 0, Math.PI * 2, false); ctx.fill();
+        ctx.fillStyle = 'rgba(255, 242, 204, 0.85)'; ctx.beginPath(); ctx.arc(mx, my, moonR, 0, Math.PI * 2, false); ctx.fill();
+        ctx.fillStyle = '#150b30'; ctx.beginPath(); ctx.arc(mx - moonR * 0.36, my - moonR * 0.18, moonR * 0.88, 0, Math.PI * 2, false); ctx.fill();
+
+        drawStarsSet(ctx, animateStep, 0.88);
+
+        // Distant mountain ridge
+        ctx.fillStyle = 'rgba(7, 3, 18, 0.65)';
+        ctx.beginPath(); ctx.moveTo(0, h); ctx.lineTo(0, h * 0.85);
+        ctx.quadraticCurveTo(w * 0.22, h * 0.74, w * 0.45, h * 0.83);
+        ctx.quadraticCurveTo(w * 0.72, h * 0.90, w, h * 0.78);
+        ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
+
+        // Silhouetted cherry branch + 2 swaying Japanese paper lanterns
+        ctx.strokeStyle = 'rgba(42, 18, 56, 0.68)'; ctx.lineWidth = 4.5; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(-6, h * 0.12); ctx.quadraticCurveTo(w * 0.14, h * 0.17, w * 0.28, h * 0.10); ctx.stroke();
+        ctx.lineWidth = 2.6;
+        ctx.beginPath(); ctx.moveTo(w * 0.12, h * 0.14); ctx.quadraticCurveTo(w * 0.18, h * 0.22, w * 0.25, h * 0.20); ctx.stroke();
+        drawLanternCanvas(ctx, w * 0.11, h * 0.145, 16, 0, animateStep);
+        drawLanternCanvas(ctx, w * 0.23, h * 0.12, 22, 1.8, animateStep);
+
+        drawMeteorSet(ctx, '255,126,212', '124,232,255', '255,248,231');
+
         var pAlpha = animateStep ? '0.68' : '0.42';
         for (i = 0; i < animePetals.length; i++) {
           var pt = animePetals[i];
-          drawCanvasSakuraPetal(ctx, pt.x, pt.y, pt.size, pt.angle, 'rgba(' + pt.rgb + ',' + pAlpha + ')');
+          var flut = 0.42 + 0.58 * Math.abs(Math.cos(animeTime * 2.3 + pt.phase));
+          drawCanvasSakuraPetal(ctx, pt.x, pt.y, pt.size, pt.angle, 'rgba(' + pt.rgb + ',' + pAlpha + ')', flut);
         }
       }
 
@@ -4035,50 +4484,66 @@
         var w = (appEl && appEl.clientWidth) || window.innerWidth || 1024;
         var h = (appEl && appEl.clientHeight) || window.innerHeight || 552;
         if (w < 40 || h < 40) return;
-        if (canvas.width !== w || canvas.height !== h) {
+        var world = activeLivingWorld();
+        if (canvas.width !== w || canvas.height !== h || animeSceneWorld !== world) {
           canvas.width = w;
           canvas.height = h;
-          if (!animeEdgePetals.length) initAnimeSky(w, h);
+          if (!animeEdgePetals.length || animeSceneWorld !== world) initAnimeSky(w, h, world);
         }
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, w, h);
 
+        var upward = world === 'miku' || world === 'starfall' || world === 'lofi';
         var i;
         if (animateStep) {
           animeSparkleTime += 0.06;
           for (i = 0; i < animeEdgePetals.length; i++) {
             var ep = animeEdgePetals[i];
             ep.x += ep.vx + Math.sin(animeSparkleTime * 2.1 + i * 1.7) * 0.55;
-            ep.y += ep.vy;
+            ep.y += upward ? -ep.vy : ep.vy;
             ep.ang = (ep.ang + 2.2) % 360;
-            if (ep.y > h + 16 || ep.x > w + 16) resetAnimeEdgePetal(ep, i, w, h, true);
+            if (upward) {
+              if (ep.y < -18 || ep.x < -18 || ep.x > w + 18) resetAnimeEdgePetal(ep, i, w, h, true, world);
+            } else {
+              if (ep.y > h + 16 || ep.x > w + 16) resetAnimeEdgePetal(ep, i, w, h, true, world);
+            }
           }
           if (animeSweepActive) {
             animeSweepProg += 0.11;
-            if (animeSweepProg >= 1.0) {
-              animeSweepActive = false;
-              animeSweepProg = 0;
+            if (animeSweepProg >= 1.0) { animeSweepActive = false; animeSweepProg = 0; }
+          }
+        }
+
+        if (animateStep) {
+          for (i = 0; i < animeEdgePetals.length; i++) {
+            var ep2 = animeEdgePetals[i];
+            if (world === 'lofi') {
+              var lp2 = 0.55 + 0.45 * Math.sin(animeSparkleTime * 2.2 + i);
+              ctx.fillStyle = (i % 2 === 0 ? 'rgba(255,224,102,' : 'rgba(255,179,138,') + (lp2 * 0.38).toFixed(2) + ')';
+              ctx.beginPath(); ctx.arc(ep2.x, ep2.y, ep2.size * 0.72, 0, Math.PI * 2, false); ctx.fill();
+            } else if (world === 'starfall') {
+              var sp2 = 0.5 + 0.5 * Math.sin(animeSparkleTime * 2.8 + i * 1.3);
+              drawCanvasDiamondStar(ctx, ep2.x, ep2.y, ep2.size * 0.85, (i % 2 === 0 ? 'rgba(220,255,120,' : 'rgba(127,231,255,') + (sp2 * 0.58).toFixed(2) + ')');
+            } else if (world === 'miku') {
+              drawCanvasMusicNote(ctx, ep2.x, ep2.y, ep2.size * 0.92, 0, i % 2 === 0 ? 'rgba(57,197,187,0.52)' : 'rgba(255,46,136,0.48)');
+            } else {
+              drawCanvasSakuraPetal(ctx, ep2.x, ep2.y, ep2.size, ep2.ang, (i % 2 === 0) ? 'rgba(255,156,224,0.44)' : 'rgba(255,214,244,0.38)', 1);
             }
           }
         }
 
-        // Foreground margin sakura petals
-        if (animateStep) {
-          for (i = 0; i < animeEdgePetals.length; i++) {
-            var ep2 = animeEdgePetals[i];
-            drawCanvasSakuraPetal(ctx, ep2.x, ep2.y, ep2.size, ep2.ang, (i % 2 === 0) ? 'rgba(255,156,224,0.44)' : 'rgba(255,214,244,0.38)');
-          }
-        }
+        var cCol = world === 'lofi' ? '255,179,138' : (world === 'starfall' ? '127,231,255' : (world === 'miku' ? '57,197,187' : '255,126,212'));
+        var sCol = world === 'lofi' ? '255,224,102' : (world === 'starfall' ? '109,255,176' : (world === 'miku' ? '255,46,136' : '255,213,107'));
+        var coreCol = world === 'miku' ? '255,92,168' : (world === 'starfall' ? '228,251,255' : '255,242,204');
 
-        // Tab-switch starlight sakura ribbon sweep
         if (animeSweepActive) {
           var sx = w * animeSweepProg;
           var fade = Math.max(0, 1 - Math.abs(animeSweepProg - 0.5) * 1.7);
-          ctx.fillStyle = 'rgba(255, 126, 212, ' + (fade * 0.30).toFixed(2) + ')';
+          ctx.fillStyle = 'rgba(' + cCol + ',' + (fade * 0.30).toFixed(2) + ')';
           ctx.fillRect(sx - 24, 0, 36, h);
-          ctx.fillStyle = 'rgba(255, 242, 204, ' + (fade * 0.84).toFixed(2) + ')';
+          ctx.fillStyle = 'rgba(' + coreCol + ',' + (fade * 0.84).toFixed(2) + ')';
           ctx.fillRect(sx - 2, 0, 4, h);
-          var starCol = 'rgba(255, 213, 107, ' + (fade * 0.85).toFixed(2) + ')';
+          var starCol = 'rgba(' + sCol + ',' + (fade * 0.85).toFixed(2) + ')';
           for (var s = 0; s < 8; s++) {
             var sy = ((s + 0.5) / 8) * h;
             var ox = sx + ((s % 2 === 0 ? 1 : -1) * 16);
@@ -4086,8 +4551,7 @@
           }
         }
 
-        // Delicate Starlight Corner Accents framing viewport cleanly
-        ctx.strokeStyle = 'rgba(255, 126, 212, 0.62)';
+        ctx.strokeStyle = 'rgba(' + cCol + ',0.64)';
         ctx.lineWidth = 1.4;
         ctx.lineCap = 'round';
         var m = 4, arm = 12;
@@ -4099,20 +4563,32 @@
         ctx.stroke();
 
         var twinkle = animateStep ? (0.65 + 0.35 * Math.sin(animeSparkleTime * 2.8)) : 0.85;
-        var cornerStar = 'rgba(255, 213, 107, ' + (twinkle * 0.86).toFixed(2) + ')';
+        var cornerStar = 'rgba(' + sCol + ',' + (twinkle * 0.88).toFixed(2) + ')';
         drawCanvasDiamondStar(ctx, m + 1.5, m + 1.5, 4, cornerStar);
         drawCanvasDiamondStar(ctx, w - m - 1.5, h - m - 1.5, 4, cornerStar);
+      }
+
+      function refreshAnimeRibbonMsgs() {
+        var world = activeLivingWorld();
+        var pingTxt = animeRibbonPing >= 0 ? ('PING ' + animeRibbonPing + 'ms') : 'PING --ms';
+        if (world === 'lofi') {
+          animeRibbonMsgs = ['LOFI 72 BPM', 'CHUVA NA JANELA', 'CPU ' + animeRibbonCpu + '% · CHILL', pingTxt, 'STUDY BEATS'];
+        } else if (world === 'starfall') {
+          animeRibbonMsgs = ['STARFALL AURORA', 'CONSTELACAO OK', 'CPU ' + animeRibbonCpu + '% · NOVA', pingTxt, 'METEOR SHOWER'];
+        } else if (world === 'miku') {
+          animeRibbonMsgs = ['MIKU 01 STAGE', 'VOCAL SYNTH OK', 'CPU ' + animeRibbonCpu + '% · 39HZ', pingTxt, '01 LIVE SYNC'];
+        } else {
+          animeRibbonMsgs = ['SAKURA STORM', 'LINK TOKYO OK', 'CPU ' + animeRibbonCpu + '% · SAKURA', pingTxt, 'HANAMI HUD'];
+        }
       }
 
       function updateAnimeRibbonTelemetry(d) {
         if (!d) return;
         var pc = d.pc || {};
         var cpuRaw = typeof pc.cpu === 'number' ? pc.cpu : pc.cpuPct;
-        var cpu = typeof cpuRaw === 'number' ? Math.round(cpuRaw) : 0;
-        var ping = (d.ping && typeof d.ping.ms === 'number') ? Math.round(d.ping.ms) : -1;
-        animeRibbonMsgs[1] = 'LINK TOKYO OK';
-        animeRibbonMsgs[2] = 'CPU ' + cpu + '% · SAKURA';
-        animeRibbonMsgs[3] = ping >= 0 ? ('PING ' + ping + 'ms') : 'PING --ms';
+        animeRibbonCpu = typeof cpuRaw === 'number' ? Math.round(cpuRaw) : 0;
+        animeRibbonPing = (d.ping && typeof d.ping.ms === 'number') ? Math.round(d.ping.ms) : -1;
+        refreshAnimeRibbonMsgs();
       }
 
       function drawAnimeTopRibbon(animateStep) {
@@ -4126,6 +4602,7 @@
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, w, h);
 
+        var world = activeLivingWorld();
         if (animateStep) {
           animeRibbonTick++;
           animeRibbonHold++;
@@ -4135,22 +4612,40 @@
           }
         }
 
+        var rBg = world === 'lofi' ? 'rgba(41, 22, 56, 0.90)' : (world === 'starfall' ? 'rgba(10, 27, 61, 0.90)' : (world === 'miku' ? 'rgba(7, 34, 43, 0.90)' : 'rgba(37, 20, 73, 0.90)'));
+        var rBrd = world === 'lofi' ? 'rgba(255, 179, 138, 0.80)' : (world === 'starfall' ? 'rgba(127, 231, 255, 0.80)' : (world === 'miku' ? 'rgba(57, 197, 187, 0.85)' : 'rgba(255, 126, 212, 0.80)'));
+        var rStar = world === 'lofi' ? '#ffe066' : (world === 'starfall' ? '#6dffb0' : (world === 'miku' ? '#39c5bb' : '#ffd56b'));
+        var rSec = world === 'lofi' ? '#9fe3c9' : (world === 'starfall' ? 'rgba(220,255,120,0.65)' : (world === 'miku' ? '#ff2e88' : 'rgba(255,126,212,0.42)'));
+        var rTxt = world === 'lofi' ? '255,244,236' : (world === 'starfall' ? '240,251,255' : (world === 'miku' ? '238,255,254' : '255,245,253'));
+
         drawRoundedBox(ctx, 1, 1, w - 2, h - 2, h * 0.48);
-        ctx.fillStyle = 'rgba(37, 20, 73, 0.90)';
+        ctx.fillStyle = rBg;
         ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 126, 212, 0.80)';
+        ctx.strokeStyle = rBrd;
         ctx.lineWidth = 1.1;
         ctx.stroke();
 
-        // Pulsing golden 4-point star gem
-        var pulse = animateStep ? (0.75 + 0.25 * Math.sin(animeRibbonTick * 0.22)) : 0.9;
-        drawCanvasDiamondStar(ctx, 12, h * 0.5, 4.6 * pulse, '#ffd56b');
-
-        // Drifting micro petal on right
-        if (animateStep) {
-          var px = w - 10 - ((animeRibbonTick * 1.1) % Math.max(16, w * 0.42));
-          var py = h * 0.5 + Math.sin(animeRibbonTick * 0.2) * (h * 0.22);
-          drawCanvasSakuraPetal(ctx, px, py, 3.2, animeRibbonTick * 4, 'rgba(255,126,212,0.42)');
+        var textLeft = 21;
+        if (world === 'lofi' || world === 'miku') {
+          var baseY = h * 0.74, maxH = h * 0.46;
+          for (var b = 0; b < 4; b++) {
+            var lvl = animateStep ? (0.32 + 0.68 * Math.abs(Math.sin(animeRibbonTick * 0.24 + b * 1.15))) : (0.45 + (b % 2) * 0.35);
+            ctx.fillStyle = (b === 2) ? rSec : rStar;
+            ctx.fillRect(8 + b * 3.6, baseY - maxH * lvl, 2.2, maxH * lvl);
+          }
+          textLeft = 25;
+        } else {
+          var pulse = animateStep ? (0.75 + 0.25 * Math.sin(animeRibbonTick * 0.22)) : 0.9;
+          drawCanvasDiamondStar(ctx, 12, h * 0.5, 4.6 * pulse, rStar);
+          if (animateStep) {
+            var px = w - 10 - ((animeRibbonTick * 1.1) % Math.max(16, w * 0.42));
+            var py = h * 0.5 + Math.sin(animeRibbonTick * 0.2) * (h * 0.22);
+            if (world === 'starfall') {
+              ctx.fillStyle = rSec; ctx.beginPath(); ctx.arc(px, py, 2.2, 0, Math.PI * 2, false); ctx.fill();
+            } else {
+              drawCanvasSakuraPetal(ctx, px, py, 3.2, animeRibbonTick * 4, rSec, 1);
+            }
+          }
         }
 
         var alpha = 1;
@@ -4160,12 +4655,12 @@
         }
         ctx.save();
         ctx.beginPath();
-        ctx.rect(20, 1, w - 26, h - 2);
+        ctx.rect(textLeft - 1, 1, w - textLeft - 5, h - 2);
         ctx.clip();
         ctx.font = 'bold 10.5px Roboto, "Segoe UI", Arial, sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillStyle = 'rgba(255, 245, 253, ' + Math.max(0.15, alpha).toFixed(2) + ')';
-        ctx.fillText(animeRibbonMsgs[animeRibbonIdx], 21, Math.round(h * 0.5 + 3.5));
+        ctx.fillStyle = 'rgba(' + rTxt + ',' + Math.max(0.15, alpha).toFixed(2) + ')';
+        ctx.fillText(animeRibbonMsgs[animeRibbonIdx % animeRibbonMsgs.length], textLeft, Math.round(h * 0.5 + 3.5));
         ctx.restore();
       }
 
@@ -4179,10 +4674,41 @@
         var box = $('anime-entrance');
         var canvas = $('anime-entrance-canvas');
         if (!box || !canvas || !canvas.getContext || !isAnimeThemeActive()) return;
+        var world = activeLivingWorld();
+        if (world === 'miku') ensureMikuSprite();
         stopHackBoot();
         stopAnimeEntrance();
         removeClass(box, 'hidden');
         animeEntranceStart = new Date().getTime();
+
+        var drawEntTitle = function (ctx, w, h, cx, cy, elapsed, fade, title, sub, tRgb, accRgb, lnRgb, hintRgb) {
+          var ta = Math.min(1, Math.max(0, (elapsed - 160) / 360)) * fade;
+          var port = h > w;
+          ctx.textAlign = 'center';
+          ctx.font = 'bold ' + (port ? 21 : 27) + 'px Roboto, "Segoe UI", Arial, sans-serif';
+          ctx.fillStyle = 'rgba(' + accRgb + ',' + (0.45 * ta).toFixed(2) + ')';
+          ctx.fillText(title, cx, cy + 18);
+          ctx.fillStyle = 'rgba(' + tRgb + ',' + ta.toFixed(2) + ')';
+          ctx.fillText(title, cx, cy + 16);
+
+          var lh = Math.min(w * 0.30, 145) * Math.min(1, Math.max(0, (elapsed - 260) / 400));
+          ctx.strokeStyle = 'rgba(' + lnRgb + ',' + (0.82 * ta).toFixed(2) + ')';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(cx - lh, cy + 28); ctx.lineTo(cx + lh, cy + 28); ctx.stroke();
+
+          ctx.font = 'bold ' + (port ? 12 : 13.5) + 'px Roboto, "Segoe UI", Arial, sans-serif';
+          ctx.fillStyle = 'rgba(' + accRgb + ',' + ta.toFixed(2) + ')';
+          ctx.fillText(sub, cx, cy + 48);
+
+          ctx.font = '11.5px Roboto, "Segoe UI", Arial, sans-serif';
+          ctx.fillStyle = 'rgba(' + hintRgb + ',' + (0.72 * ta).toFixed(2) + ')';
+          ctx.fillText('Toque ou clique para entrar', cx, cy + 74);
+
+          var sp = 0.7 + 0.3 * Math.sin(elapsed * 0.014);
+          var gCol = 'rgba(' + lnRgb + ',' + ta.toFixed(2) + ')';
+          drawCanvasDiamondStar(ctx, cx - lh - 10, cy + 28, 6.2 * sp, gCol);
+          drawCanvasDiamondStar(ctx, cx + lh + 10, cy + 28, 6.2 * sp, gCol);
+        };
 
         var renderEnt = function () {
           var elapsed = new Date().getTime() - animeEntranceStart;
@@ -4201,85 +4727,115 @@
           ctx.clearRect(0, 0, w, h);
 
           var progress = Math.min(1, elapsed / ANIME_ENTRANCE_MS);
-          var masterFade = 1;
+          var fade = 1;
           if (elapsed > ANIME_ENTRANCE_MS - 420) {
-            masterFade = Math.max(0, 1 - ((elapsed - (ANIME_ENTRANCE_MS - 420)) / 420));
+            fade = Math.max(0, 1 - ((elapsed - (ANIME_ENTRANCE_MS - 420)) / 420));
           }
-          ctx.fillStyle = 'rgba(10, 6, 26, ' + (0.95 * masterFade).toFixed(2) + ')';
-          ctx.fillRect(0, 0, w, h);
-
-          var cx = w * 0.5;
-          var cy = h * 0.46;
           var minDim = Math.min(w, h);
           var ease = 1 - (1 - progress) * (1 - progress) * (1 - progress);
-          var ringR = minDim * (0.14 + 0.38 * ease);
+          var cx = w * 0.5, cy = h * 0.47;
+          var i;
 
-          // Expanding glowing sakura & cyan rings
-          ctx.strokeStyle = 'rgba(255, 126, 212, ' + (0.55 * masterFade * (1 - progress * 0.4)).toFixed(2) + ')';
-          ctx.lineWidth = 2.2;
-          ctx.beginPath();
-          ctx.arc(cx, cy, ringR, 0, Math.PI * 2, false);
-          ctx.stroke();
-
-          ctx.strokeStyle = 'rgba(124, 232, 255, ' + (0.45 * masterFade).toFixed(2) + ')';
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.arc(cx, cy, ringR * 0.72, 0, Math.PI * 2, false);
-          ctx.stroke();
-
-          // Crescent moon emblem
-          var moonR = Math.max(18, minDim * 0.068) * Math.min(1, elapsed / 320);
-          var my = cy - 48;
-          ctx.fillStyle = 'rgba(255, 242, 204, ' + (0.94 * masterFade).toFixed(2) + ')';
-          ctx.beginPath();
-          ctx.arc(cx, my, moonR, 0, Math.PI * 2, false);
-          ctx.fill();
-          ctx.fillStyle = 'rgba(10, 6, 26, ' + (0.96 * masterFade).toFixed(2) + ')';
-          ctx.beginPath();
-          ctx.arc(cx - moonR * 0.38, my - moonR * 0.16, moonR * 0.86, 0, Math.PI * 2, false);
-          ctx.fill();
-
-          // Swirling sakura blossom ring
-          for (var i = 0; i < 16; i++) {
-            var ang = (i * Math.PI * 2 / 16) + progress * 2.4;
-            var dist = minDim * (0.08 + 0.42 * ease) * (0.82 + (i % 3) * 0.14);
-            var px = cx + Math.cos(ang) * dist;
-            var py = cy + Math.sin(ang) * dist * 0.75;
-            var pCol = (i % 2 === 0 ? 'rgba(255,126,212,' : 'rgba(255,209,240,') + (0.82 * masterFade).toFixed(2) + ')';
-            drawCanvasSakuraPetal(ctx, px, py, 6.5 + (i % 3) * 1.6, (ang * 180 / Math.PI) + 45, pCol);
+          if (world === 'lofi') {
+            ctx.fillStyle = 'rgba(19, 10, 30, ' + (0.96 * fade).toFixed(2) + ')';
+            ctx.fillRect(0, 0, w, h);
+            var vr = Math.max(24, minDim * 0.088) * Math.min(1, elapsed / 300);
+            var vy = cy - 54;
+            ctx.fillStyle = 'rgba(255, 179, 138, ' + (0.18 * fade).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(cx, vy, vr * 1.5, 0, Math.PI * 2, false); ctx.fill();
+            ctx.fillStyle = 'rgba(30, 17, 44, ' + (0.94 * fade).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(cx, vy, vr, 0, Math.PI * 2, false); ctx.fill();
+            ctx.strokeStyle = 'rgba(255, 179, 138, ' + (0.65 * fade).toFixed(2) + ')'; ctx.lineWidth = 1.5; ctx.stroke();
+            ctx.strokeStyle = 'rgba(255, 224, 102, ' + (0.38 * fade).toFixed(2) + ')'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.arc(cx, vy, vr * 0.72, 0, Math.PI * 2, false); ctx.stroke();
+            ctx.beginPath(); ctx.arc(cx, vy, vr * 0.52, 0, Math.PI * 2, false); ctx.stroke();
+            ctx.fillStyle = 'rgba(255, 179, 138, ' + (0.92 * fade).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(cx, vy, vr * 0.30, 0, Math.PI * 2, false); ctx.fill();
+            ctx.fillStyle = 'rgba(19, 10, 30, ' + (0.96 * fade).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(cx, vy, vr * 0.09, 0, Math.PI * 2, false); ctx.fill();
+            var spin = progress * Math.PI * 3.5;
+            ctx.strokeStyle = 'rgba(255, 242, 204, ' + (0.72 * fade).toFixed(2) + ')'; ctx.lineWidth = 2.2;
+            ctx.beginPath(); ctx.moveTo(cx + Math.cos(spin) * vr * 0.40, vy + Math.sin(spin) * vr * 0.40); ctx.lineTo(cx + Math.cos(spin) * vr * 0.86, vy + Math.sin(spin) * vr * 0.86); ctx.stroke();
+            var bStart = cx - (14 * 12) * 0.5;
+            for (i = 0; i < 14; i++) {
+              var ebh = (6 + 18 * (0.5 + 0.5 * Math.sin(elapsed * 0.012 + i * 0.7))) * ease;
+              ctx.fillStyle = 'rgba(' + (i % 3 === 0 ? '159,227,201' : (i % 2 === 0 ? '255,179,138' : '255,224,102')) + ',' + (0.74 * fade).toFixed(2) + ')';
+              ctx.fillRect(bStart + i * 12, cy + 104 - ebh, 7, ebh);
+            }
+            drawEntTitle(ctx, w, h, cx, cy, elapsed, fade, 'PHONEBOX  LOFI', 'COZY RAINY ROOM  //  72 BPM', '255,244,236', '255,179,138', '255,224,102', '201,166,196');
+            return;
           }
 
-          // Title & subtitle reveal
-          var textAlpha = Math.min(1, Math.max(0, (elapsed - 160) / 360)) * masterFade;
-          var portrait = h > w;
-          ctx.textAlign = 'center';
-          ctx.font = 'bold ' + (portrait ? 22 : 28) + 'px Roboto, "Segoe UI", Arial, sans-serif';
-          ctx.fillStyle = 'rgba(255, 126, 212, ' + (0.45 * textAlpha).toFixed(2) + ')';
-          ctx.fillText('PHONEBOX  SAKURA', cx, cy + 18);
-          ctx.fillStyle = 'rgba(255, 245, 253, ' + textAlpha.toFixed(2) + ')';
-          ctx.fillText('PHONEBOX  SAKURA', cx, cy + 16);
+          if (world === 'starfall') {
+            ctx.fillStyle = 'rgba(2, 5, 18, ' + (0.96 * fade).toFixed(2) + ')';
+            ctx.fillRect(0, 0, w, h);
+            ctx.strokeStyle = 'rgba(109, 255, 176, ' + (0.52 * fade).toFixed(2) + ')'; ctx.lineWidth = 2.6;
+            ctx.beginPath(); ctx.arc(cx, cy, minDim * (0.14 + 0.36 * ease), 0, Math.PI * 2, false); ctx.stroke();
+            ctx.strokeStyle = 'rgba(181, 124, 255, ' + (0.48 * fade).toFixed(2) + ')'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(cx, cy, minDim * (0.10 + 0.28 * ease), 0, Math.PI * 2, false); ctx.stroke();
+            var ay = cy - 54, spn = Math.min(w * 0.28, 110);
+            var cxs = [cx - spn, cx - spn * 0.45, cx, cx + spn * 0.45, cx + spn];
+            var cys = [ay + 12, ay - 14, ay + 4, ay - 16, ay + 10];
+            var drw = 4 * Math.min(1, progress * 1.8);
+            ctx.strokeStyle = 'rgba(127, 231, 255, ' + (0.80 * fade).toFixed(2) + ')'; ctx.lineWidth = 1.6;
+            for (i = 0; i < 4; i++) {
+              if (i > drw) break;
+              var sf2 = Math.min(1, drw - i);
+              ctx.beginPath(); ctx.moveTo(cxs[i], cys[i]); ctx.lineTo(cxs[i] + (cxs[i + 1] - cxs[i]) * sf2, cys[i] + (cys[i + 1] - cys[i]) * sf2); ctx.stroke();
+            }
+            for (i = 0; i < 5; i++) {
+              drawCanvasDiamondStar(ctx, cxs[i], cys[i], 4.2 + (i === 2 ? 2.5 : 0), 'rgba(' + (i % 2 === 0 ? '109,255,176' : '255,224,102') + ',' + (0.92 * fade).toFixed(2) + ')');
+            }
+            drawEntTitle(ctx, w, h, cx, cy, elapsed, fade, 'PHONEBOX  STARFALL', 'AURORA & CONSTELLATIONS  //  HP 7.1', '240,251,255', '127,231,255', '109,255,176', '136,180,220');
+            return;
+          }
 
-          var lineHalf = Math.min(w * 0.34, 155) * Math.min(1, Math.max(0, (elapsed - 260) / 420));
-          ctx.strokeStyle = 'rgba(255, 213, 107, ' + (0.82 * textAlpha).toFixed(2) + ')';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(cx - lineHalf, cy + 28);
-          ctx.lineTo(cx + lineHalf, cy + 28);
-          ctx.stroke();
+          if (world === 'miku') {
+            ctx.fillStyle = 'rgba(3, 16, 21, ' + (0.96 * fade).toFixed(2) + ')';
+            ctx.fillRect(0, 0, w, h);
+            var port = h > w;
+            var tcx2 = port ? (w * 0.5) : (w * 0.40);
+            var tcy2 = port ? (h * 0.54) : (h * 0.48);
+            var rcx = port ? (w * 0.5) : (w * 0.72);
+            var rcy = port ? (h * 0.30) : (h * 0.50);
+            ctx.strokeStyle = 'rgba(57, 197, 187, ' + (0.60 * fade).toFixed(2) + ')'; ctx.lineWidth = 2.4;
+            ctx.beginPath(); ctx.arc(rcx, rcy, minDim * (0.16 + 0.24 * ease), 0, Math.PI * 2, false); ctx.stroke();
+            ctx.strokeStyle = 'rgba(255, 46, 136, ' + (0.54 * fade).toFixed(2) + ')'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(rcx, rcy, minDim * (0.12 + 0.19 * ease), 0, Math.PI * 2, false); ctx.stroke();
+            if (mikuSpriteReady && mikuSpriteImg) {
+              var mh2 = Math.min(h * (port ? 0.36 : 0.68), 260);
+              var mw2 = mh2 * (mikuSpriteImg.width / Math.max(1, mikuSpriteImg.height));
+              var rise = (1 - ease) * 26, bob = Math.sin(elapsed * 0.008) * 4;
+              ctx.save();
+              ctx.globalAlpha = Math.min(1, progress * 2.2) * fade;
+              ctx.drawImage(mikuSpriteImg, rcx - mw2 * 0.5, rcy - mh2 * 0.5 + rise + bob, mw2, mh2);
+              ctx.restore();
+            }
+            var slt = w / 18;
+            for (i = 0; i < 18; i++) {
+              var mbh = (10 + 34 * (0.5 + 0.5 * Math.sin(elapsed * 0.014 + i * 0.6))) * ease;
+              ctx.fillStyle = 'rgba(' + (i % 5 === 2 ? '255,46,136' : (i % 3 === 0 ? '127,231,255' : '57,197,187')) + ',' + (0.58 * fade).toFixed(2) + ')';
+              ctx.fillRect(i * slt + 3, h - mbh, slt - 6, mbh);
+            }
+            drawEntTitle(ctx, w, h, tcx2, tcy2, elapsed, fade, 'HATSUNE MIKU  01', 'CYBER VOCAL STAGE  //  HP 7.1', '238,255,254', '57,197,187', '255,46,136', '121,196,199');
+            return;
+          }
 
-          ctx.font = 'bold ' + (portrait ? 12 : 14) + 'px Roboto, "Segoe UI", Arial, sans-serif';
-          ctx.fillStyle = 'rgba(255, 126, 212, ' + textAlpha.toFixed(2) + ')';
-          ctx.fillText('MIDNIGHT ANIME EDITION  //  HP 7.1', cx, cy + 48);
-
-          ctx.font = '11.5px Roboto, "Segoe UI", Arial, sans-serif';
-          ctx.fillStyle = 'rgba(192, 162, 232, ' + (0.72 * textAlpha).toFixed(2) + ')';
-          ctx.fillText('Toque ou clique para entrar', cx, cy + 74);
-
-          var sp = 0.7 + 0.3 * Math.sin(elapsed * 0.014);
-          var gCol = 'rgba(255, 213, 107, ' + textAlpha.toFixed(2) + ')';
-          drawCanvasDiamondStar(ctx, cx - lineHalf - 10, cy + 28, 6.5 * sp, gCol);
-          drawCanvasDiamondStar(ctx, cx + lineHalf + 10, cy + 28, 6.5 * sp, gCol);
-          drawCanvasDiamondStar(ctx, cx + moonR * 1.45, my - moonR * 0.6, 5.0 * sp, 'rgba(124,232,255,' + textAlpha.toFixed(2) + ')');
+          // Sakura Storm entrance
+          ctx.fillStyle = 'rgba(10, 6, 26, ' + (0.95 * fade).toFixed(2) + ')';
+          ctx.fillRect(0, 0, w, h);
+          var ringR = minDim * (0.14 + 0.38 * ease);
+          ctx.strokeStyle = 'rgba(255, 126, 212, ' + (0.55 * fade * (1 - progress * 0.4)).toFixed(2) + ')'; ctx.lineWidth = 2.2;
+          ctx.beginPath(); ctx.arc(cx, cy, ringR, 0, Math.PI * 2, false); ctx.stroke();
+          ctx.strokeStyle = 'rgba(124, 232, 255, ' + (0.45 * fade).toFixed(2) + ')'; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.arc(cx, cy, ringR * 0.72, 0, Math.PI * 2, false); ctx.stroke();
+          var moonR = Math.max(18, minDim * 0.068) * Math.min(1, elapsed / 320);
+          var my = cy - 48;
+          ctx.fillStyle = 'rgba(255, 242, 204, ' + (0.94 * fade).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(cx, my, moonR, 0, Math.PI * 2, false); ctx.fill();
+          ctx.fillStyle = 'rgba(10, 6, 26, ' + (0.96 * fade).toFixed(2) + ')'; ctx.beginPath(); ctx.arc(cx - moonR * 0.38, my - moonR * 0.16, moonR * 0.86, 0, Math.PI * 2, false); ctx.fill();
+          for (i = 0; i < 16; i++) {
+            var ang = (i * Math.PI * 2 / 16) + progress * 2.4;
+            var dist = minDim * (0.08 + 0.42 * ease) * (0.82 + (i % 3) * 0.14);
+            var pCol = (i % 2 === 0 ? 'rgba(255,126,212,' : 'rgba(255,209,240,') + (0.82 * fade).toFixed(2) + ')';
+            drawCanvasSakuraPetal(ctx, cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist * 0.75, 6.5 + (i % 3) * 1.6, (ang * 180 / Math.PI) + 45, pCol, 1);
+          }
+          drawEntTitle(ctx, w, h, cx, cy, elapsed, fade, 'PHONEBOX  SAKURA', 'SAKURA STORM EDITION  //  HP 7.1', '255,245,253', '255,126,212', '255,213,107', '192,162,232');
         };
         renderEnt();
         animeEntranceTimer = setInterval(renderEnt, 36);
@@ -4330,11 +4886,13 @@
 
         stopHackBoot();
         if (isAnimeThemeActive()) {
+          refreshAnimeRibbonMsgs();
           drawAnimeSkyFrame(false);
           drawAnimeSparkleFrame(false);
           drawAnimeTopRibbon(false);
           if (shouldAnimate) {
-            animeMeteor.nextAt = new Date().getTime() + 1800;
+            animeMeteor.nextAt = new Date().getTime() + 1600;
+            lofiNextFlash = new Date().getTime() + 6500;
             animeSkyTimer = setInterval(function () {
               if (!document.hidden && !document.webkitHidden) drawAnimeSkyFrame(true);
             }, 50);
@@ -4352,9 +4910,9 @@
       }
 
       function selectLocalTheme(theme) {
-        var wasHack = isHackThemeActive();
-        var wasAnime = isAnimeThemeActive();
-        localTheme = theme === 'anime' || theme === 'hack' ? theme : 'default';
+        var prevTheme = activeEffectiveTheme;
+        var norm = normalizeThemeId(theme);
+        localTheme = isCustomLocalThemeId(norm) ? norm : 'default';
         var choices = document.getElementsByName('panel-theme');
         for (var i = 0; i < choices.length; i++) choices[i].checked = choices[i].value === localTheme;
         if (!state.isPreview) storeSet('localTheme', localTheme);
@@ -4364,7 +4922,8 @@
 
         var settingsEl = $('theme-settings');
         var modalOpen = settingsEl && !(/(^|\s)hidden(\s|$)/).test(settingsEl.className);
-        if (isHackThemeActive() && !wasHack && effectsEnabled && !state.isPreview) {
+        var changed = activeEffectiveTheme !== prevTheme;
+        if (isHackThemeActive() && changed && effectsEnabled && !state.isPreview) {
           if (modalOpen) {
             pendingHackBootOnClose = true;
             pendingAnimeEntranceOnClose = false;
@@ -4372,7 +4931,7 @@
             coldHackBootPlayed = true;
             playHackBoot();
           }
-        } else if (isAnimeThemeActive() && !wasAnime && effectsEnabled && !state.isPreview) {
+        } else if (isAnimeThemeActive() && changed && effectsEnabled && !state.isPreview) {
           if (modalOpen) {
             pendingAnimeEntranceOnClose = true;
             pendingHackBootOnClose = false;
@@ -4386,17 +4945,23 @@
       function applyThemeAndAccent(disp) {
         var d = disp || {};
         lastThemeDisplay = disp;
-        var themeKey = localTheme !== 'default' ? localTheme : (d.theme && THEMES[d.theme] ? d.theme : 'default');
+        var serverTheme = normalizeThemeId(d.theme);
+        var themeKey = localTheme !== 'default' ? localTheme : (THEMES[serverTheme] ? serverTheme : 'default');
         var prevEff = activeEffectiveTheme;
         activeEffectiveTheme = themeKey;
-        var th = THEMES[themeKey];
+        var th = THEMES[themeKey] || THEMES['default'];
         var isHack = !!(th && th.isHack);
         var isAnime = !!(th && th.isAnime);
         var isSpecial = isHack || isAnime;
-        var visualCls = (themeKey === 'hack' || themeKey === 'anime') ? ('theme-' + themeKey) : 'theme-default';
+        var visualCls = isHack ? 'theme-hack' : (isAnime ? ('theme-anime world-' + (th.world || themeKey)) : 'theme-default');
         if ($('app')) $('app').className = visualCls;
         var ts = $('theme-settings');
         if (ts) ts.className = 'modal ' + visualCls + ((/(^|\s)hidden(\s|$)/).test(ts.className) ? ' hidden' : '');
+        var tbArt = $('anime-tb-art');
+        if (tbArt && isAnime && th.art && tbArt.getAttribute('src') !== th.art) {
+          tbArt.setAttribute('src', th.art);
+        }
+        if (themeKey === 'miku') ensureMikuSprite();
 
         var accent = th.accent || ((typeof d.accent === 'string' && /^#[0-9a-fA-F]{6}$/.test(d.accent)) ? d.accent : '#8bd0ff');
         state.accentColor = accent;
@@ -5031,14 +5596,15 @@
             if (!state.isPreview) storeSet('themeEffects', '1');
             pendingHackBootOnClose = false;
             pendingAnimeEntranceOnClose = false;
-            if (isAnimeThemeActive() || localTheme === 'anime') {
-              selectLocalTheme('anime');
-              addClass(settings, 'hidden');
-              playAnimeEntrance();
-            } else {
+            if (isHackThemeActive() || localTheme === 'hack') {
               selectLocalTheme('hack');
               addClass(settings, 'hidden');
               playHackBoot();
+            } else {
+              var targetWorld = isLivingWorldId(localTheme) ? normalizeThemeId(localTheme) : (isLivingWorldId(activeEffectiveTheme) ? activeLivingWorld() : 'sakura');
+              selectLocalTheme(targetWorld);
+              addClass(settings, 'hidden');
+              playAnimeEntrance();
             }
           };
         }

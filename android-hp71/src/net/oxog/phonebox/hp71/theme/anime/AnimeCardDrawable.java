@@ -10,10 +10,9 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 /**
- * Drawable nativo API 17 estilo Anime Crystal / Sakura Twilight HUD:
- * - Bordas arredondadas macias com duplo aro luminoso (borda sakura/orquídea + brilho interno superior);
- * - Faixa sutil de brilho cel-shaded no topo do card;
- * - Estrela brilhante de 4 pontas (✦) + ponto dourado nos cards em destaque.
+ * Drawable nativo API 17 estilo Living World Crystal HUD (Sakura / Lofi / Starfall / Miku):
+ * - Vidro translúcido com duplo aro luminoso e brilho cel-shaded parametrizado pelo mundo ativo;
+ * - Estrela brilhante de 4 pontas + gema secundária nos cards em destaque.
  * Zero alocações em draw().
  */
 public final class AnimeCardDrawable extends Drawable {
@@ -35,7 +34,7 @@ public final class AnimeCardDrawable extends Drawable {
     private final boolean highlight;
 
     public AnimeCardDrawable(int fillColor, int borderColor, int starColor, int goldColor,
-                             float density, boolean highlight) {
+                             int sheenColor, int innerRimColor, float density, boolean highlight) {
         this.density = density;
         this.highlight = highlight;
         this.radiusPx = (highlight ? 13f : 10f) * density;
@@ -44,7 +43,7 @@ public final class AnimeCardDrawable extends Drawable {
         fillPaint.setColor(fillColor);
 
         sheenPaint.setStyle(Paint.Style.FILL);
-        sheenPaint.setColor(highlight ? 0x24FF7ED4 : 0x14C792FF);
+        sheenPaint.setColor(sheenColor);
 
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(Math.max(1.2f, (highlight ? 1.6f : 1.15f) * density));
@@ -52,7 +51,7 @@ public final class AnimeCardDrawable extends Drawable {
 
         innerRimPaint.setStyle(Paint.Style.STROKE);
         innerRimPaint.setStrokeWidth(Math.max(1f, density * 0.9f));
-        innerRimPaint.setColor(highlight ? 0x44FFE3F7 : 0x22E8D5FF);
+        innerRimPaint.setColor(innerRimColor);
 
         starPaint.setStyle(Paint.Style.FILL);
         starPaint.setColor(starColor);
@@ -78,18 +77,12 @@ public final class AnimeCardDrawable extends Drawable {
         if (b.width() <= 6 || b.height() <= 6) return;
         if (outerRect.isEmpty()) onBoundsChange(b);
 
-        // Translucent twilight glass fill
         canvas.drawRoundRect(outerRect, radiusPx, radiusPx, fillPaint);
-
-        // Cel-shaded soft specular top sheen
         canvas.drawRoundRect(sheenRect, radiusPx * 0.75f, radiusPx * 0.75f, sheenPaint);
-
-        // Inner soft moonlight rim + outer glowing sakura/orchid border
         canvas.drawRoundRect(innerRect, Math.max(2f, radiusPx - 1.5f * density),
                 Math.max(2f, radiusPx - 1.5f * density), innerRimPaint);
         canvas.drawRoundRect(outerRect, radiusPx, radiusPx, borderPaint);
 
-        // Decorative 4-point anime starlight sparkle in top-right corner on highlight cards
         if (highlight && b.width() > 64f * density && b.height() > 36f * density) {
             float sx = b.right - 13f * density;
             float sy = b.top + 11f * density;

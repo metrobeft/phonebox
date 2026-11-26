@@ -154,7 +154,7 @@ public class ApprovalModalOverlay extends FrameLayout {
             setBackgroundColor(0xEB000503);
             card.setBackground(DrawableFactory.cardBackground(t, CardViewContainer.VARIANT_HIGHLIGHT));
         } else if (t.isAnime()) {
-            setBackgroundColor(0xE8090516);
+            setBackgroundColor(c.worldModalScrim);
             card.setBackground(DrawableFactory.cardBackground(t, CardViewContainer.VARIANT_HIGHLIGHT));
         } else {
             setBackgroundColor(0xDD04060A);
@@ -164,7 +164,7 @@ public class ApprovalModalOverlay extends FrameLayout {
         projectView.setTextColor(c.textMuted);
         toolView.setTextColor(c.textPrimary);
         detailView.setTextColor(c.textSecondary);
-        detailView.setBackground(DrawableFactory.roundedRect(t.isAnime() ? 0xE0110A26 : c.bg, c.border, d.strokePx, t.isHack() ? 0f : d.dp(8)));
+        detailView.setBackground(DrawableFactory.roundedRect(t.isAnime() ? c.worldChartBg : c.bg, c.border, d.strokePx, t.isHack() ? 0f : d.dp(8)));
         denyBtn.applyTheme();
         allowBtn.applyTheme();
     }

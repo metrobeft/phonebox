@@ -137,9 +137,9 @@ public class NativeLineChartView extends View {
 
     public void applyTheme() {
         ThemeColors c = AppTheme.get().colors();
-        bgPaint.setColor(sparkline ? 0x00000000 : (c.isHack ? 0xD8010A05 : (c.isAnime ? 0xCC110A26 : c.bg)));
-        borderPaint.setColor(c.isAnime ? 0x996B4C9A : c.border);
-        gridPaint.setColor(c.isHack ? 0x5515693B : (c.isAnime ? 0x44C792FF : c.divider));
+        bgPaint.setColor(sparkline ? 0x00000000 : ((c.isHack || c.isAnime) ? c.worldChartBg : c.bg));
+        borderPaint.setColor(c.isAnime ? ThemeColors.withAlpha(c.border, 0xAA) : c.border);
+        gridPaint.setColor((c.isHack || c.isAnime) ? c.worldGridColor : c.divider);
         labelPaint.setColor(c.textPrimary);
         labelPaint.setTypeface(c.isHack ? android.graphics.Typeface.MONOSPACE : android.graphics.Typeface.DEFAULT);
         axisPaint.setColor(ThemeColors.withAlpha(c.textMuted, (c.isHack || c.isAnime) ? 215 : 170));

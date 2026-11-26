@@ -51,6 +51,7 @@ import net.oxog.phonebox.hp71.screens.NightScreen;
 import net.oxog.phonebox.hp71.screens.ProcsScreen;
 import net.oxog.phonebox.hp71.screens.SystemScreen;
 import net.oxog.phonebox.hp71.theme.AppTheme;
+import net.oxog.phonebox.hp71.theme.DrawableFactory;
 import net.oxog.phonebox.hp71.theme.ThemeColors;
 import net.oxog.phonebox.hp71.theme.ThemeDimens;
 import net.oxog.phonebox.hp71.theme.anime.AnimeEntranceOverlayView;
@@ -101,8 +102,7 @@ public final class MainActivity extends Activity implements
     private final HackTextGlitchManager hackTextGlitch = new HackTextGlitchManager();
     private View nightDimOverlay;
     private ApprovalModalOverlay approvalOverlay;
-    private boolean lastThemeWasHack = false;
-    private boolean lastThemeWasAnime = false;
+    private String lastThemeId = "";
     private boolean coldBootPlayed = false;
     private boolean settingsDialogOpen = false;
     private boolean pendingHackBootOnDialogClose = false;
@@ -270,7 +270,8 @@ public final class MainActivity extends Activity implements
         rootFrame.addView(matrixRainBg, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
-        // Camada 0b (tema Anime): céu crepuscular estrelado + lua crescente + pétalas de sakura
+        // Camada 0b (tema Anime): céu crepuscular estrelado + lua crescente + pétalas
+        // de sakura
         animeSkyBg = new AnimeSkyBackgroundView(this);
         animeSkyBg.setVisibility(View.GONE);
         rootFrame.addView(animeSkyBg, new FrameLayout.LayoutParams(
@@ -387,7 +388,8 @@ public final class MainActivity extends Activity implements
         rootFrame.addView(hackGlitchOverlay, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
-        // Camada de brilhos estelares + pétalas marginais + varredura ao trocar de aba (tema Anime)
+        // Camada de brilhos estelares + pétalas marginais + varredura ao trocar de aba
+        // (tema Anime)
         animeSparkleOverlay = new AnimeSparkleOverlayView(this);
         rootFrame.addView(animeSparkleOverlay, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
@@ -544,8 +546,10 @@ public final class MainActivity extends Activity implements
             }
         } else if (theme.isAnime()) {
             if (tabChanged && resumed && prefs.themeEffectsEnabled()) {
-                if (animeSparkleOverlay != null) animeSparkleOverlay.triggerTabSweep();
-                if (animeSkyBg != null) animeSkyBg.triggerSakuraBurst();
+                if (animeSparkleOverlay != null)
+                    animeSparkleOverlay.triggerTabSweep();
+                if (animeSkyBg != null)
+                    animeSkyBg.triggerSakuraBurst();
             }
         }
     }
@@ -738,49 +742,115 @@ public final class MainActivity extends Activity implements
     }
 
     private void applyPanelTheme() {
-        String local = prefs.getLocalTheme();
-        boolean custom = "anime".equals(local) || "hack".equals(local);
+        String local = ThemeColors.normalizePresetId(prefs.getLocalTheme());
+        boolean custom = ThemeColors.isCustomLocalTheme(local);
         theme.update(custom ? local : appState.display.theme, appState.display.accent,
                 appState.display.cardRadiusDp, appState.display.borderlessCards);
     }
 
     private void showSettingsDialog() {
-        final String[] ids = {"anime", "hack", "default"};
-        final String[] labels = {"Anime", "Hack", "Default"};
-        ThemeDimens d = theme.dimens();
+        final String[] ids = { "sakura", "lofi", "starfall", "miku", "hack", "default" };
+        final String[] labels = { "Sakura Storm", "Lofi Room", "Starfall Aurora", "Hatsune Miku 01", "Hack Cyberdeck", "Default Navy" };
+        final int[] banners = {
+                R.drawable.theme_anime, R.drawable.theme_lofi, R.drawable.theme_starfall,
+                R.drawable.theme_miku, R.drawable.theme_hack, 0
+        };
+        final int[] accents = { 0xFFFF7ED4, 0xFFFFB38A, 0xFF7FE7FF, 0xFF39C5BB, 0xFF00FF66, 0xFF8BD0FF };
+
+        final ThemeDimens d = theme.dimens();
         LinearLayout box = new LinearLayout(this);
         box.setOrientation(LinearLayout.VERTICAL);
-        box.setPadding(d.dp(14), d.dp(5), d.dp(14), d.dp(5));
-        LinearLayout previews = new LinearLayout(this);
-        for (int art : new int[] {R.drawable.theme_anime, R.drawable.theme_hack}) {
-            ImageView image = new ImageView(this);
-            image.setImageResource(art);
-            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            previews.addView(image, new LinearLayout.LayoutParams(0, d.dp(44), 1f));
-        }
-        box.addView(previews);
-        android.widget.RadioGroup options = new android.widget.RadioGroup(this);
-        for (int i = 0; i < ids.length; i++) {
-            android.widget.RadioButton option = new android.widget.RadioButton(this);
-            option.setId(i + 1);
-            option.setText(labels[i]);
-            option.setMinHeight(d.dp(40));
-            options.addView(option);
-            if (ids[i].equals(prefs.getLocalTheme())) options.check(i + 1);
-        }
-        options.setOnCheckedChangeListener(new android.widget.RadioGroup.OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(android.widget.RadioGroup group, int checkedId) {
-                if (checkedId < 1 || checkedId > ids.length) return;
-                prefs.setLocalTheme(ids[checkedId - 1]);
-                applyPanelTheme();
+        box.setPadding(d.dp(12), d.dp(8), d.dp(12), d.dp(6));
+
+        TextView galleryTitle = new TextView(this);
+        galleryTitle.setText("Theme Studio — Mundos Animados");
+        galleryTitle.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        galleryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f);
+        galleryTitle.setPadding(d.dp(2), 0, d.dp(2), d.dp(6));
+        box.addView(galleryTitle);
+
+        final LinearLayout[] tileCards = new LinearLayout[ids.length];
+        final TextView[] tileTitles = new TextView[ids.length];
+        final String[] selectedId = new String[] { ThemeColors.normalizePresetId(prefs.getLocalTheme()) };
+        if (!ThemeColors.isCustomLocalTheme(selectedId[0])) selectedId[0] = "default";
+
+        final Runnable refreshSelection = new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < ids.length; i++) {
+                    boolean active = ids[i].equals(selectedId[0]);
+                    tileCards[i].setBackground(DrawableFactory.roundedRect(
+                            active ? 0xFF1F2B47 : 0xFF12192A,
+                            active ? accents[i] : 0xFF31415E,
+                            d.dp(active ? 2 : 1), d.dp(8)));
+                    tileTitles[i].setText((active ? "* " : "") + labels[i]);
+                    tileTitles[i].setTextColor(active ? accents[i] : 0xFFE6EFFC);
+                }
             }
-        });
-        box.addView(options);
+        };
+
+        for (int row = 0; row < ids.length; row += 2) {
+            LinearLayout rowBox = new LinearLayout(this);
+            rowBox.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout.LayoutParams rowLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            rowLp.bottomMargin = d.dp(7);
+            for (int col = 0; col < 2 && (row + col) < ids.length; col++) {
+                final int idx = row + col;
+                LinearLayout tile = new LinearLayout(this);
+                tile.setOrientation(LinearLayout.VERTICAL);
+                tile.setPadding(d.dp(5), d.dp(5), d.dp(5), d.dp(6));
+                tile.setClickable(true);
+
+                if (banners[idx] != 0) {
+                    ImageView img = new ImageView(this);
+                    img.setImageResource(banners[idx]);
+                    img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    tile.addView(img, new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, d.dp(50)));
+                } else {
+                    View navyPreview = new View(this);
+                    navyPreview.setBackground(DrawableFactory.roundedRect(0xFF152641, 0xFF8BD0FF, d.dp(1), d.dp(4)));
+                    tile.addView(navyPreview, new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, d.dp(50)));
+                }
+
+                TextView lbl = new TextView(this);
+                lbl.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+                lbl.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11.5f);
+                lbl.setSingleLine(true);
+                lbl.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                lbl.setGravity(Gravity.CENTER_HORIZONTAL);
+                lbl.setPadding(d.dp(2), d.dp(4), d.dp(2), 0);
+                tile.addView(lbl, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                tileCards[idx] = tile;
+                tileTitles[idx] = lbl;
+                tile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectedId[0] = ids[idx];
+                        prefs.setLocalTheme(ids[idx]);
+                        applyPanelTheme();
+                        refreshSelection.run();
+                    }
+                });
+
+                LinearLayout.LayoutParams tLp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                if (col == 0) tLp.rightMargin = d.dp(7);
+                rowBox.addView(tile, tLp);
+            }
+            box.addView(rowBox, rowLp);
+        }
+        refreshSelection.run();
+
         CheckBox effects = new CheckBox(this);
-        effects.setText("Animar temas (Hack: Matrix/Glitch · Anime: Sakura/Estrelas)");
+        effects.setText("Animar mundos (Matrix/Glitch, Sakura, Lofi, Aurora, Miku)");
         effects.setChecked(prefs.themeEffectsEnabled());
         effects.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(android.widget.CompoundButton button, boolean checked) {
+            @Override
+            public void onCheckedChanged(android.widget.CompoundButton button, boolean checked) {
                 prefs.setThemeEffectsEnabled(checked);
                 syncThemeEffectsState(false, false);
             }
@@ -791,7 +861,8 @@ public final class MainActivity extends Activity implements
         autoUpd.setText("Verificar atualizações do APK automaticamente");
         autoUpd.setChecked(prefs.isAutoCheckUpdates());
         autoUpd.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(android.widget.CompoundButton button, boolean checked) {
+            @Override
+            public void onCheckedChanged(android.widget.CompoundButton button, boolean checked) {
                 prefs.setAutoCheckUpdates(checked);
                 updateUpdateBannerVisibility();
             }
@@ -813,7 +884,8 @@ public final class MainActivity extends Activity implements
 
         final ActionButtonView checkUpdBtn = new ActionButtonView(this);
         checkUpdBtn.setButton(
-                hasNewerApk ? ("Baixar atualização " + ApkUpdater.formatRemoteVersion(latestServerApk)) : "Verificar / Atualizar APK no servidor",
+                hasNewerApk ? ("Baixar atualização " + ApkUpdater.formatRemoteVersion(latestServerApk))
+                        : "Verificar / Atualizar APK no servidor",
                 hasNewerApk ? ActionButtonView.VARIANT_PRIMARY : ActionButtonView.VARIANT_ACTIVE);
         LinearLayout.LayoutParams updBtnLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, d.dp(40));
@@ -828,23 +900,27 @@ public final class MainActivity extends Activity implements
         pendingAnimeEntranceOnDialogClose = false;
         final AlertDialog dialog = new AlertDialog.Builder(this).setTitle("Configurações").setView(scrollBox)
                 .setNeutralButton("Conexão do PC", new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface d1, int which) {
+                    @Override
+                    public void onClick(DialogInterface d1, int which) {
                         pendingHackBootOnDialogClose = false;
                         pendingAnimeEntranceOnDialogClose = false;
                         showServerDialog();
                     }
                 })
                 .setNegativeButton("Testar Animação", new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface d1, int which) {
+                    @Override
+                    public void onClick(DialogInterface d1, int which) {
                         prefs.setThemeEffectsEnabled(true);
-                        if ("anime".equals(prefs.getLocalTheme()) || theme.isAnime()) {
-                            prefs.setLocalTheme("anime");
-                            pendingAnimeEntranceOnDialogClose = true;
-                            pendingHackBootOnDialogClose = false;
-                        } else {
+                        String cur = ThemeColors.normalizePresetId(prefs.getLocalTheme());
+                        if ("hack".equals(cur) || theme.isHack()) {
                             prefs.setLocalTheme("hack");
                             pendingHackBootOnDialogClose = true;
                             pendingAnimeEntranceOnDialogClose = false;
+                        } else {
+                            String targetWorld = ThemeColors.isLivingWorldId(cur) ? cur : "sakura";
+                            prefs.setLocalTheme(targetWorld);
+                            pendingAnimeEntranceOnDialogClose = true;
+                            pendingHackBootOnDialogClose = false;
                         }
                         applyPanelTheme();
                     }
@@ -867,7 +943,8 @@ public final class MainActivity extends Activity implements
                 if (pendingHackBootOnDialogClose && theme.isHack() && resumed && prefs.themeEffectsEnabled()) {
                     pendingHackBootOnDialogClose = false;
                     playHackBootSequence();
-                } else if (pendingAnimeEntranceOnDialogClose && theme.isAnime() && resumed && prefs.themeEffectsEnabled()) {
+                } else if (pendingAnimeEntranceOnDialogClose && theme.isAnime() && resumed
+                        && prefs.themeEffectsEnabled()) {
                     pendingAnimeEntranceOnDialogClose = false;
                     playAnimeEntranceSequence();
                 }
@@ -1136,8 +1213,10 @@ public final class MainActivity extends Activity implements
             @Override
             public void run() {
                 if (theme.isAnime() && resumed && prefs.themeEffectsEnabled()) {
-                    if (animeSkyBg != null) animeSkyBg.triggerSakuraBurst();
-                    if (animeSparkleOverlay != null) animeSparkleOverlay.triggerTabSweep();
+                    if (animeSkyBg != null)
+                        animeSkyBg.triggerSakuraBurst();
+                    if (animeSparkleOverlay != null)
+                        animeSparkleOverlay.triggerTabSweep();
                 }
             }
         });
@@ -1168,14 +1247,17 @@ public final class MainActivity extends Activity implements
         hackTextGlitch.setRunning(animateHack);
 
         if (animeSkyBg != null) {
+            if (isAnime) animeSkyBg.setWorld(theme.worldId());
             animeSkyBg.setVisibility(isAnime ? View.VISIBLE : View.GONE);
             animeSkyBg.setRunning(animateAnime);
         }
         if (animeSparkleOverlay != null) {
+            if (isAnime) animeSparkleOverlay.setWorld(theme.worldId());
             animeSparkleOverlay.setState(isAnime, animateAnime);
         }
-        if (!isAnime && animeEntranceOverlay != null) {
-            animeEntranceOverlay.stop();
+        if (animeEntranceOverlay != null) {
+            if (isAnime) animeEntranceOverlay.setWorld(theme.worldId());
+            else animeEntranceOverlay.stop();
         }
 
         if (enteredHackNow && animateHack) {
@@ -1202,19 +1284,17 @@ public final class MainActivity extends Activity implements
         ThemeColors c = t.colors();
         boolean isHack = t.isHack();
         boolean isAnime = t.isAnime();
-        boolean enteredHack = isHack && !lastThemeWasHack;
-        boolean enteredAnime = isAnime && !lastThemeWasAnime;
-        lastThemeWasHack = isHack;
-        lastThemeWasAnime = isAnime;
+        boolean changedTheme = !c.id.equals(lastThemeId);
+        boolean enteredHack = isHack && changedTheme;
+        boolean enteredAnime = isAnime && changedTheme;
+        lastThemeId = c.id;
 
         rootFrame.setBackgroundColor(c.bg);
-        // Nos temas Hack e Anime, mainColumn fica transparente para revelar o fundo animado
-        // full-screen (Matrix ou Céu Sakura) atrás dos cards translúcidos
         mainColumn.setBackgroundColor((isHack || isAnime) ? 0x00000000 : c.bg);
         offlineBanner.setBackgroundColor(c.redDim);
-        offlineBanner.setTextColor(isHack ? 0xFFFF6B8A : (isAnime ? 0xFFFFD6EB : 0xFFFEF2F2));
-        updateBanner.setBackgroundColor(isHack ? 0xE6052B15 : (isAnime ? 0xE63D194E : c.accentDim));
-        updateBanner.setTextColor(isHack ? c.accent : (isAnime ? 0xFFFFF5FD : c.textPrimary));
+        offlineBanner.setTextColor(isHack ? 0xFFFF6B8A : (isAnime ? c.textPrimary : 0xFFFEF2F2));
+        updateBanner.setBackgroundColor(isHack ? 0xE6052B15 : (isAnime ? c.accentDim : c.accentDim));
+        updateBanner.setTextColor(isHack ? c.accent : c.textPrimary);
         topBar.applyTheme();
         navBar.applyTheme();
         approvalOverlay.applyTheme();

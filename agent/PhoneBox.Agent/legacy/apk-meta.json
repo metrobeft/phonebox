@@ -1,9 +1,9 @@
 {
   "package": "net.oxog.phonebox.hp71",
-  "versionCode": 9,
-  "versionName": "1.5.0",
-  "size": 313869,
-  "sha256": "C01A2C44EB2E5D16D52758DF3B754ED2503412523A25AE567B393CCC57A02475",
-  "builtAt": "2026-11-25T22:08:27.6680969-03:00",
+  "versionCode": 10,
+  "versionName": "2.0.0",
+  "size": 559998,
+  "sha256": "783950932895B9B024B352C06C59DE037C788F78666E46592852A7CCE3B36387",
+  "builtAt": "2026-11-25T23:15:41.6299598-03:00",
   "url": "/legacy/PhoneBox-HP71.apk"
 }

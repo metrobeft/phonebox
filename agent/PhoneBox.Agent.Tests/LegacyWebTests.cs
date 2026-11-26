@@ -102,6 +102,8 @@ public sealed class LegacyWebTests
         Assert.NotNull(AppPaths.Resource("legacy/style.css"));
         Assert.NotNull(AppPaths.Resource("legacy/app.js"));
         Assert.NotNull(AppPaths.Resource("legacy/PhoneBox-HP71.apk"));
+        foreach (var asset in new[] { "theme_anime.png", "theme_hack.png", "theme_lofi.png", "theme_starfall.png", "theme_miku.png", "miku_mascot.png" })
+            Assert.NotNull(AppPaths.Resource($"legacy/{asset}"));
         foreach (var id in new[] { "wsl", "explorer", "vscode", "brave", "spotify", "steam", "riot", "claude", "antigravity", "calc", "settings", "snip", "taskmgr", "monitoroff", "lock" })
             Assert.NotNull(AppPaths.Resource($"legacy/icons/{id}.png"));
     }

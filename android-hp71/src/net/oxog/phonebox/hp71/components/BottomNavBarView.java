@@ -115,6 +115,7 @@ public class BottomNavBarView extends LinearLayout {
     public void applyTheme() {
         ThemeColors c = AppTheme.get().colors();
         setBackgroundColor(c.navBar);
+        animeRailPaint.setColor(ThemeColors.withAlpha(c.accent, 0x99));
         for (int i = 0; i < items.size(); i++) {
             items.get(i).setTabActive(i == selectedPos, atTop);
         }
@@ -185,6 +186,8 @@ public class BottomNavBarView extends LinearLayout {
         void setTabActive(boolean active, boolean atTop) {
             this.activeTab = active;
             ThemeColors c = AppTheme.get().colors();
+            animeDividerPaint.setColor(ThemeColors.withAlpha(c.border, 0x40));
+            animeStarPaint.setColor(ThemeColors.withAlpha(c.starGold, 0xD8));
             setSelected(active);
             setBackgroundColor(active ? c.cardHighlightBg : c.navBar);
             int fg = active ? ((c.isHack || c.isAnime) ? c.accent : c.textPrimary) : c.textMuted;
